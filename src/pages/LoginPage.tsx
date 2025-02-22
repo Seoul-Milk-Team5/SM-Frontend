@@ -1,4 +1,4 @@
-import PasswordChangeModal from "@/feature/auth/ui/passwordChangeModal";
+import PasswordChangeModal from "@/feature/auth/ui/PasswordChangeModal";
 
 function LoginPage() {
   return (
