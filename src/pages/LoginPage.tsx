@@ -1,9 +1,9 @@
-import PasswordChangeModal from "@/feature/auth/ui/PasswordChangeModal";
+import LoginForm from "@/feature/auth/ui/LoginForm";
 
 function LoginPage() {
   return (
-    <div>
-      <PasswordChangeModal />
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <LoginForm />
     </div>
   );
 }

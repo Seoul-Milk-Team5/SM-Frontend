@@ -50,7 +50,7 @@ function PasswordChangeModal() {
         </div>
         <div className="flex flex-col gap-2 mx-auto">
           <DialogDescription>인증 이메일은 서울우유 사내 메일 주소만 가능합니다.</DialogDescription>
-          <DialogDescription>정보 보안을 위해 5분에 하 번만 비밀번호를 변경할 수 있습니다.</DialogDescription>
+          <DialogDescription>정보 보안을 위해 5분에 한 번만 비밀번호를 변경할 수 있습니다.</DialogDescription>
         </div>
         <DialogFooter>
           <div>
