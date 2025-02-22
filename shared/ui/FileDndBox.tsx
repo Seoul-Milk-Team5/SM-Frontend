@@ -3,8 +3,6 @@ import React, { useState } from "react";
 function FileDndBox() {
   const [files, setFiles] = useState<File[]>([]);
 
-  console.log(files);
-
   // 드래그 오버 이벤트 (드래그 시 기본 이벤트 제거)
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
