@@ -1,5 +1,11 @@
+import PasswordChangeModal from "@/feature/auth/ui/passwordChangeModal";
+
 function LoginPage() {
-  return <div>loginPage</div>;
+  return (
+    <div>
+      <PasswordChangeModal />
+    </div>
+  );
 }
 
 export default LoginPage;
