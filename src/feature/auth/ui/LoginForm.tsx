@@ -8,10 +8,11 @@ function LoginForm() {
     <div className="w-full max-w-md">
       <div className="flex flex-col items-center mb-4">
         {/* 브랜드 로고 추가 */}
+        <img src="/logo/Logomark.svg" alt="Company Logo" className="w-sm h-sm object-contain"/>
         <p className="text-center text-gray-700 mt-2">
           초일류 유제품 전문기업으로 나아가는 길에 언제나 당신이 있습니다.
         </p>
-      </div>      
+      </div>
       <Card className="h-[300px] flex flex-col justify-center">
         <CardContent>
           <form>
