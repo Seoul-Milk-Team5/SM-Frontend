@@ -9,11 +9,6 @@ import ProtectedRoute from "../providers/ProtectedRoute";
 import RoleBasedRedirect from "../providers/RoleBasedRedirect";
 import Layout from "../layouts/Layout";
 
-// 실제 로그인 api 연동 후 context로 역할 가져올 예정
-const isAuthenticated = true;
-const userRole : string = "manager";
-//const userRole : string = "member";
-
 const router = createBrowserRouter([
   {
     path: "/login",
@@ -21,7 +16,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/", // 메인 페이지 보호
-    element: <ProtectedRoute isAuthenticated={isAuthenticated} />, // 로그인 여부 확인
+    element: <ProtectedRoute />, // 로그인 여부 확인
     children: [
       {
         element: <Layout />,
@@ -32,15 +27,15 @@ const router = createBrowserRouter([
           },
           {
             path: "mypage",
-            element: <RoleBasedRedirect userRole={userRole} />
+            element: <RoleBasedRedirect />
           },
           {
             path: "userpage",
-            element: userRole === "member" ? <UserPage /> : <Navigate to="/" replace />,
+            element: <UserPage />
           },
           {
             path: "adminpage",
-            element: userRole === "manager" ? <Outlet /> : <Navigate to="/" replace />, 
+            element: <Outlet />, 
             children: [
               { path: "mytask", element: <MyTaskPage /> },
               { path: "workview", element: <WorkViewPage /> },
