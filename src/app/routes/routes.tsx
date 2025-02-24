@@ -7,6 +7,7 @@ import WorkViewPage from "@/pages/admin/WorkViewPage";
 import AddUserPage from "@/pages/admin/AddUserPage";
 import ProtectedRoute from "../providers/ProtectedRoute";
 import RoleBasedRedirect from "../providers/RoleBasedRedirect";
+import Layout from "../layouts/Layout";
 
 // 실제 로그인 api 연동 후 context로 역할 가져올 예정
 const isAuthenticated = true;
@@ -23,26 +24,31 @@ const router = createBrowserRouter([
     element: <ProtectedRoute isAuthenticated={isAuthenticated} />, // 로그인 여부 확인
     children: [
       {
-        index: true,
-        element: <MainPage />,
-      },
-      {
-        path: "mypage",
-        element: <RoleBasedRedirect userRole={userRole} />
-      },
-      {
-        path: "userpage",
-        element: userRole === "member" ? <UserPage /> : <Navigate to="/" replace />,
-      },
-      {
-        path: "adminpage",
-        element: userRole === "manager" ? <Outlet /> : <Navigate to="/" replace />, 
+        element: <Layout />,
         children: [
-          { path: "mytask", element: <MyTaskPage /> },
-          { path: "workview", element: <WorkViewPage /> },
-          { path: "adduser", element: <AddUserPage />},
+          {
+            index: true,
+            element: <MainPage />,
+          },
+          {
+            path: "mypage",
+            element: <RoleBasedRedirect userRole={userRole} />
+          },
+          {
+            path: "userpage",
+            element: userRole === "member" ? <UserPage /> : <Navigate to="/" replace />,
+          },
+          {
+            path: "adminpage",
+            element: userRole === "manager" ? <Outlet /> : <Navigate to="/" replace />, 
+            children: [
+              { path: "mytask", element: <MyTaskPage /> },
+              { path: "workview", element: <WorkViewPage /> },
+              { path: "adduser", element: <AddUserPage />},
+            ]
+          }
         ]
-      }
+      }, 
     ],
   },
 ]);
