@@ -1,5 +1,11 @@
+import { DataTable } from "../../shared/ui/DataTable";
+
 function MainPage() {
-  return <div>mainPage</div>;
+  return (
+    <div>
+      <DataTable></DataTable>
+    </div>
+  );
 }
 
 export default MainPage;
