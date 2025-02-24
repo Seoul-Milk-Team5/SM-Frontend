@@ -65,7 +65,11 @@ function LoginForm() {
                 <p className="text-red-400 text-sm mb-2">{errorMessage}</p>
               )}
             </div>
-            <Button type="submit" className="w-full bg-gray-800 hover:bg-gray-600">
+            <Button
+              type="submit"
+              className="w-full bg-gray-800 hover:bg-gray-600"
+              disabled={!IsPasswordValid || !employeeId || !password}
+            >
               로그인
             </Button>
           </form>
