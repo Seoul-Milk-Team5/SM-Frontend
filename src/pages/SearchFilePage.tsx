@@ -1,18 +1,16 @@
-import { DataTable } from "../../shared/ui/DataTable";
 import Navbar from "../../shared/ui/Navbar";
 
-function MainPage() {
+function SearchFilePage() {
   const navItems = [
     { path: "/", label: "파일 업로드" },
     { path: "/searchfile", label: "파일 조회"},
   ]
-
   return (
     <div>
-      <Navbar items={navItems}/>
-      <DataTable></DataTable>
+      <Navbar items={navItems} />
+      SearchFilePage
     </div>
   );
 }
 
-export default MainPage;
+export default SearchFilePage;
