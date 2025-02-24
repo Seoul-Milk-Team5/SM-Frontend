@@ -10,7 +10,6 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [IsIdValid, setIsIdValid] = useState(true);
   const [IsPasswordValid, setIsPasswordValid] = useState(true);
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
