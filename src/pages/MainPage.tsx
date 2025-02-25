@@ -1,5 +1,5 @@
-import { DataTable } from "../../shared/ui/DataTable";
 import Navbar from "../../shared/ui/Navbar";
+import FileDndBox from "../../shared/ui/FileDndBox";
 
 function MainPage() {
   const navItems = [
@@ -8,10 +8,10 @@ function MainPage() {
   ]
 
   return (
-    <div>
+    <main>
       <Navbar items={navItems}/>
-      <DataTable></DataTable>
-    </div>
+      <FileDndBox />
+    </main>
   );
 }
 
