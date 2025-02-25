@@ -1,10 +1,10 @@
-import { DataTable } from "../../shared/ui/DataTable";
+import FileDndBox from "../../shared/ui/FileDndBox";
 
 function MainPage() {
   return (
-    <div>
-      <DataTable></DataTable>
-    </div>
+    <main>
+      <FileDndBox />
+    </main>
   );
 }
 
