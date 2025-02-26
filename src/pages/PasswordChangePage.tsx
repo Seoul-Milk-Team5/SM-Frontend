@@ -4,7 +4,7 @@ import Title from "@/feature/passwordChange/ui/Title";
 
 function PasswordChangePage() {
   return (
-    <main className="max-w-[1280px] mx-auto min-h-screen flex flex-col justify-center items-center gap-6">
+    <main className="max-w-[1280px] mx-auto min-h-screen flex flex-col justify-center items-center gap-6 pl-8">
       <Title />
       <PasswordChangeForm />
       <Description />
