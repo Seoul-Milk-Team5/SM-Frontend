@@ -5,7 +5,7 @@ const userRole : string = "manager"; //context에서 불러오는 값
 
 function RoleBasedRedirect() {
   if (userRole === "member") return <Navigate to="/userpage" replace />;
-  if (userRole === "manager") return <Navigate to="/adminpage/mytask" replace />;
+  if (userRole === "manager") return <Navigate to="/adminpage/workview" replace />;
   return <Navigate to="/login" replace />;
 };
 

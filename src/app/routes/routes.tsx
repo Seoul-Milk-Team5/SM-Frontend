@@ -2,13 +2,14 @@ import { createBrowserRouter, Outlet } from "react-router-dom";
 import LoginPage from "@/pages/LoginPage";
 import MainPage from "@/pages/MainPage";
 import UserPage from "@/pages/UserPage";
-import MyTaskPage from "@/pages/admin/MyTaskPage";
-import WorkViewPage from "@/pages/admin/WorkViewPage";
 import AddUserPage from "@/pages/admin/AddUserPage";
 import ProtectedRoute from "../providers/ProtectedRoute";
 import RoleBasedRedirect from "../providers/RoleBasedRedirect";
 import Layout from "../layouts/Layout";
 import PasswordChangePage from "@/pages/PasswordChangePage";
+import WorkViewPage from "@/pages/admin/WorkViewPage";
+import SearchFilePage from "@/pages/SearchFilePage";
+
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
             element: <MainPage />,
           },
           {
+            path: "searchfile",
+            element: <SearchFilePage />,
+          },
+          {
             path: "mypage",
             element: <RoleBasedRedirect />,
           },
@@ -42,7 +47,6 @@ const router = createBrowserRouter([
             path: "adminpage",
             element: <Outlet />,
             children: [
-              { path: "mytask", element: <MyTaskPage /> },
               { path: "workview", element: <WorkViewPage /> },
               { path: "adduser", element: <AddUserPage /> },
             ],
