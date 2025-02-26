@@ -15,7 +15,7 @@ function PasswordChangeModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="link">비밀번호 변경</Button>
+        <Button className="text-gray-400" variant="link">비밀번호 변경</Button>
       </DialogTrigger>
       <DialogContent className="w-[600px]">
         <DialogHeader>

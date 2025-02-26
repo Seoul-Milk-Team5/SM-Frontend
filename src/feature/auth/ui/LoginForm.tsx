@@ -4,12 +4,16 @@ import { Input } from "@/components/ui/input";
 import PasswordChangeModal from "./PasswordChangeModal";
 import React, { useState } from "react";
 import { validatePassword } from "../../../../shared/utils/validation";
+import { mockLoginRequest } from "../service/mock/mockLoginRequest";
 
 function LoginForm() {
-  const [employeeId, setEmployeId] = useState("");
+  const [employeeId, setEmployeeId] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [employeeIdError, setEmployeeIdError] = useState(""); //서버 메시지
+  const [passwordError, setPasswordError] = useState("");
 
+  const [IsIdvalid, setIsIdValid] = useState(true);
   const [IsPasswordValid, setIsPasswordValid] = useState(true);
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,10 +30,31 @@ function LoginForm() {
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!errorMessage) {
-      alert("로그인 성공!"); // 실제 로그인 로직 실행 예정, 이후 메인으로
+    if (errorMessage) return;
+
+    setEmployeeIdError("");
+    setPasswordError("");
+    setIsIdValid(true);
+    setIsPasswordValid(true);
+
+    try{
+      const response = await mockLoginRequest(employeeId, password);
+
+      if(response.success) {
+        alert("로그인 성공");
+      } else {
+        if (response.message?.includes("사번")) {
+          setEmployeeIdError(response.message);
+          setIsIdValid(false);
+        } else if (response.message?.includes("비밀번호")) {
+          setPasswordError(response.message);
+          setIsPasswordValid(false);
+        }
+      }
+    } catch (error) {
+      console.log("로그인 실패", error);
     }
   }
 
@@ -38,43 +63,51 @@ function LoginForm() {
       <div className="flex flex-col items-center mb-4">
         {/* 브랜드 로고 추가 */}
         <img src="/logo/Logomark.svg" alt="Company Logo" className="w-sm h-sm object-contain"/>
-        <p className="text-center text-gray-700 mt-2">
+        <p className="text-center text-gray-700 mt-2 text-sm">
           초일류 유제품 전문기업으로 나아가는 길에 언제나 당신이 있습니다.
         </p>
       </div>
-      <Card className="h-[300px] flex flex-col justify-center">
+      <Card className="h-[300px] flex flex-col justify-center border-none shadow-none">
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <Input
+                className="h-12 hover:border-green-300 focus:!border-green-600"
                 id="emplyeeId"
                 type="text"
                 placeholder="사번을 입력해주세요"
-                value={employeeId} onChange={(e) => setEmployeId(e.target.value)}
+                value={employeeId} onChange={(e) => setEmployeeId(e.target.value)}
+                valid={IsIdvalid}
               />
+              {employeeIdError && (
+                <p className="text-red-400 text-sm mt-1">{employeeIdError}</p>
+              )}
             </div>
             <div className="mb-4">
               <Input
+                className="h-12 hover:border-green-300 focus:!border-green-600"
                 id="password"
                 type="password"
                 placeholder="비밀번호를 입력해주세요."
                 value={password} onChange={handlePasswordChange}
                 valid={IsPasswordValid}
               />
-              {errorMessage && (
+              {passwordError ? (
+                <p className="text-red-400 text-sm mt-1">{passwordError}</p>
+              ) : errorMessage ? (
                 <p className="text-red-400 text-sm mb-2">{errorMessage}</p>
-              )}
+              ) : null}
             </div>
             <Button
               type="submit"
-              className="w-full bg-gray-800 hover:bg-gray-600"
+              className="h-12 w-full bg-green-600 hover:bg-green-700"
               disabled={!IsPasswordValid || !employeeId || !password}
             >
               로그인
             </Button>
           </form>
           <div className="flex text-center mt-4 justify-center items-center">
-            <p className="text-sm text-gray-800">
+            <p className="text-sm text-gray-400">
               비밀번호를 잊어버리셨나요?
             </p>
             <PasswordChangeModal />
