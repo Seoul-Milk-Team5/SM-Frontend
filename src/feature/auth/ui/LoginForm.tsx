@@ -63,10 +63,10 @@ function LoginForm() {
 
   return(
     <div className="w-full max-w-md">
-      <div className="flex flex-col items-center mb-2">
+      <div className="flex flex-col items-center mb-8">
         {/* 브랜드 로고 추가 */}
         <img src="/logo/Logomark.svg" alt="Company Logo" className="w-64 h-20 sm:w-80 sm:h-20 object-contain"/>
-        <p className="text-center text-gray-700 text-sm">
+        <p className="text-center text-gray-800 text-sm font-pretendard font-light">
           초일류 유제품 전문기업으로 나아가는 길에{" "}
           <br className="sm:hidden" />
           언제나 당신이 있습니다.
@@ -77,7 +77,7 @@ function LoginForm() {
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <Input
-                className="h-12 focus:!border-green-600"
+                className="h-12 focus:!border-green-600 text-gray-800 placeholder:text-gray-300 placeholder:font-extralight border-gray-100 "
                 id="employeeId"
                 type="text"
                 placeholder="사번을 입력해주세요"
@@ -85,12 +85,12 @@ function LoginForm() {
                 valid={IsIdvalid}
               />
               {employeeIdError && (
-                <p className="text-red-400 text-sm mt-1 ml-3">{employeeIdError}</p>
+                <p className="text-red-300 text-sm mt-1 ml-3">{employeeIdError}</p>
               )}
             </div>
             <div className="mb-4">
               <Input
-                className="h-12 focus:!border-green-600"
+                className="h-12 focus:!border-green-600 text-gray-800 placeholder:text-gray-300 placeholder:font-extralight border-gray-100"
                 id="password"
                 type="password"
                 placeholder="비밀번호를 입력해주세요."
@@ -98,21 +98,21 @@ function LoginForm() {
                 valid={IsPasswordValid}
               />
               {passwordError ? (
-                <p className="text-red-400 text-sm mt-1 ml-3">{passwordError}</p>
+                <p className="text-red-300 text-sm mt-1 ml-3">{passwordError}</p>
               ) : errorMessage ? (
-                <p className="text-red-400 text-sm mt-1 ml-3">{errorMessage}</p>
+                <p className="text-red-300 text-sm mt-1 ml-3">{errorMessage}</p>
               ) : null}
             </div>
             <Button
               type="submit"
-              className="h-12 w-full bg-green-600 hover:bg-green-700 mt-4"
+              className="h-12 w-full bg-green-500 hover:bg-green-600 mt-4 disabled:bg-green-200 disabled:opacity-100"
               disabled={!IsPasswordValid || !employeeId || !password}
             >
               로그인
             </Button>
           </form>
           <div className="flex text-center mt-4 justify-center items-center">
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-gray-400 font-light">
               비밀번호를 잊어버리셨나요?  
             </p>
             <PasswordChangeModal />
