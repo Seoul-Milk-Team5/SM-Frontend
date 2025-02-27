@@ -10,7 +10,7 @@ function InputWithLabel({ label, type, id, placeholder, value, onChange, success
       </Label>
       <div className="flex-1 flex flex-col max-w-[300px] ml-8">
         <Input
-          className="focus:!border-green-600 placeholder-gray-300 p-5"
+          className="placeholder-gray-300 p-5"
           type={type}
           id={id}
           value={value}

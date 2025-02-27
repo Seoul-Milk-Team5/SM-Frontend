@@ -24,7 +24,7 @@ function InputWithButton({
       <div className="flex-1 flex flex-col max-w-[300px] ml-8">
         <Input
           type={type}
-          className="focus:!border-green-600 placeholder-gray-300 p-5"
+          className="placeholder-gray-300 p-5"
           id={id}
           value={value}
           onChange={onChange}
