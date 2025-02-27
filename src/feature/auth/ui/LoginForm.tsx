@@ -6,16 +6,8 @@ import { validatePassword } from "../../../../shared/utils/validation";
 import { mockLoginRequest } from "../service/mock/mockLoginRequest";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { FormState } from "..";
 
-
-interface FormState {
-  employeeId: string;
-  password: string;
-  employeeIdError: string;
-  passwordError: string;
-  isIdValid: boolean;
-  isPasswordValid: boolean;
-}
 
 function LoginForm() {
 
