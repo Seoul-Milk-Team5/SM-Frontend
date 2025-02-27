@@ -112,7 +112,6 @@ function LoginForm() {
               <Input
                 className="
                   h-12
-                  focus:!border-green-600
                   text-gray-800
                   placeholder:text-gray-300
                   placeholder:font-extralight
@@ -132,7 +131,6 @@ function LoginForm() {
               <Input
                 className="
                   h-12
-                  focus:!border-green-600
                   text-gray-800
                   placeholder:text-gray-300
                   placeholder:font-extralight
