@@ -1,22 +1,28 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ChangeEvent, FormEvent, MouseEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from "react";
 import { validatePassword } from "../../../../shared/utils/validation";
+import InputWithButton from "../../../../shared/ui/InputWithButton";
+import InputWithLabel from "../../../../shared/ui/InputWithLabel";
+import { Errors, FormData, IsButtonDisabled } from "../model";
+import PasswordChangeAlert from "./PasswordChangeAlert";
 
 function PasswordChangeForm() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     userId: "",
     email: "",
     authNumber: "",
     password: "",
     rePassword: "",
   });
+  const [isButtonDisabled, setIsButtonDisabled] = useState<IsButtonDisabled>({
+    userId: true,
+    email: true,
+    authNumber: true,
+  });
   const [success, setSuccess] = useState({
     email: "",
     authNumber: "",
   });
-  const [errors, setErrors] = useState({
+  const [errors, setErrors] = useState<Errors>({
     userId: "",
     email: "",
     authNumber: "",
@@ -24,17 +30,18 @@ function PasswordChangeForm() {
     rePassword: "",
   });
   const [isFormValid, setIsFormValid] = useState(false);
-  const authRequestButtonRef = useRef<HTMLButtonElement | null>(null);
-  const authNumberRef = useRef<HTMLInputElement | null>(null);
-  const authNumberButtonRef = useRef<HTMLButtonElement | null>(null);
 
-  // 모든 필드가 채워졌는지 확인
   useEffect(() => {
+    setIsButtonDisabled({
+      userId: formData.userId.trim() === "",
+      email: formData.email.trim() === "" || !/^[^@]+@seoulmilk\.co\.kr$/.test(formData.email),
+      authNumber: formData.authNumber.trim() === "" || formData.email.trim() === "",
+    });
+
     const isValid =
       Object.values(formData).every(value => value.trim() !== "") &&
       formData.password === formData.rePassword &&
       Object.values(errors).every(error => error === "");
-
     setIsFormValid(isValid);
   }, [formData, errors]);
 
@@ -44,44 +51,64 @@ function PasswordChangeForm() {
       ...prevData,
       [id]: value,
     }));
-    setErrors(prevErrors => ({
-      ...prevErrors,
-      [id]: "",
-    }));
 
-    if (id === "password") {
-      const validation = validatePassword(value);
-      if (!validation.valid) {
-        setErrors(prevErrors => ({
-          ...prevErrors,
-          password: "비밀번호 양식을 확인해 주세요.",
-        }));
-      } else {
-        setErrors(prevErrors => ({
-          ...prevErrors,
-          password: "",
-        }));
-      }
-    }
-
-    if (id === "rePassword") {
-      if (formData.password !== value) {
-        setErrors(prevErrors => ({
-          ...prevErrors,
-          rePassword: "비밀번호가 일치하지 않습니다.",
-        }));
-      } else {
-        setErrors(prevErrors => ({
-          ...prevErrors,
-          rePassword: "",
-        }));
-      }
+    switch (id) {
+      case "email":
+        // 이메일 유효성 검사
+        const emailRegex = /^[^@]+@seoulmilk\.co\.kr$/;
+        if (!emailRegex.test(value)) {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            email: "인증 이메일은 서울우유 사내 메일만 가능합니다.",
+          }));
+        } else {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            email: "",
+          }));
+        }
+        break;
+      case "password":
+        // 비밀번호 유효성 검사
+        const validation = validatePassword(value);
+        if (!validation.valid) {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            password: "비밀번호 양식을 확인해 주세요.",
+          }));
+        } else {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            password: "",
+          }));
+        }
+        break;
+      case "rePassword":
+        // 비밀번호 재입력 확인
+        if (formData.password !== value) {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            rePassword: "비밀번호가 일치하지 않습니다.",
+          }));
+        } else {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            rePassword: "",
+          }));
+        }
+        break;
     }
   };
 
-  // 제출 핸들러
-  const handleSubmit = (event: FormEvent) => {
+  //사번 확인 요청
+  const handleUserIdVerificationRequest = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+
+    // api 요청 후 리스폰스에 따라 disabled 처리 여부를 결정하는 로직 추가해야함
+    setErrors(prevState => ({
+      ...prevState, // 기존 상태 유지
+      userId: "존재하지 않는 사번입니다.",
+    }));
   };
 
   // 인증 이메일 요청
@@ -97,14 +124,6 @@ function PasswordChangeForm() {
       ...prevState, // 기존 상태 유지
       email: "존재하지 않는 메일입니다.",
     }));
-    if (authRequestButtonRef.current) {
-      authRequestButtonRef.current.innerText = "재요청";
-    }
-    if (authNumberRef.current && authNumberButtonRef.current) {
-      authNumberButtonRef.current.disabled = false;
-      authNumberRef.current.disabled = false;
-      authNumberRef.current.focus();
-    }
   };
 
   // 인증 번호 확인
@@ -121,128 +140,83 @@ function PasswordChangeForm() {
       authNumber: "인증번호가 틀렸습니다.",
     }));
   };
+
+  // 제출 핸들러
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    // Form submission logic here
+    console.log("Test");
+  };
+
   return (
     <form className="w-full max-w-[50%] flex flex-col gap-6" onSubmit={handleSubmit}>
       {/* 사번 */}
-      <div className="flex items-center gap-3">
-        <Label htmlFor="userId" className="w-[120px] text-left">
-          사번
-        </Label>
-        <div className="flex-1 flex flex-col max-w-[300px] ml-8">
-          <Input
-            className="focus:!border-green-600 placeholder-gray-300 p-5"
-            id="userId"
-            value={formData.userId}
-            onChange={handleChange}
-            placeholder="사번을 입력해주세요."
-            valid={!errors.userId}
-          />
-          {errors.userId && <p className="text-red-400 text-[12px] mt-1">{errors.userId}</p>}
-        </div>
-      </div>
+      <InputWithButton
+        label="사번"
+        type="text"
+        id="userId"
+        placeholder="사번을 입력해주세요."
+        value={formData.userId}
+        onChange={handleChange}
+        error={errors.userId}
+        disabled={isButtonDisabled.userId}
+        buttonText="확인"
+        onClick={handleUserIdVerificationRequest}
+      />
+      {/* 이메일 */}
+      <InputWithButton
+        label="인증 이메일"
+        type="email"
+        id="email"
+        placeholder="이메일을 입력해 주세요."
+        value={formData.email}
+        onChange={handleChange}
+        success={success.email}
+        error={errors.email}
+        disabled={isButtonDisabled.email}
+        buttonText="요청"
+        onClick={handleEmailVerificationRequest}
+      />
 
-      {/* 인증 이메일 */}
-      <div className="flex gap-3">
-        <Label htmlFor="email" className="w-[120px] text-left pt-3">
-          인증 이메일
-        </Label>
-        <div className="flex-1 flex flex-col max-w-[300px] ml-8">
-          <Input
-            className="focus:!border-green-600 placeholder-gray-300 p-5"
-            id="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="이메일을 입력해주세요."
-            valid={!errors.email}
-          />
-          {success.email && <p className="text-green-400 text-[12px] mt-1">{success.email}</p>}
-          {errors.email && <p className="text-red-400 text-[12px] mt-1">{errors.email}</p>}
-        </div>
-        <Button
-          ref={authRequestButtonRef}
-          className="bg-green-500 disabled:bg-gray-100 disabled:opacity-100 text-white hover:bg-green-600 py-[21px]"
-          type="button"
-          onClick={handleEmailVerificationRequest}>
-          요청
-        </Button>
-      </div>
-
-      {/* 인증 번호 */}
-      <div className="flex gap-3">
-        <Label htmlFor="authNumber" className="w-[120px] text-left pt-3">
-          인증 번호
-        </Label>
-        <div className="flex-1 flex flex-col max-w-[300px] ml-8">
-          <Input
-            className="focus:!border-green-600 placeholder-gray-300 p-5"
-            ref={authNumberRef}
-            type="tel"
-            id="authNumber"
-            value={formData.authNumber}
-            onChange={handleChange}
-            disabled
-            valid={!errors.authNumber}
-            placeholder="인증번호를 입력해 주세요."
-          />
-          {success.authNumber && <p className="text-green-400 text-[12px] mt-1">{success.authNumber}</p>}
-          {errors.authNumber && <p className="text-red-400 text-[12px] mt-1">{errors.authNumber}</p>}
-        </div>
-        <Button
-          ref={authNumberButtonRef}
-          disabled={true}
-          className="bg-green-500 disabled:bg-gray-100 disabled:opacity-100 text-white hover:bg-green-600 py-[21px]"
-          type="button"
-          onClick={handleAuthCodeVerification}>
-          확인
-        </Button>
-      </div>
+      {/* 인증번호 */}
+      <InputWithButton
+        label="인증 번호"
+        type="tel"
+        id="authNumber"
+        placeholder="인증번호를 입력해 주세요."
+        value={formData.authNumber}
+        onChange={handleChange}
+        success={success.authNumber}
+        error={errors.authNumber}
+        disabled={isButtonDisabled.authNumber}
+        buttonText="확인"
+        onClick={handleAuthCodeVerification}
+      />
 
       {/* 새 비밀번호 */}
-      <div className="flex gap-3">
-        <Label htmlFor="password" className="w-[120px] text-left pt-3 ">
-          새 비밀번호
-        </Label>
-        <div className="flex-1 flex flex-col max-w-[300px] ml-8">
-          <Input
-            className="focus:!border-green-600 placeholder-gray-300 p-5"
-            type="password"
-            id="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="새 비밀번호 입력"
-            valid={!errors.password}
-          />
-          {errors.password && <p className="text-red-400 text-[12px] mt-1">{errors.password}</p>}
-        </div>
-      </div>
+      <InputWithLabel
+        label="새 비밀번호"
+        type="password"
+        id="password"
+        placeholder="비밀번호를 입력해 주세요."
+        value={formData.password}
+        onChange={handleChange}
+        error={errors.password}
+      />
 
       {/* 새 비밀번호 확인 */}
-      <div className="flex gap-3">
-        <Label htmlFor="rePassword" className="w-[120px] text-left pt-3">
-          비밀번호 확인
-        </Label>
-        <div className="flex-1 flex flex-col max-w-[300px] ml-8">
-          <Input
-            className="focus:!border-green-600 placeholder-gray-300 p-5"
-            type="password"
-            id="rePassword"
-            value={formData.rePassword}
-            onChange={handleChange}
-            placeholder="비밀번호 확인 입력"
-            valid={!errors.rePassword}
-          />
-          {errors.rePassword && <p className="text-red-400 text-[12px] mt-1">{errors.rePassword}</p>}
-        </div>
-      </div>
+      <InputWithLabel
+        label="비밀번호 확인"
+        type="password"
+        id="rePassword"
+        placeholder="새 비밀번호를 입력해 주세요."
+        value={formData.rePassword}
+        onChange={handleChange}
+        error={errors.rePassword}
+      />
 
-      {/* 변경하기 버튼 */}
       <div className="flex justify-center">
-        <Button
-          className="w-[15%] bg-green-500 disabled:bg-green-200 disabled:opacity-100 text-white hover:bg-green-600 py-5.5 text-[16px] cursor-pointer"
-          disabled={!isFormValid}
-          type="submit">
-          변경하기
-        </Button>
+        <PasswordChangeAlert disabled={!isFormValid} />
       </div>
     </form>
   );
