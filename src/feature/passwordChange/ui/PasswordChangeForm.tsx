@@ -34,7 +34,7 @@ function PasswordChangeForm() {
   useEffect(() => {
     setIsButtonDisabled({
       userId: formData.userId.trim() === "",
-      email: formData.email.trim() === "" || !/\S+@\S+\.\S+/.test(formData.email),
+      email: formData.email.trim() === "" || !/^[^@]+@seoulmilk\.co\.kr$/.test(formData.email),
       authNumber: formData.authNumber.trim() === "" || formData.email.trim() === "",
     });
 
@@ -52,8 +52,51 @@ function PasswordChangeForm() {
       [id]: value,
     }));
 
-    if (id === "password" || id === "rePassword") {
-      handlePasswordValidation(id as keyof FormData, value);
+    switch (id) {
+      case "email":
+        // 이메일 유효성 검사
+        const emailRegex = /^[^@]+@seoulmilk\.co\.kr$/;
+        if (!emailRegex.test(value)) {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            email: "인증 이메일은 서울우유 사내 메일만 가능합니다.",
+          }));
+        } else {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            email: "",
+          }));
+        }
+        break;
+      case "password":
+        // 비밀번호 유효성 검사
+        const validation = validatePassword(value);
+        if (!validation.valid) {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            password: "비밀번호 양식을 확인해 주세요.",
+          }));
+        } else {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            password: "",
+          }));
+        }
+        break;
+      case "rePassword":
+        // 비밀번호 재입력 확인
+        if (formData.password !== value) {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            rePassword: "비밀번호가 일치하지 않습니다.",
+          }));
+        } else {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            rePassword: "",
+          }));
+        }
+        break;
     }
   };
 
@@ -96,24 +139,6 @@ function PasswordChangeForm() {
       ...prevState, // 기존 상태 유지
       authNumber: "인증번호가 틀렸습니다.",
     }));
-  };
-
-  // 비밀번호 확인
-  const handlePasswordValidation = (id: keyof FormData, value: string) => {
-    if (id === "password") {
-      const validation = validatePassword(value);
-      setErrors(prevErrors => ({
-        ...prevErrors,
-        password: validation.valid ? "" : "비밀번호 양식을 확인해 주세요.",
-      }));
-    }
-
-    if (id === "rePassword") {
-      setErrors(prevErrors => ({
-        ...prevErrors,
-        rePassword: formData.password === value ? "" : "비밀번호가 일치하지 않습니다.",
-      }));
-    }
   };
 
   // 제출 핸들러
