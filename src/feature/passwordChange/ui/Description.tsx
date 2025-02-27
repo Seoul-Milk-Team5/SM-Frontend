@@ -1,6 +1,6 @@
 function Description() {
   return (
-    <div className="w-[50%] text-sm text-gray-400 flex flex-col gap-1 mt-10 font-[400]">
+    <div className="w-[50%] text-sm text-gray-400 flex flex-col gap-1 mt-10 font-normal">
       <div className="flex gap-2.5 items-center">
         <img src="/icon/check.svg" alt="설명1" />
         <p>인증 이메일은 서울우유 사내 메일 주소만 가능합니다.</p>
