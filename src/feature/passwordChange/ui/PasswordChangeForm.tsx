@@ -125,12 +125,12 @@ function PasswordChangeForm() {
     <form className="w-full max-w-[50%] flex flex-col gap-6" onSubmit={handleSubmit}>
       {/* 사번 */}
       <div className="flex items-center gap-3">
-        <Label htmlFor="userId" className="w-[120px] text-left font-normal">
+        <Label htmlFor="userId" className="w-[120px] text-left">
           사번
         </Label>
         <div className="flex-1 flex flex-col max-w-[300px] ml-8">
           <Input
-            className="focus:!border-green-600 placeholder-gray-300 p-5 placeholder:font-light"
+            className="focus:!border-green-600 placeholder-gray-300 p-5"
             id="userId"
             value={formData.userId}
             onChange={handleChange}
@@ -143,12 +143,12 @@ function PasswordChangeForm() {
 
       {/* 인증 이메일 */}
       <div className="flex gap-3">
-        <Label htmlFor="email" className="w-[120px] text-left pt-3 font-normal">
+        <Label htmlFor="email" className="w-[120px] text-left pt-3">
           인증 이메일
         </Label>
         <div className="flex-1 flex flex-col max-w-[300px] ml-8">
           <Input
-            className="focus:!border-green-600 placeholder-gray-300 p-5 placeholder:font-light"
+            className="focus:!border-green-600 placeholder-gray-300 p-5"
             id="email"
             value={formData.email}
             onChange={handleChange}
@@ -160,7 +160,7 @@ function PasswordChangeForm() {
         </div>
         <Button
           ref={authRequestButtonRef}
-          className="bg-green-500 disabled:bg-gray-100 disabled:opacity-100 text-white hover:bg-green-600 py-[21px] font-normal"
+          className="bg-green-500 disabled:bg-gray-100 disabled:opacity-100 text-white hover:bg-green-600 py-[21px]"
           type="button"
           onClick={handleEmailVerificationRequest}>
           요청
@@ -169,12 +169,12 @@ function PasswordChangeForm() {
 
       {/* 인증 번호 */}
       <div className="flex gap-3">
-        <Label htmlFor="authNumber" className="w-[120px] text-left pt-3 font-normal">
+        <Label htmlFor="authNumber" className="w-[120px] text-left pt-3">
           인증 번호
         </Label>
         <div className="flex-1 flex flex-col max-w-[300px] ml-8">
           <Input
-            className="focus:!border-green-600 placeholder-gray-300 p-5 placeholder:font-light"
+            className="focus:!border-green-600 placeholder-gray-300 p-5"
             ref={authNumberRef}
             type="tel"
             id="authNumber"
@@ -190,7 +190,7 @@ function PasswordChangeForm() {
         <Button
           ref={authNumberButtonRef}
           disabled={true}
-          className="bg-green-500 disabled:bg-gray-100 disabled:opacity-100 text-white hover:bg-green-600 py-[21px] font-normal"
+          className="bg-green-500 disabled:bg-gray-100 disabled:opacity-100 text-white hover:bg-green-600 py-[21px]"
           type="button"
           onClick={handleAuthCodeVerification}>
           확인
@@ -199,12 +199,12 @@ function PasswordChangeForm() {
 
       {/* 새 비밀번호 */}
       <div className="flex gap-3">
-        <Label htmlFor="password" className="w-[120px] text-left pt-3 font-normal">
+        <Label htmlFor="password" className="w-[120px] text-left pt-3 ">
           새 비밀번호
         </Label>
         <div className="flex-1 flex flex-col max-w-[300px] ml-8">
           <Input
-            className="focus:!border-green-600 placeholder-gray-300 p-5 placeholder:font-light"
+            className="focus:!border-green-600 placeholder-gray-300 p-5"
             type="password"
             id="password"
             value={formData.password}
@@ -218,12 +218,12 @@ function PasswordChangeForm() {
 
       {/* 새 비밀번호 확인 */}
       <div className="flex gap-3">
-        <Label htmlFor="rePassword" className="w-[120px] text-left pt-3 font-normal">
+        <Label htmlFor="rePassword" className="w-[120px] text-left pt-3">
           비밀번호 확인
         </Label>
         <div className="flex-1 flex flex-col max-w-[300px] ml-8">
           <Input
-            className="focus:!border-green-600 placeholder-gray-300 p-5 placeholder:font-light"
+            className="focus:!border-green-600 placeholder-gray-300 p-5"
             type="password"
             id="rePassword"
             value={formData.rePassword}
@@ -238,7 +238,7 @@ function PasswordChangeForm() {
       {/* 변경하기 버튼 */}
       <div className="flex justify-center">
         <Button
-          className="w-[15%] bg-green-500 disabled:bg-green-200 disabled:opacity-100 text-white hover:bg-green-600 py-5.5 text-[16px] cursor-pointer font-normal"
+          className="w-[15%] bg-green-500 disabled:bg-green-200 disabled:opacity-100 text-white hover:bg-green-600 py-5.5 text-[16px] cursor-pointer"
           disabled={!isFormValid}
           type="submit">
           변경하기
