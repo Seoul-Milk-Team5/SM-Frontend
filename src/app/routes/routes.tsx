@@ -6,6 +6,7 @@ import AddUserPage from "@/pages/admin/AddUserPage";
 import ProtectedRoute from "../providers/ProtectedRoute";
 import RoleBasedRedirect from "../providers/RoleBasedRedirect";
 import Layout from "../layouts/Layout";
+import PasswordChangePage from "@/pages/PasswordChangePage";
 import WorkViewPage from "@/pages/admin/WorkViewPage";
 import SearchFilePage from "@/pages/SearchFilePage";
 
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+  },
+  {
+    path: "/passwordchange",
+    element: <PasswordChangePage />,
   },
   {
     path: "/", // 메인 페이지 보호
@@ -32,22 +37,22 @@ const router = createBrowserRouter([
           },
           {
             path: "mypage",
-            element: <RoleBasedRedirect />
+            element: <RoleBasedRedirect />,
           },
           {
             path: "userpage",
-            element: <UserPage />
+            element: <UserPage />,
           },
           {
             path: "adminpage",
-            element: <Outlet />, 
+            element: <Outlet />,
             children: [
               { path: "workview", element: <WorkViewPage /> },
-              { path: "adduser", element: <AddUserPage />},
-            ]
-          }
-        ]
-      }, 
+              { path: "adduser", element: <AddUserPage /> },
+            ],
+          },
+        ],
+      },
     ],
   },
 ]);
