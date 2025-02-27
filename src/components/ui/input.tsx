@@ -7,6 +7,7 @@ interface InputProps extends React.ComponentProps<"input"> {
 }
 
 function Input({ className, type, valid = true, ...props }: InputProps) {
+  
   return (
     <input
       type={type}

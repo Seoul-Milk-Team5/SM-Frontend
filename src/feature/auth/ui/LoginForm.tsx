@@ -7,59 +7,92 @@ import { mockLoginRequest } from "../service/mock/mockLoginRequest";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-function LoginForm() {
-  const [employeeId, setEmployeeId] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [employeeIdError, setEmployeeIdError] = useState(""); //서버 메시지
-  const [passwordError, setPasswordError] = useState("");
 
-  const [IsIdvalid, setIsIdValid] = useState(true);
-  const [IsPasswordValid, setIsPasswordValid] = useState(true);
+interface FormState {
+  employeeId: string;
+  password: string;
+  employeeIdError: string;
+  passwordError: string;
+  isIdValid: boolean;
+  isPasswordValid: boolean;
+}
+
+function LoginForm() {
+
+  const [formState, setFormState] = useState<FormState>({
+    employeeId: "",
+    password: "",
+    employeeIdError: "",
+    passwordError: "",
+    isIdValid: true,
+    isPasswordValid: true,
+  });
 
   const navigate = useNavigate();
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormState((prev) => ({
+      ...prev,
+      [id]: value,
+      employeeIdError: id === "employeeId" ? "" : prev.employeeIdError,
+      isIdValid: id === "employeeId" ? true : prev.isIdValid,
+    }));
+  };
+
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPassword = e.target.value;
-    setPassword(newPassword);
-
     const validation = validatePassword(newPassword);
-    if (!validation.valid) {
-      setErrorMessage(validation.message || "비밀번호가 유효하지 않습니다.");
-      setIsPasswordValid(false);
-    } else {
-      setErrorMessage(""); // 올바른 형식으로 입력
-      setIsPasswordValid(true);
-    }
+
+    setFormState((prev) => ({
+      ...prev,
+      password: newPassword,
+      passwordError: validation.valid ? "" : validation.message || "비밀번호가 유효하지 않습니다.",
+      isPasswordValid: validation.valid,
+    }));
   };
 
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (errorMessage) return;
 
-    setEmployeeIdError("");
-    setPasswordError("");
-    setIsIdValid(true);
-    setIsPasswordValid(true);
+    let newFormState = { ...formState };
 
-    try{
-      const response = await mockLoginRequest(employeeId, password);
+    if (!formState.employeeId) {
+      newFormState.employeeIdError = "사번을 입력해주세요.";
+      newFormState.isIdValid = false;
+    }
 
-      if(response.success) {
+    if (!formState.password || !formState.isPasswordValid) {
+      newFormState.passwordError = formState.password
+        ? "비밀번호 형식이 올바르지 않습니다."
+        : "비밀번호를 입력해주세요.";
+      newFormState.isPasswordValid = false;
+    }
+
+    setFormState(newFormState);
+
+    if (newFormState.employeeIdError || newFormState.passwordError) return;
+
+    try {
+      const response = await mockLoginRequest(formState.employeeId, formState.password);
+
+      if (response.success) {
         navigate("/");
       } else {
-        if (response.message?.includes("사번")) {
-          setEmployeeIdError(response.message);
-          setIsIdValid(false);
-        } else if (response.message?.includes("비밀번호")) {
-          setPasswordError(response.message);
-          setIsPasswordValid(false);
-        }
+        setFormState((prev) => ({
+          ...prev,
+          employeeIdError: response.message?.includes("사번") ? response.message : "",
+          passwordError: response.message?.includes("비밀번호") ? response.message : "",
+          isIdValid: !response.message?.includes("사번"),
+          isPasswordValid: !response.message?.includes("비밀번호"),
+        }));
       }
     } catch (error) {
-      console.log("로그인 실패", error);
+      console.error("로그인 실패", error);
     }
   };
+  
 
   return (
     <div className="w-full max-w-md">
@@ -77,38 +110,48 @@ function LoginForm() {
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <Input
-                className="h-12 focus:!border-green-600 text-gray-800 placeholder:text-gray-300 placeholder:font-extralight border-gray-100 "
+                className="
+                  h-12
+                  focus:!border-green-600
+                  text-gray-800
+                  placeholder:text-gray-300
+                  placeholder:font-extralight
+                "
                 id="employeeId"
                 type="text"
                 placeholder="사번을 입력해주세요"
-                value={employeeId}
-                onChange={(e) => setEmployeeId(e.target.value)}
-                valid={IsIdvalid}
+                value={formState.employeeId}
+                onChange={handleChange}
+                valid={formState.isIdValid}
               />
-              {employeeIdError && (
-                <p className="text-red-300 text-sm mt-1 ml-3">{employeeIdError}</p>
+              {formState.employeeIdError && (
+                <p className="text-red-300 text-sm mt-1 ml-3">{formState.employeeIdError}</p>
               )}
             </div>
             <div className="mb-4">
               <Input
-                className="h-12 focus:!border-green-600 text-gray-800 placeholder:text-gray-300 placeholder:font-extralight border-gray-100"
+                className="
+                  h-12
+                  focus:!border-green-600
+                  text-gray-800
+                  placeholder:text-gray-300
+                  placeholder:font-extralight
+                "
                 id="password"
                 type="password"
                 placeholder="비밀번호를 입력해주세요."
-                value={password}
+                value={formState.password}
                 onChange={handlePasswordChange}
-                valid={IsPasswordValid}
+                valid={formState.isPasswordValid}
               />
-              {passwordError ? (
-                <p className="text-red-300 text-sm mt-1 ml-3">{passwordError}</p>
-              ) : errorMessage ? (
-                <p className="text-red-300 text-sm mt-1 ml-3">{errorMessage}</p>
-              ) : null}
+              {formState.passwordError && (
+                <p className="text-red-300 text-sm mt-1 ml-3">{formState.passwordError}</p>
+              )}
             </div>
             <Button
               type="submit"
               className="h-12 w-full bg-green-500 hover:bg-green-600 mt-4 disabled:bg-green-200 disabled:opacity-100"
-              disabled={!IsPasswordValid || !employeeId || !password}
+              disabled={!formState.isPasswordValid || !formState.employeeId || !formState.password}
             >
               로그인
             </Button>
