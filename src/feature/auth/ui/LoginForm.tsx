@@ -3,76 +3,151 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
 import { validatePassword } from "../../../../shared/utils/validation";
+import { mockLoginRequest } from "../service/mock/mockLoginRequest";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { FormState } from "..";
+
 
 function LoginForm() {
-  const [employeeId, setEmployeId] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [IsPasswordValid, setIsPasswordValid] = useState(true);
+
+  const [formState, setFormState] = useState<FormState>({
+    employeeId: "",
+    password: "",
+    employeeIdError: "",
+    passwordError: "",
+    isIdValid: true,
+    isPasswordValid: true,
+  });
+
+  const navigate = useNavigate();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormState((prev) => ({
+      ...prev,
+      [id]: value,
+      employeeIdError: id === "employeeId" ? "" : prev.employeeIdError,
+      isIdValid: id === "employeeId" ? true : prev.isIdValid,
+    }));
+  };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPassword = e.target.value;
-    setPassword(newPassword);
-
     const validation = validatePassword(newPassword);
-    if (!validation.valid) {
-      setErrorMessage(validation.message || "비밀번호가 유효하지 않습니다.");
-      setIsPasswordValid(false);
-    } else {
-      setErrorMessage(""); // 올바른 형식으로 입력
-      setIsPasswordValid(true);
-    }
+
+    setFormState((prev) => ({
+      ...prev,
+      password: newPassword,
+      passwordError: validation.valid ? "" : validation.message || "비밀번호가 유효하지 않습니다.",
+      isPasswordValid: validation.valid,
+    }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!errorMessage) {
-      alert("로그인 성공!"); // 실제 로그인 로직 실행 예정, 이후 메인으로
+
+    let newFormState = { ...formState };
+
+    if (!formState.employeeId) {
+      newFormState.employeeIdError = "사번을 입력해주세요.";
+      newFormState.isIdValid = false;
+    }
+
+    if (!formState.password || !formState.isPasswordValid) {
+      newFormState.passwordError = formState.password
+        ? "비밀번호 형식이 올바르지 않습니다."
+        : "비밀번호를 입력해주세요.";
+      newFormState.isPasswordValid = false;
+    }
+
+    setFormState(newFormState);
+
+    if (newFormState.employeeIdError || newFormState.passwordError) return;
+
+    try {
+      const response = await mockLoginRequest(formState.employeeId, formState.password);
+
+      if (response.success) {
+        navigate("/");
+      } else {
+        setFormState((prev) => ({
+          ...prev,
+          employeeIdError: response.message?.includes("사번") ? response.message : "",
+          passwordError: response.message?.includes("비밀번호") ? response.message : "",
+          isIdValid: !response.message?.includes("사번"),
+          isPasswordValid: !response.message?.includes("비밀번호"),
+        }));
+      }
+    } catch (error) {
+      console.error("로그인 실패", error);
     }
   };
+  
 
   return (
     <div className="w-full max-w-md">
-      <div className="flex flex-col items-center mb-4">
+      <div className="flex flex-col items-center mb-8">
         {/* 브랜드 로고 추가 */}
-        <img src="/logo/Logomark.svg" alt="Company Logo" className="w-sm h-sm object-contain" />
-        <p className="text-center text-gray-700 mt-2">
-          초일류 유제품 전문기업으로 나아가는 길에 언제나 당신이 있습니다.
+        <img src="/logo/Logomark.svg" alt="Company Logo" className="w-64 h-20 sm:w-80 sm:h-20 object-contain"/>
+        <p className="text-center text-gray-800 text-sm font-pretendard font-light">
+          초일류 유제품 전문기업으로 나아가는 길에{" "}
+          <br className="sm:hidden" />
+          언제나 당신이 있습니다.
         </p>
       </div>
-      <Card className="h-[300px] flex flex-col justify-center">
+      <Card className="h-[300px] flex flex-col justify-center border-none shadow-none">
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <Input
-                id="emplyeeId"
+                className="
+                  h-12
+                  text-gray-800
+                  placeholder:text-gray-300
+                  placeholder:font-extralight
+                "
+                id="employeeId"
                 type="text"
                 placeholder="사번을 입력해주세요"
-                value={employeeId}
-                onChange={e => setEmployeId(e.target.value)}
+                value={formState.employeeId}
+                onChange={handleChange}
+                valid={formState.isIdValid}
               />
+              {formState.employeeIdError && (
+                <p className="text-red-300 text-sm mt-1 ml-3">{formState.employeeIdError}</p>
+              )}
             </div>
             <div className="mb-4">
               <Input
+                className="
+                  h-12
+                  text-gray-800
+                  placeholder:text-gray-300
+                  placeholder:font-extralight
+                "
                 id="password"
                 type="password"
                 placeholder="비밀번호를 입력해주세요."
-                value={password}
+                value={formState.password}
                 onChange={handlePasswordChange}
-                valid={IsPasswordValid}
+                valid={formState.isPasswordValid}
               />
-              {errorMessage && <p className="text-red-400 text-sm mb-2">{errorMessage}</p>}
+              {formState.passwordError && (
+                <p className="text-red-300 text-sm mt-1 ml-3">{formState.passwordError}</p>
+              )}
             </div>
             <Button
               type="submit"
-              className="w-full bg-gray-800 hover:bg-gray-600"
-              disabled={!IsPasswordValid || !employeeId || !password}>
+              className="h-12 w-full bg-green-500 hover:bg-green-600 mt-4 disabled:bg-green-200 disabled:opacity-100"
+              disabled={!formState.isPasswordValid || !formState.employeeId || !formState.password}
+            >
               로그인
             </Button>
           </form>
           <div className="flex text-center mt-4 justify-center items-center">
-            <p className="text-sm text-gray-800">
+            <p className="text-sm text-gray-400 font-light">
               비밀번호를 잊어버리셨나요?
               <Link to="/passwordchange" className="cursor-pointer underline ml-1.5">
                 비밀번호 변경

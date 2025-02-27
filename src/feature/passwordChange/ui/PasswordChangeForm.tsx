@@ -199,7 +199,7 @@ function PasswordChangeForm() {
 
       {/* 새 비밀번호 */}
       <div className="flex gap-3">
-        <Label htmlFor="password" className="w-[120px] text-left pt-3">
+        <Label htmlFor="password" className="w-[120px] text-left pt-3 ">
           새 비밀번호
         </Label>
         <div className="flex-1 flex flex-col max-w-[300px] ml-8">
