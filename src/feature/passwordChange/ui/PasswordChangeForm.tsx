@@ -2,8 +2,8 @@ import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from "react";
 import { validatePassword } from "../../../../shared/utils/validation";
 import InputWithButton from "../../../../shared/ui/InputWithButton";
 import InputWithLabel from "../../../../shared/ui/InputWithLabel";
-import { Button } from "@/components/ui/button";
 import { Errors, FormData, IsButtonDisabled } from "../model";
+import PasswordChangeAlert from "./PasswordChangeAlert";
 
 function PasswordChangeForm() {
   const [formData, setFormData] = useState<FormData>({
@@ -145,6 +145,7 @@ function PasswordChangeForm() {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     // Form submission logic here
+    console.log("Test");
   };
 
   return (
@@ -215,12 +216,7 @@ function PasswordChangeForm() {
       />
 
       <div className="flex justify-center">
-        <Button
-          className="w-[15%] bg-green-500 disabled:bg-green-200 disabled:opacity-100 text-white hover:bg-green-600 py-5.5 text-[16px] cursor-pointer"
-          disabled={!isFormValid}
-          type="submit">
-          변경하기
-        </Button>
+        <PasswordChangeAlert disabled={!isFormValid} />
       </div>
     </form>
   );
