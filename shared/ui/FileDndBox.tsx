@@ -1,44 +1,45 @@
-import React, { useState } from "react";
+import { ChangeEvent, DragEvent, useRef, useState } from "react";
 
 function FileDndBox() {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [files, setFiles] = useState<File[]>([]);
 
   // 드래그 오버 이벤트 (드래그 시 기본 이벤트 제거)
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
   };
 
   // 파일이 드롭되었을 때
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
 
     const droppedFiles = Array.from(event.dataTransfer.files);
     setFiles(prevFiles => [...prevFiles, ...droppedFiles]);
   };
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files) return;
+    const selectedFiles = Array.from(event.target.files);
+    setFiles(prevFiles => [...prevFiles, ...selectedFiles]);
+  };
+
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
 
   return (
     <div
       onDragOver={handleDragOver}
       onDrop={handleDrop}
-      style={{
-        width: "300px",
-        height: "200px",
-        border: "2px dashed #aaa",
-        borderRadius: "10px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-        backgroundColor: "#f9f9f9",
-      }}>
-      <p>여기에 파일을 드래그 앤 드롭하세요!</p>
-      <ul>
-        {files.map((file, index) => (
-          <li key={index}>{file.name}</li> // ✅ key는 index 사용 가능하지만 고유 ID가 있으면 더 좋음
-        ))}
-      </ul>
+      className="w-full h-[200px] border-2 border-dashed border-gray-400 rounded-[10px] flex flex-col items-center justify-center text-center bg-gray-100">
+      <div>움짤 영역</div>
+      <p>영수증 파일을 끌어다 놓거나 선택하세요.</p>
+      <p>{files.length}/50(개) | 00mb</p>
+      <input type="file" ref={fileInputRef} className="hidden" multiple onChange={handleFileChange} />
+      <button className=" border border-solid p-5 w-[150px] rounded-xl" onClick={handleButtonClick}>
+        파일 선택
+      </button>
     </div>
   );
 }
