@@ -62,7 +62,7 @@ function FileDndBox() {
           파일 선택
         </button>
       </div>
-      <div className="w-full text-[14px] flex justify-between">
+      <div className="w-full text-[14px] flex justify-between mb-10">
         <p className="text-gray-800">
           <span className="text-gray-800">{files.length}/50(개)</span> | 예상 검증 시간: 00분 00초
         </p>

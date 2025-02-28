@@ -7,7 +7,7 @@ function Layout() {
       {/* 왼쪽 사이드바 */}
       <Sidebar />
       {/* 메인 컨텐츠 */}
-      <main className="flex-1 p-4">
+      <main className="flex-1 p-10">
         <Outlet />
       </main>
     </div>
