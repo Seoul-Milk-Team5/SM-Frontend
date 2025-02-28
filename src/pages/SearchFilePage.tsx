@@ -1,14 +1,15 @@
+import DataTable from "@/feature/searchFile/ui/dataTable";
 import Navbar from "../../shared/ui/Navbar";
 
 function SearchFilePage() {
   const navItems = [
     { path: "/", label: "파일 업로드" },
-    { path: "/searchfile", label: "파일 조회"},
+    { path: "/searchfile", label: "검증 내역"},
   ]
   return (
-    <div>
+    <div className="bg-[#FFF] rounded-[10px] p-7">
       <Navbar items={navItems} />
-      SearchFilePage
+      <DataTable />
     </div>
   );
 }

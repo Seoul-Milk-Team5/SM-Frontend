@@ -94,6 +94,20 @@ module.exports = {
           1000: "#000000",
         },
       },
+	  fontSize: {
+        lg: ["25px", "150%"], // Large
+        "md-b": ["21px", "150%"], // Medium-B (Bold)
+        md: ["21px", "150%"], // Medium (Semi Bold)
+        sm: ["19px", "150%"], // Small
+
+        "body-lg": ["19px", "150%"], // Body Large
+        "body-md-sb": ["17px", "150%"], // Body Medium-SB (Semi Bold)
+        "body-md-m": ["17px", "150%"], // Body Medium-M (Medium)
+        "body-md": ["17px", "150%"], // Body Medium (Regular)
+        "body-sm": ["15px", "150%"], // Body Small
+
+        label: ["13px", "150%"], // Label XSmall
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
