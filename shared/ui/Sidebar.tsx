@@ -56,7 +56,7 @@ function Sidebar() {
           <p className="text-gray-700">이름</p>
           <p className="text-gray-500">000000000000</p>        
         </div>
-        <div className="flex gap-3 border-t pt-4 text-sm">
+        <div className="flex gap-3 border-t pt-4 text-body-md cursor-pointer">
           <img src="/icon/logout.svg" alt="logout" />
           로그아웃
         </div>
