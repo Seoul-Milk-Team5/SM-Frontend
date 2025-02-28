@@ -62,15 +62,15 @@ export default function InvoiceTable() {
         </div>
 
         <div className="flex gap-2">
-          <Button variant="outline">삭제하기</Button>
-          <Button>임시 저장</Button>
+          <Button className="!text-body-md !font-normal w-[111px] h-[40px] bg-gray-500 hover:bg-gray-600 disabled:opacity-100 disabled:bg-gray-100">삭제하기</Button>
+          <Button className="!text-body-md !font-normal w-[111px] h-[40px] bg-green-500 hover:bg-green-600 disabled:opacity-100 disabled:bg-green-200">임시 저장</Button>
         </div>
       </div>
       
       <Table>
         <TableHeader className="h-[57px]">
           <TableRow>
-            <TableHead><Checkbox /></TableHead>
+            <TableHead></TableHead>
             <TableHead>번호</TableHead>
             <TableHead>공급자</TableHead>
             <TableHead>공급받는자</TableHead>
