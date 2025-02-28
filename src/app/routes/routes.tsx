@@ -9,7 +9,7 @@ import Layout from "../layouts/Layout";
 import PasswordChangePage from "@/pages/PasswordChangePage";
 import WorkViewPage from "@/pages/admin/WorkViewPage";
 import SearchFilePage from "@/pages/SearchFilePage";
-
+import FileLayout from "../layouts/FileLayout";
 
 const router = createBrowserRouter([
   {
@@ -28,12 +28,17 @@ const router = createBrowserRouter([
         element: <Layout />,
         children: [
           {
-            index: true,
-            element: <MainPage />,
-          },
-          {
-            path: "searchfile",
-            element: <SearchFilePage />,
+            element: <FileLayout />,
+            children: [
+              {
+                index: true,
+                element: <MainPage />,
+              },
+              {
+                path: "searchfile",
+                element: <SearchFilePage />,
+              },
+            ],
           },
           {
             path: "mypage",

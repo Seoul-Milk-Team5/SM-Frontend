@@ -1,8 +1,10 @@
+import { useFileContext } from "@/app/providers/FileProvider";
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
 
 function FileDndBox() {
+  const { files, setFiles } = useFileContext();
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [files, setFiles] = useState<File[]>([]);
   const [isDragOver, setIsDragOver] = useState(false); // 드래그 상태 추적
 
   const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
@@ -38,7 +40,7 @@ function FileDndBox() {
 
   // 조건부 클래스 적용
   const dragOverClass = isDragOver
-    ? files.length <= 50
+    ? files.length >= 50
       ? "bg-red-50 border-red-500 border-solid"
       : "bg-green-50 border-green-500 border-solid"
     : "border-gray-200";
@@ -55,7 +57,7 @@ function FileDndBox() {
         <button
           type="button"
           className="bg-green-500 hover:bg-green-600 disabled:bg-gray-100 text-white rounded-[10px] text-[18px] h-[50px] w-[300px] cursor-pointer"
-          disabled={files.length <= 50}
+          disabled={files.length >= 50}
           onClick={handleButtonClick}>
           파일 선택
         </button>
@@ -64,7 +66,7 @@ function FileDndBox() {
         <p className="text-gray-800">
           <span className="text-gray-800">{files.length}/50(개)</span> | 예상 검증 시간: 00분 00초
         </p>
-        {files.length <= 50 && <p className="text-red-500">파일 최대 업로드 가능 개수를 초과했습니다</p>}
+        {files.length >= 50 && <p className="text-red-500">파일 최대 업로드 가능 개수를 초과했습니다</p>}
       </div>
     </>
   );
