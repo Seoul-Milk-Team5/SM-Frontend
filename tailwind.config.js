@@ -2,6 +2,7 @@
 module.exports = {
   darkMode: ["class"],
   content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
+  safelist: ["text-body-sm"],
   theme: {
     extend: {
       borderRadius: {
@@ -94,19 +95,22 @@ module.exports = {
           1000: "#000000",
         },
       },
+	  fontFamily: {
+        sans: ["Pretendard", "sans-serif"], // 기본 sans-serif 설정
+      },
 	  fontSize: {
-        lg: ["25px", "150%"], // Large
-        "md-b": ["21px", "150%"], // Medium-B (Bold)
-        md: ["21px", "150%"], // Medium (Semi Bold)
-        sm: ["19px", "150%"], // Small
+        lg: ["25px", {lineHeight: "150%"}], // Large
+        "md-b": ["21px", {lineHeight: "150%"}], // Medium-B (Bold)
+        md: ["21px", {lineHeight: "150%"}], // Medium (Semi Bold)
+        sm: ["19px", {lineHeight: "150%"}], // Small
 
-        "body-lg": ["19px", "150%"], // Body Large
-        "body-md-sb": ["17px", "150%"], // Body Medium-SB (Semi Bold)
-        "body-md-m": ["17px", "150%"], // Body Medium-M (Medium)
-        "body-md": ["17px", "150%"], // Body Medium (Regular)
-        "body-sm": ["15px", "150%"], // Body Small
+        "body-lg": ["19px", {lineHeight: "150%"}], // Body Large
+        "body-md-sb": ["17px", {lineHeight: "150%"}], // Body Medium-SB (Semi Bold)
+        "body-md-m": ["17px", {lineHeight: "150%"}], // Body Medium-M (Medium)
+        "body-md": ["17px", {lineHeight: "150%"}], // Body Medium (Regular)
+        "body-sm": ["15px", {lineHeight: "150%"}], // Body Small
 
-        label: ["13px", "150%"], // Label XSmall
+        label: "13px", // Label XSmall
       },
     },
   },
