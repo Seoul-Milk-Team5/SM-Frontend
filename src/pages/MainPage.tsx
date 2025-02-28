@@ -3,7 +3,7 @@ import FileDndBox from "../../shared/ui/FileDndBox";
 
 function MainPage() {
   const navItems = [
-    { path: "/", label: "파일 업로드" },
+    { path: "/", label: "세금계산서 업로드" },
     { path: "/searchfile", label: "검증 내역"},
   ]
 
