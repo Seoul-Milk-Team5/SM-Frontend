@@ -1,6 +1,6 @@
-import { Label } from "../../src/components/ui/label";
-import { Input } from "../../src/components/ui/input";
-import { Button } from "../../src/components/ui/button";
+import { Label } from "../../components/ui/label";
+import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
 import { InputWithButtonProps } from "../model";
 
 function InputWithButton({

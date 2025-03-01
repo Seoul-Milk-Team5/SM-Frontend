@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from "react";
-import { validatePassword } from "../../../../shared/utils/validation";
-import InputWithButton from "../../../../shared/ui/InputWithButton";
-import InputWithLabel from "../../../../shared/ui/InputWithLabel";
+import { validatePassword } from "../../../shared/utils/validation";
+import InputWithButton from "../../../shared/ui/InputWithButton";
+import InputWithLabel from "../../../shared/ui/InputWithLabel";
 import { Errors, FormData, IsButtonDisabled } from "../model";
 import PasswordChangeAlert from "./PasswordChangeAlert";
 

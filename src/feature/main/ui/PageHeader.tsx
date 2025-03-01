@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import Navbar from "../../../../shared/ui/Navbar";
+import Navbar from "../../../shared/ui/Navbar";
 
 export function PageHeader() {
   const navItems = [
