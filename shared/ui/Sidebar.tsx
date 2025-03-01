@@ -19,7 +19,7 @@ function Sidebar() {
                 to="/"
                 className={cn(
                   "flex gap-2 -mx-6 px-6 h-[60px] items-center hover:bg-gray-0",
-                  isActive(["/", "/searchfile"]) ? "text-green-500 font-normal bg-gray-0" : "text-gray-300"
+                  isActive(["/", "/searchfile"]) ? "text-green-500 font-normal bg-green-0 hover:bg-green-0" : "text-gray-300"
                 )}
               >
                 {
@@ -33,7 +33,7 @@ function Sidebar() {
               <Link
                 to="/mypage" className={cn(
                 "flex gap-2 -mx-6 px-6 h-[60px] items-center rounded hover:bg-gray-0",
-                isActive(["/adminpage/workview", "/adminpage/adduser", "/userpage"]) ? "text-green-500 font-normal bg-gray-0" : "text-gray-300"
+                isActive(["/adminpage/workview", "/adminpage/adduser", "/userpage"]) ? "text-green-500 font-normal bg-green-0 hover:bg-green-0" : "text-gray-300"
               )}>
                 {
                   isActive(["/adminpage/workview", "/adminpage/adduser", "userpage"]) ? <img src="/icon/activeMytask.svg" alt="active verification" />
@@ -51,8 +51,8 @@ function Sidebar() {
           </ul>
         </nav>
       </div>
-      <div className="flex flex-col gap-2">
-        <div className="">
+      <div className="flex flex-col gap-2 relative">
+        <div className="hover:bg-green-0 px-[13px]">
           <p className="text-gray-700">이름</p>
           <p className="text-gray-500">000000000000</p>        
         </div>

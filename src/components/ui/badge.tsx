@@ -21,7 +21,7 @@ const badgeVariants = cva(
       custom: {
         승인: "bg-green-50 text-green-700",
         반려: "bg-red-50 text-red-700",
-        "검증 실패": "bg-gray-50 text-gray-700",
+        검증실패: "bg-gray-50 text-gray-700",
         수정됨: "bg-[#E8EEFF] text-blue-700",
       },
     },
