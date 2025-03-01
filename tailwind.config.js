@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require("tailwindcss/plugin");
+
 module.exports = {
   darkMode: ["class"],
   content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
@@ -95,24 +97,36 @@ module.exports = {
           1000: "#000000",
         },
       },
-	  fontFamily: {
-        sans: ["Pretendard", "sans-serif"], // 기본 sans-serif 설정
+      fontFamily: {
+        sans: ["Pretendard", "sans-serif"],
       },
-	  fontSize: {
-        lg: ["25px", {lineHeight: "150%"}], // Large
-        "md-b": ["21px", {lineHeight: "150%"}], // Medium-B (Bold)
-        md: ["21px", {lineHeight: "150%"}], // Medium (Semi Bold)
-        sm: ["19px", {lineHeight: "150%"}], // Small
+      fontSize: {
+        // Title
+        "title-lg": ["25px", { lineHeight: "150%", fontWeight: "700" }], // Large (Bold)
+        "title-md-b": ["21px", { lineHeight: "150%", fontWeight: "700" }], // Medium-B (Bold)
+        "title-md": ["21px", { lineHeight: "150%", fontWeight: "600" }], // Medium (Semi Bold)
+        "title-sm": ["19px", { lineHeight: "150%", fontWeight: "600" }], // Small (Semi Bold)
 
-        "body-lg": ["19px", {lineHeight: "150%"}], // Body Large
-        "body-md-sb": ["17px", {lineHeight: "150%"}], // Body Medium-SB (Semi Bold)
-        "body-md-m": ["17px", {lineHeight: "150%"}], // Body Medium-M (Medium)
-        "body-md": ["17px", {lineHeight: "150%"}], // Body Medium (Regular)
-        "body-sm": ["15px", {lineHeight: "150%"}], // Body Small
+        // Body
+        "body-lg": ["19px", { lineHeight: "150%", fontWeight: "400" }], // Large (Regular)
+        "body-md-sb": ["17px", { lineHeight: "150%", fontWeight: "600" }], // Medium-SB (Semi Bold)
+        "body-md-m": ["17px", { lineHeight: "150%", fontWeight: "500" }], // Medium-M (Medium)
+        "body-md": ["17px", { lineHeight: "150%", fontWeight: "400" }], // Medium (Regular)
+        "body-sm": ["15px", { lineHeight: "150%", fontWeight: "400" }], // Small (Regular)
 
-        label: "13px", // Label XSmall
+        // Label
+        "label-xs": ["13px", { lineHeight: "150%", fontWeight: "400" }], // XSmall (Regular)
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    plugin(({ addUtilities }) => {
+      addUtilities({
+        ".font-default": {
+          fontFamily: "Pretendard, sans-serif",
+        },
+      });
+    }),
+  ],
 };
