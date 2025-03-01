@@ -1,7 +1,7 @@
+import { FileDndBox } from "@/feature/main";
 import Navbar from "../../shared/ui/Navbar";
-import FileDndBox from "../../shared/ui/FileDndBox";
-import { FileUploadTable } from "@/feature/main/ui/FileUploadTable";
 import { Button } from "@/components/ui/button";
+import { FileUploadTable } from "@/feature/main";
 
 function MainPage() {
   const navItems = [

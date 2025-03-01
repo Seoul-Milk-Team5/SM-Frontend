@@ -1,7 +1,7 @@
 import { useFileContext } from "@/app/providers/FileProvider";
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
 
-function FileDndBox() {
+export function FileDndBox() {
   const { files, setFiles } = useFileContext();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -71,5 +71,3 @@ function FileDndBox() {
     </>
   );
 }
-
-export default FileDndBox;
