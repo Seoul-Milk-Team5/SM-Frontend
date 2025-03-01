@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 
 const statuses = ["전체", "승인", "반려", "검증 실패", "수정됨"];
 
@@ -21,6 +22,8 @@ export default function InvoiceTable() {
   const [selectedStatus, setSelectedStatus] = useState("전체");
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+
   const itemsPerPage = 10;
 
   const filteredData = data.filter(
@@ -32,8 +35,14 @@ export default function InvoiceTable() {
   const paginatedData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
+  const toggleRowSelection = (id: number) => {
+    setSelectedRows((prev) =>
+    prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
+    );
+  }
+
   return (
-    <div className="p-6 bg-[#FFF] rounded-lg">
+    <div className="p-[46px] bg-[#FFF] rounded-lg">
       <div className="flex justify-between mb-4">
         <div className="flex gap-2">
           <DropdownMenu>
@@ -81,14 +90,25 @@ export default function InvoiceTable() {
         </TableHeader>
         <TableBody>
           {paginatedData.map((row) => (
-            <TableRow key={row.id} className="h-[68px]">
-              <TableCell><Checkbox /></TableCell>
+            <TableRow 
+              key={row.id} 
+              className={`h-[68px] ${selectedRows.includes(row.id) ? "bg-green-50 hover:bg-green-50" : ""}`}
+            >
+              <TableCell className="w-[70px]">
+                <Checkbox 
+                  className="h-[24px] w-[24px] bg-gray-50 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
+                  checked={selectedRows.includes(row.id)}
+                  onCheckedChange={() => toggleRowSelection(row.id)}
+                />
+              </TableCell>
               <TableCell>{row.id}</TableCell>
               <TableCell>{row.provider}</TableCell>
               <TableCell>{row.receiver}</TableCell>
               <TableCell>{row.date}</TableCell>
-              <TableCell className="text-blue-500 underline cursor-pointer">{row.preview}</TableCell>
-              <TableCell className={row.status === "승인" ? "text-green-500" : "text-red-500"}>{row.status}</TableCell>
+              <TableCell className="text-gray-300 underline cursor-pointer">{row.preview}</TableCell>
+              <TableCell className={row.status === "승인" ? "text-green-500" : "text-red-500"}>
+                <Badge custom={["승인", "반려", "검증 실패", "수정됨"].includes(row.status) ? (row.status as "승인" | "반려" | "검증 실패" | "수정됨") : undefined}>{row.status}</Badge>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
