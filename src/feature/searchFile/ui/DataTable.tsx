@@ -71,8 +71,8 @@ export default function InvoiceTable() {
         </div>
 
         <div className="flex gap-2">
-          <Button className="!text-body-md !font-normal w-[111px] h-[40px] bg-gray-500 hover:bg-gray-600 disabled:opacity-100 disabled:bg-gray-100">삭제하기</Button>
-          <Button className="!text-body-md !font-normal w-[111px] h-[40px] bg-green-500 hover:bg-green-600 disabled:opacity-100 disabled:bg-green-200">임시 저장</Button>
+          <Button className="!text-body-md-sb !font-normal w-[111px] h-[40px] bg-gray-500 hover:bg-gray-600 disabled:opacity-100 disabled:bg-gray-100">삭제하기</Button>
+          <Button className="!text-body-md-sb !font-normal w-[111px] h-[40px] bg-green-500 hover:bg-green-600 disabled:opacity-100 disabled:bg-green-200">임시 저장</Button>
         </div>
       </div>
       
