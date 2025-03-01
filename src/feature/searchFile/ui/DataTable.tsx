@@ -6,6 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
+import ApprovalModal from "./ApprovalModal";
 
 const statuses = ["전체", "승인", "반려", "검증실패", "수정됨"];
 
@@ -24,8 +25,15 @@ export default function DataTable() {
   const [currentPage, setCurrentPage] = useState(1); // 클라이언트 사이드 페이지네이션으로 구현 예정
   const [selectedRows, setSelectedRows] = useState<number[]>([]); // 선택된 cell 값들
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const itemsPerPage = 10;
+
+  // 상태별 개수 계산
+  const statusCounts = statuses.reduce((acc, status) => {
+    acc[status] = status === "전체" ? data.length : data.filter((item) => item.status === status).length;
+    return acc;
+  }, {} as Record<string, number>);
 
   const filteredData = data.filter(
     (item) =>
@@ -35,6 +43,12 @@ export default function DataTable() {
 
   const paginatedData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  const openModal = (row: typeof data[number]) => {
+    if(row.status === "승인") {
+      setIsModalOpen(true);
+    }
+  }
 
   const toggleRowSelection = (id: number) => {
     setSelectedRows((prev) =>
@@ -48,13 +62,14 @@ export default function DataTable() {
         <div className="flex gap-2">
           <DropdownMenu onOpenChange={setIsDropdownOpen}>
           <DropdownMenuTrigger className="flex justify-between w-[156px] h-[40px] px-4 py-2 border rounded-lg text-gray-300">
-              {selectedStatus}
+              {selectedStatus} ({statusCounts[selectedStatus]})
               <img src={isDropdownOpen ? "/icon/activeDropdown.svg" : "/icon/dropdown.svg"} alt="dropdown" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-[156px]">
               {statuses.map((status) => (
               <DropdownMenuItem key={status} onClick={() => setSelectedStatus(status)} className="text-body-md">
-                  {status}
+                  <span>{status}</span>
+                  <span className="text-gray-400">({statusCounts[status]})</span>
               </DropdownMenuItem>
               ))}
           </DropdownMenuContent>
@@ -72,12 +87,12 @@ export default function DataTable() {
 
         <div className="flex gap-[15px]">
           <Button className="!text-body-md-sb text-green-500 w-[111px] h-[40px] bg-[#FFF] border border-green-500 hover:bg-green-600 disabled:opacity-100 disabled:bg-green-200">임시 저장</Button>
-          <Button className="!text-body-md-sb text-[#FFF] w-[111px] h-[40px] bg-green-500 hover:bg-gray-600 disabled:opacity-100 disabled:bg-gray-100">삭제하기</Button>
+          <Button className="!text-body-md-sb text-[#FFF] w-[111px] h-[40px] bg-green-500 hover:bg-green-600 disabled:opacity-100 disabled:bg-gray-100">삭제하기</Button>
         </div>
       </div>
       
       <Table>
-        <TableHeader className="h-[57px]">
+        <TableHeader className="h-[57px] pointer-events-none">
           <TableRow>
             <TableHead></TableHead>
             <TableHead>번호</TableHead>
@@ -93,12 +108,14 @@ export default function DataTable() {
             <TableRow 
               key={row.id} 
               className={`h-[68px] ${selectedRows.includes(row.id) ? "bg-green-50 hover:bg-green-50" : ""}`}
+              onClick={() => openModal(row)}
             >
               <TableCell className="w-[70px]">
                 <Checkbox 
                   className="h-[24px] w-[24px] bg-gray-50 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
                   checked={selectedRows.includes(row.id)}
                   onCheckedChange={() => toggleRowSelection(row.id)}
+                  onClick={(e) => e.stopPropagation()}
                 />
               </TableCell>
               <TableCell>{row.id}</TableCell>
@@ -113,6 +130,7 @@ export default function DataTable() {
           ))}
         </TableBody>
       </Table>
+      <ApprovalModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
 
       <Pagination className="mt-4">
         <PaginationContent>
