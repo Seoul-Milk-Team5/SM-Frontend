@@ -107,7 +107,7 @@ export default function DataTable() {
           {paginatedData.map((row) => (
             <TableRow 
               key={row.id} 
-              className={`h-[68px] ${selectedRows.includes(row.id) ? "bg-green-50 hover:bg-green-0" : ""}`}
+              className={`h-[68px] ${selectedRows.includes(row.id) ? "bg-green-0 hover:bg-green-0" : ""}`}
               onClick={() => openModal(row)}
             >
               <TableCell className="w-[70px]">
