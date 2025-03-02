@@ -1,7 +1,10 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require("tailwindcss/plugin");
+
 module.exports = {
   darkMode: ["class"],
   content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
+  safelist: ["text-body-sm"],
   theme: {
     extend: {
       borderRadius: {
@@ -68,7 +71,8 @@ module.exports = {
           900: "#610008",
         },
         green: {
-          50: "#E6F5EE",
+		        0: "#F1FCF7",
+           50: "#E6F5EE",
           100: "#B0DFCB",
           200: "#8AD0B2",
           300: "#54BA8E",
@@ -94,7 +98,36 @@ module.exports = {
           1000: "#000000",
         },
       },
+      fontFamily: {
+        sans: ["Pretendard", "sans-serif"],
+      },
+      fontSize: {
+        // Title
+        "title-lg": ["25px", { lineHeight: "150%", fontWeight: "700" }], // Large (Bold)
+        "title-md-b": ["21px", { lineHeight: "150%", fontWeight: "700" }], // Medium-B (Bold)
+        "title-md": ["21px", { lineHeight: "150%", fontWeight: "600" }], // Medium (Semi Bold)
+        "title-sm": ["19px", { lineHeight: "150%", fontWeight: "600" }], // Small (Semi Bold)
+
+        // Body
+        "body-lg": ["19px", { lineHeight: "150%", fontWeight: "400" }], // Large (Regular)
+        "body-md-sb": ["17px", { lineHeight: "150%", fontWeight: "600" }], // Medium-SB (Semi Bold)
+        "body-md-m": ["17px", { lineHeight: "150%", fontWeight: "500" }], // Medium-M (Medium)
+        "body-md": ["17px", { lineHeight: "150%", fontWeight: "400" }], // Medium (Regular)
+        "body-sm": ["15px", { lineHeight: "150%", fontWeight: "400" }], // Small (Regular)
+
+        // Label
+        "label-xs": ["13px", { lineHeight: "150%", fontWeight: "400" }], // XSmall (Regular)
+      },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    plugin(({ addUtilities }) => {
+      addUtilities({
+        ".font-default": {
+          fontFamily: "Pretendard, sans-serif",
+        },
+      });
+    }),
+  ],
 };
