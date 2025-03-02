@@ -10,7 +10,7 @@ import ApprovalModal from "./ApprovalModal";
 
 const statuses = ["전체", "승인", "반려", "검증실패", "수정됨"];
 
-const data = Array.from({ length: 100 }, (_, i) => ({ // 서버로부터 최근 업로드된 100개의 데이터 가져옴
+const data = Array.from({ length: 100 }, (_, i) => ({
   id: i + 1,
   provider: "서울우유 강동지점",
   receiver: "파리바게트 수원역점",
@@ -22,14 +22,14 @@ const data = Array.from({ length: 100 }, (_, i) => ({ // 서버로부터 최근 
 export default function DataTable() {
   const [selectedStatus, setSelectedStatus] = useState("전체");
   const [search, setSearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(1); // 클라이언트 사이드 페이지네이션으로 구현 예정
-  const [selectedRows, setSelectedRows] = useState<number[]>([]); // 선택된 cell 값들
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedRows, setSelectedRows] = useState<number[]>([]); // 선택된 cell 값들 저장
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const itemsPerPage = 10;
+  const itemsPerPage = 10; // 페이지별 아이템 개수
 
-  // 상태별 개수 계산
+  // 상태별 개수 계산(페이지 쿼리로 10개씩 요청하면 구현 불가능, 아니면 한번에 가져와야 함)
   const statusCounts = statuses.reduce((acc, status) => {
     acc[status] = status === "전체" ? data.length : data.filter((item) => item.status === status).length;
     return acc;
@@ -107,7 +107,7 @@ export default function DataTable() {
           {paginatedData.map((row) => (
             <TableRow 
               key={row.id} 
-              className={`h-[68px] ${selectedRows.includes(row.id) ? "bg-green-50 hover:bg-green-50" : ""}`}
+              className={`h-[68px] ${selectedRows.includes(row.id) ? "bg-green-50 hover:bg-green-0" : ""}`}
               onClick={() => openModal(row)}
             >
               <TableCell className="w-[70px]">
