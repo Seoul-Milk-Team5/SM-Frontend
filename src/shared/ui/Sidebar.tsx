@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { cn } from "../../src/lib/utils";
+import { cn } from "../../lib/utils";
 
 function Sidebar() {
   return (

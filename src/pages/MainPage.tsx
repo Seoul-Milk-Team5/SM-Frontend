@@ -1,16 +1,12 @@
-import Navbar from "../../shared/ui/Navbar";
-import FileDndBox from "../../shared/ui/FileDndBox";
+import { FileDndBox, PageHeader, FileUploadTable } from "@/feature/main";
 
 function MainPage() {
-  const navItems = [
-    { path: "/", label: "파일 업로드" },
-    { path: "/searchfile", label: "파일 조회"},
-  ]
-
   return (
     <main>
-      <Navbar items={navItems}/>
+      <PageHeader />
       <FileDndBox />
+      <div className="w-full bg-gray-0 h-1.5 mb-13"></div>
+      <FileUploadTable />
     </main>
   );
 }

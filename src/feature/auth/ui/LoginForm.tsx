@@ -2,15 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
-import { validatePassword } from "../../../../shared/utils/validation";
+import { validatePassword } from "../../../shared/utils/validation";
 import { mockLoginRequest } from "../service/mock/mockLoginRequest";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FormState } from "..";
 
-
 function LoginForm() {
-
   const [formState, setFormState] = useState<FormState>({
     employeeId: "",
     password: "",
@@ -24,7 +22,7 @@ function LoginForm() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    setFormState((prev) => ({
+    setFormState(prev => ({
       ...prev,
       [id]: value,
       employeeIdError: id === "employeeId" ? "" : prev.employeeIdError,
@@ -36,7 +34,7 @@ function LoginForm() {
     const newPassword = e.target.value;
     const validation = validatePassword(newPassword);
 
-    setFormState((prev) => ({
+    setFormState(prev => ({
       ...prev,
       password: newPassword,
       passwordError: validation.valid ? "" : validation.message || "비밀번호가 유효하지 않습니다.",
@@ -44,7 +42,6 @@ function LoginForm() {
     }));
   };
 
-  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -72,7 +69,7 @@ function LoginForm() {
       if (response.success) {
         navigate("/");
       } else {
-        setFormState((prev) => ({
+        setFormState(prev => ({
           ...prev,
           employeeIdError: response.message?.includes("사번") ? response.message : "",
           passwordError: response.message?.includes("비밀번호") ? response.message : "",
@@ -84,16 +81,14 @@ function LoginForm() {
       console.error("로그인 실패", error);
     }
   };
-  
 
   return (
     <div className="w-full max-w-md">
       <div className="flex flex-col items-center mb-8">
         {/* 브랜드 로고 추가 */}
-        <img src="/logo/Logomark.svg" alt="Company Logo" className="w-64 h-20 sm:w-80 sm:h-20 object-contain"/>
+        <img src="/logo/Logomark.svg" alt="Company Logo" className="w-64 h-20 sm:w-80 sm:h-20 object-contain" />
         <p className="text-center text-gray-800 text-sm font-pretendard font-light">
-          초일류 유제품 전문기업으로 나아가는 길에{" "}
-          <br className="sm:hidden" />
+          초일류 유제품 전문기업으로 나아가는 길에 <br className="sm:hidden" />
           언제나 당신이 있습니다.
         </p>
       </div>
@@ -134,15 +129,12 @@ function LoginForm() {
                 onChange={handlePasswordChange}
                 valid={formState.isPasswordValid}
               />
-              {formState.passwordError && (
-                <p className="text-red-300 text-sm mt-1 ml-3">{formState.passwordError}</p>
-              )}
+              {formState.passwordError && <p className="text-red-300 text-sm mt-1 ml-3">{formState.passwordError}</p>}
             </div>
             <Button
               type="submit"
               className="h-12 w-full bg-green-500 hover:bg-green-600 mt-4 disabled:bg-green-200 disabled:opacity-100"
-              disabled={!formState.isPasswordValid || !formState.employeeId || !formState.password}
-            >
+              disabled={!formState.isPasswordValid || !formState.employeeId || !formState.password}>
               로그인
             </Button>
           </form>

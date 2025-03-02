@@ -9,11 +9,11 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
-import { Button } from "../../src/components/ui/button";
-import { Checkbox } from "../../src/components/ui/checkbox";
-import { Input } from "../../src/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../src/components/ui/table";
-import { Label } from "../../src/components/ui/label";
+import { Button } from "../../components/ui/button";
+import { Checkbox } from "../../components/ui/checkbox";
+import { Input } from "../../components/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../components/ui/table";
+import { Label } from "../../components/ui/label";
 import DatePickerWithRange from "./DatePickerWithRange";
 import { addDays } from "date-fns";
 
