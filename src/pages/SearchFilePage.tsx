@@ -1,4 +1,4 @@
-import DataTable from "@/feature/searchFile/ui/dataTable";
+import DataTable from "@/feature/searchFile/ui/DataTable";
 import Navbar from "../shared/ui/Navbar";
 
 function SearchFilePage() {
