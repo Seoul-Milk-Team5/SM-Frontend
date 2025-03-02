@@ -19,7 +19,7 @@ function PasswordChangeAlert({ disabled }: SuccessModalProps) {
       <AlertDialogTrigger asChild>
         <Button
           type="submit"
-          className="w-[15%] bg-green-500 disabled:bg-green-200 disabled:opacity-100 text-white hover:bg-green-600 py-5.5 text-[16px] cursor-pointer"
+          className="w-[15%] bg-green-500 disabled:bg-green-200 disabled:opacity-100 hover:bg-green-600 py-5.5 text-title-md text-white cursor-pointer"
           disabled={disabled}>
           변경하기
         </Button>

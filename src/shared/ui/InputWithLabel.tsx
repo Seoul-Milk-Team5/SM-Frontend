@@ -18,8 +18,8 @@ function InputWithLabel({ label, type, id, placeholder, value, onChange, success
           placeholder={placeholder}
           valid={!error}
         />
-        {success && <p className="text-green-400 text-[12px] mt-1">{success}</p>}
-        {error && <p className="text-red-400 text-[12px] mt-1">{error}</p>}
+        {success && <p className="text-green-400 text-label-xs mt-1">{success}</p>}
+        {error && <p className="text-red-400 text-label-xs mt-1">{error}</p>}
       </div>
     </div>
   );
