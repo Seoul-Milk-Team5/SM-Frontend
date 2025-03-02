@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import { cn } from "../../src/lib/utils";
+import { cn } from "../../lib/utils";
 import { useLocation } from "react-router-dom";
+
 
 function Sidebar() {
   const location = useLocation();

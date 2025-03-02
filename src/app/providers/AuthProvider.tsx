@@ -1,6 +1,5 @@
-
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
-import { getCookie, setCookie } from "../../../shared/utils/cookies";
+import { getCookie, setCookie } from "../../shared/utils/cookies";
 import { Cookies } from "react-cookie";
 
 const cookies = new Cookies();
@@ -31,11 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsAuthenticated(false);
   };
 
-  return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ isAuthenticated, login, logout }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {

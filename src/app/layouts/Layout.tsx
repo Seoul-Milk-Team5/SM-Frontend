@@ -1,4 +1,4 @@
-import Sidebar from "../../../shared/ui/Sidebar";
+import Sidebar from "../../shared/ui/Sidebar";
 import { Outlet } from "react-router-dom";
 
 function Layout() {
