@@ -1,5 +1,4 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
-import LoginPage from "@/pages/LoginPage";
 import MainPage from "@/pages/MainPage";
 import UserPage from "@/pages/UserPage";
 import AddUserPage from "@/pages/admin/AddUserPage";
@@ -10,54 +9,40 @@ import PasswordChangePage from "@/pages/PasswordChangePage";
 import WorkViewPage from "@/pages/admin/WorkViewPage";
 import SearchFilePage from "@/pages/SearchFilePage";
 import FileLayout from "../layouts/FileLayout";
+import LoginPage from "@/pages/LoginPage";
 
 const router = createBrowserRouter([
   {
-    path: "/login",
-    element: <LoginPage />,
+    path: "/",
+    element: <ProtectedRoute />,
+    children: [
+      { index: true, element: <LoginPage /> },
+      { path: "passwordchange", element: <PasswordChangePage /> },
+    ],
   },
   {
-    path: "/passwordchange",
-    element: <PasswordChangePage />,
-  },
-  {
-    path: "/", // 메인 페이지 보호
-    element: <ProtectedRoute />, // 로그인 여부 확인
+    path: "/dashboard",
+    element: <Layout />,
     children: [
       {
-        element: <Layout />,
+        path: "",
+        element: <FileLayout />,
         children: [
-          {
-            element: <FileLayout />,
-            children: [
-              {
-                index: true,
-                element: <MainPage />,
-              },
-              {
-                path: "searchfile",
-                element: <SearchFilePage />,
-              },
-            ],
-          },
-          {
-            path: "mypage",
-            element: <RoleBasedRedirect />,
-          },
-          {
-            path: "userpage",
-            element: <UserPage />,
-          },
-          {
-            path: "adminpage",
-            element: <Outlet />,
-            children: [
-              { path: "workview", element: <WorkViewPage /> },
-              { path: "adduser", element: <AddUserPage /> },
-            ],
-          },
+          { path: "file", element: <MainPage /> },
+          { path: "searchfile", element: <SearchFilePage /> },
         ],
       },
+
+      {
+        path: "admin",
+        element: <Outlet />,
+        children: [
+          { path: "workview", element: <WorkViewPage /> },
+          { path: "adduser", element: <AddUserPage /> },
+        ],
+      },
+      { path: "userpage", element: <UserPage /> },
+      { path: "mypage", element: <RoleBasedRedirect /> },
     ],
   },
 ]);

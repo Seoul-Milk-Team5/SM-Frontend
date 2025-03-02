@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react";
 import { getCookie, setCookie } from "../../shared/utils/cookies";
 import { Cookies } from "react-cookie";
 
@@ -6,8 +6,10 @@ const cookies = new Cookies();
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
   login: (token: string) => void;
   logout: () => void;
+  getUser: () => string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -15,10 +17,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-  useEffect(() => {
+  const getUser = () => {
     const token = getCookie("access_token");
-    setIsAuthenticated(!!token);
-  }, []);
+    return token;
+  };
 
   const login = (token: string) => {
     setCookie("access_token", token, { path: "/", secure: true, httpOnly: false });
@@ -30,7 +32,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsAuthenticated(false);
   };
 
-  return <AuthContext.Provider value={{ isAuthenticated, login, logout }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, login, logout, getUser }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => {

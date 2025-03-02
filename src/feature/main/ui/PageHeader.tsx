@@ -3,8 +3,8 @@ import Navbar from "../../../shared/ui/Navbar";
 
 export function PageHeader() {
   const navItems = [
-    { path: "/", label: "파일 업로드" },
-    { path: "/searchfile", label: "파일 조회" },
+    { path: "/dashboard/file", label: "세금계산서 업로드" },
+    { path: "/dashboard/searchfile", label: "검증 내역" },
   ];
 
   return (

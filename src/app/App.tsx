@@ -5,7 +5,7 @@ import { AppProviders } from "./providers";
 function App() {
   return (
     <AppProviders>
-      <RouterProvider router={router} />
+      <RouterProvider router={router}></RouterProvider>
     </AppProviders>
   );
 }

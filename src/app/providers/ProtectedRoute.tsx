@@ -1,9 +1,14 @@
 import { Navigate, Outlet } from "react-router-dom";
-
-const isAuthenticated = true; // 실제로는 context로 가져옴
+import { useAuth } from "./AuthProvider";
 
 function ProtectedRoute() {
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
-};
+  const { getUser } = useAuth();
+
+  if (getUser()) {
+    return <Navigate to="/dashboard/file" replace />;
+  } else {
+    return <Outlet />;
+  }
+}
 
 export default ProtectedRoute;

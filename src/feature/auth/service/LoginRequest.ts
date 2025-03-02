@@ -1,11 +1,11 @@
 import { getFetchHeader } from "@/shared/utils";
 import { baseHttpClient } from "@/shared/api";
-import { LoginRequestBody } from "../model";
+import { LoginRequest, LoginRespnse } from "../model";
 
-export async function LoginRequest(body: LoginRequestBody): Promise<string> {
+export async function loginRequest(body: LoginRequest): Promise<LoginRespnse> {
   const HEADER = getFetchHeader("", "b");
   try {
-    return await baseHttpClient().post<string, LoginRequestBody>("login", HEADER, body);
+    return await baseHttpClient().post<LoginRespnse, LoginRequest>("login", HEADER, body);
   } catch (error) {
     console.error("Fetch error:", error);
     throw error;
