@@ -58,9 +58,12 @@ function Sidebar() {
         </nav>
       </div>
       <div className="flex flex-col gap-2 relative">
-        <div className="hover:bg-green-0 px-[13px]">
-          <p className="text-gray-700">이름</p>
-          <p className="text-gray-500">000000000000</p>
+        <div className="hover:bg-green-0 px-[13px] flex justify-between items-center">
+          <div>
+            <p className="text-body-md">이름</p>
+            <p className="text-label-xs">0000000</p>
+          </div>
+          <img className="w-[24px]" src="/icon/gear.svg" alt="마이페이지" />
         </div>
         <div className="flex gap-3 border-t pt-4 text-body-md cursor-pointer">
           <img src="/icon/logout.svg" alt="logout" />
