@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import Navbar from "../../../shared/ui/Navbar";
 import { useFileContext } from "@/app/providers/FileProvider";
 import { useEffect, useState } from "react";
+import { AuthModal } from "@/shared/ui/AuthModal";
 
 export function PageHeader() {
   const { files } = useFileContext();
@@ -28,11 +29,7 @@ export function PageHeader() {
           disabled={disable}>
           임시 저장
         </Button>
-        <Button
-          className="bg-green-500 hover:bg-green-600 cursor-pointer disabled:bg-green-200 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white"
-          disabled={disable}>
-          검사하기
-        </Button>
+        <AuthModal btnName="검사하기" disable={disable} />
       </div>
     </div>
   );
