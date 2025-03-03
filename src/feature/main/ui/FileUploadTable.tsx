@@ -22,10 +22,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useFileContext } from "@/app/providers/FileProvider";
 import { formatDate } from "@/shared/utils/FormatDate";
+import { ImageModal } from "../../../shared/ui";
 // import { saveFileGetRequest } from "../service";
 // import { useAuth } from "@/app/providers/AuthProvider";
 
@@ -65,7 +65,7 @@ export const columns: ColumnDef<Payment>[] = [
     header: "미리보기",
     cell: ({ row }) => (
       <div className="lowercase text-gray-300 underline ellipsis">
-        <Link to={""}>{row.getValue("fileUrl")}</Link>
+        <ImageModal btnName={row.getValue("fileUrl")} imageUrl={row.getValue("fileUrl")} />
       </div>
     ),
   },
