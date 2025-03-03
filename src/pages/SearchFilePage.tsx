@@ -8,7 +8,7 @@ function SearchFilePage() {
   ];
 
   return (
-    <div className="bg-[#FFF] rounded-[10px] p-7">
+    <div className="bg-[#FFF] rounded-[10px] ">
       <Navbar items={navItems} />
       <DataTable />
     </div>
