@@ -2,8 +2,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { EditModalProps } from "../model/EditModal.type";
-import { editData } from "../model/mock/unapprovalData";
+import { EditModalProps } from "../../feature/searchFile/model/EditModal.type";
+import { editData } from "../../feature/searchFile/model/mock/unapprovalData";
 
 
 export default function EditApprovalModal({ isOpen, onClose }: EditModalProps) {
