@@ -9,9 +9,9 @@ function Sidebar() {
     Array.isArray(path) ? path.includes(location.pathname) : location.pathname === path;
 
   return (
-    <aside className="w-[200px] h-[100vh-20px] m-h-[100vh-20px] rounded-[10px] bg-[#FFF] text-gray-300 p-6 flex flex-col justify-between relative mt-[25px] mb-[25px]">
+    <aside className="w-[200px] h-[100vh-20px] m-h-[100vh-20px] rounded-[10px] bg-[#FFF] text-gray-300 px-6 pb-6 pt-8 flex flex-col justify-between relative mt-[25px] mb-[25px]">
       <div>
-        <img src="/logo/Logomark.svg" alt="brand logo" className="w-[158px] h-[100px]" />
+        <img src="/logo/Logomark.svg" alt="brand logo" className="w-[158px]" />
         <nav className="mt-6">
           <ul className="space-y-3">
             <li>
