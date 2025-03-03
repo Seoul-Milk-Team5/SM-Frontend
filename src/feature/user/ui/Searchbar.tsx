@@ -16,7 +16,7 @@ export default function Searchbar() {
 
   const [name, setName] = useState({
     suBusinessName: "",
-    ipBusinessName: ""
+    ipBusinessName: "",
   });
 
   const handlePeriodSelect = (limit: number) => {
@@ -45,6 +45,22 @@ export default function Searchbar() {
     setSelectedApproval(status);
   };
 
+  const handleReset = () => {
+    setSelectedPeriod(null);
+    setIsCustomDateSelected(false);
+    setSelectedApproval("전체");
+    setName({ suBusinessName: "", ipBusinessName: "" });
+    setFilter({ date: { limit: 0, from: new Date(), to: new Date() }, companyName: "", fileType: "" });
+  };
+
+  // 버튼 비활성화 여부를 계산하는 조건
+  const isDisabled =
+    selectedPeriod === null &&
+    !isCustomDateSelected &&
+    selectedApproval === "전체" &&
+    name.suBusinessName.trim() === "" &&
+    name.ipBusinessName.trim() === "";
+
   return (
     <div>
       <div className="pb-2 border-b-3 hover:underline text-title-md-b border-gray-800 text-gray-800 w-[78px] h-[42px]">
@@ -56,10 +72,17 @@ export default function Searchbar() {
           <span className="text-title-sm text-gray-800">필터 검색</span>
         </div>
         <div className="flex gap-2">
-          <Button className="!text-body-md-sb text-green-500 bg-[#FFF] border border-green-500 h-[40px] w-[120px] hover:bg-white">
+          <Button
+            className="!text-body-md-sb text-green-500 bg-[#FFF] border border-green-500 h-[40px] w-[120px] hover:bg-white disabled:opacity-100 disabled:border-gray-300 disabled:text-gray-300"
+            onClick={handleReset}
+            disabled={isDisabled}
+          >
             옵션 초기화
           </Button>
-          <Button className="!text-[#FFF] bg-green-500 h-[40px] w-[120px] hover:bg-green-600 !text-body-md-sb">
+          <Button
+            className="!text-[#FFF] bg-green-500 h-[40px] w-[120px] hover:bg-green-600 !text-body-md-sb disabled:opacity-100 disabled:bg-gray-100 disabled:text-[#FFF]"
+            disabled={isDisabled}
+          >
             조회하기
           </Button>
         </div>
@@ -103,7 +126,7 @@ export default function Searchbar() {
             value={name.suBusinessName}
             onChange={handleInputChange}
             className="w-[313px] h-[40px]"
-          />            
+          />
         </div>
         <div className="flex space-x-[30px] items-center">
           <span className="text-body-md-m text-gray-500">공급받는자</span>

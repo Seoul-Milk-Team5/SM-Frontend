@@ -49,7 +49,12 @@ export default function UserTable() {
     <div className="p-[20px] bg-[#FFF] rounded-lg">
       <div className="flex justify-between mb-7">
         <span className="text-title-sm text-gray-800">검증 내역</span>
-        <Button className="w-[120px] h-[40px] bg-green-500 hover:bg-green-600 !text-body-md-sb text-[#FFF]">내보내기</Button>
+        <Button
+          className="w-[120px] h-[40px] bg-green-500 hover:bg-green-600 !text-body-md-sb text-[#FFF] disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={selectedRows.length === 0}
+        >
+        내보내기
+        </Button>
       </div>
       <Table>
         <TableHeader className="h-[57px] pointer-events-none">
