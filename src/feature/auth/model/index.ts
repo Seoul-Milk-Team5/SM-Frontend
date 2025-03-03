@@ -1,2 +1,2 @@
 export * from "./LoginForm.type";
-export * from "./LoginRequestBody.type";
+export * from "./LoginApi.type";

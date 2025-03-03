@@ -158,9 +158,9 @@ export function FileUploadTable() {
   return (
     <div className="w-full">
       <div className="flex justify-between items-center py-4 gap-3.5 mb-9">
-        <h3 className="text-gray-800 text-[19px]">업로드 항목</h3>
+        <h3 className="text-gray-800 text-title-sm">업로드 항목</h3>
         <Button
-          className="bg-gray-500 text-white hover:bg-gray-600 cursor-pointer disabled:bg-gray-100 disabled:opacity-100 py-3.5 px-6 text-[17px]"
+          className="bg-gray-500 hover:bg-gray-600 cursor-pointer disabled:bg-gray-100 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white"
           disabled={true}>
           삭제하기
         </Button>
@@ -174,7 +174,7 @@ export function FileUploadTable() {
                   return (
                     <TableHead
                       key={header.id}
-                      className={`text-[15px] ${index === headerGroup.headers.length - 1 ? "flex justify-end pr-21 items-center" : ""}`}>
+                      className={`text-body-sm ${index === headerGroup.headers.length - 1 ? "flex justify-end pr-21 items-center" : ""}`}>
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   );
@@ -186,7 +186,7 @@ export function FileUploadTable() {
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map(row => (
                 <TableRow
-                  className="hover:bg-gray-50 h-[68px] text-[17px]"
+                  className="hover:bg-gray-50 h-[68px] text-body-md"
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map(cell => (
@@ -199,7 +199,7 @@ export function FileUploadTable() {
                 <TableCell colSpan={columns.length} className="h-24 text-center">
                   <div className="flex flex-col items-center pt-[100px] pb-[130px] gap-7">
                     <img className="w-[80px]" src="/icon/noResult.svg" alt="검색결과 없음" />
-                    <p className="text-[15px] text-gray-300">업로드된 세금계산서 파일이 없습니다.</p>
+                    <p className="text-body-sm text-gray-300">업로드된 세금계산서 파일이 없습니다.</p>
                   </div>
                 </TableCell>
               </TableRow>

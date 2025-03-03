@@ -1,4 +1,6 @@
-const BASE_URL = process.env.REACT_PUBLIC_BASE_URL;
+import { setCookie } from "../utils";
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export const baseHttpClient = () => {
   async function get<R>(url: string, headers: HeadersInit, params?: Record<string, any>): Promise<R> {
@@ -38,6 +40,12 @@ export const baseHttpClient = () => {
         console.log("Response status:", response.status);
         console.log("Response body:", errorBody);
         throw new Error("Network response was not ok");
+      }
+
+      const accessToken = response.headers.get("access");
+
+      if (accessToken) {
+        setCookie("access_token", accessToken, { path: "/", secure: true, httpOnly: false });
       }
 
       // 성공적인 응답 처리
