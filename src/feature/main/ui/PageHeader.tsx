@@ -18,7 +18,7 @@ export function PageHeader() {
           임시 저장
         </Button>
         <Button
-          className="bg-green-500 text-white hover:bg-green-600 cursor-pointer disabled:bg-green-200 disabled:opacity-100 py-3.5 px-6 text-body-md-sb"
+          className="bg-green-500 hover:bg-green-600 cursor-pointer disabled:bg-green-200 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white"
           disabled={true}>
           검사하기
         </Button>

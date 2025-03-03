@@ -160,7 +160,7 @@ export function FileUploadTable() {
       <div className="flex justify-between items-center py-4 gap-3.5 mb-9">
         <h3 className="text-gray-800 text-title-sm">업로드 항목</h3>
         <Button
-          className="bg-gray-500 text-white hover:bg-gray-600 cursor-pointer disabled:bg-gray-100 disabled:opacity-100 py-3.5 px-6 text-body-md-sb"
+          className="bg-gray-500 hover:bg-gray-600 cursor-pointer disabled:bg-gray-100 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white"
           disabled={true}>
           삭제하기
         </Button>
