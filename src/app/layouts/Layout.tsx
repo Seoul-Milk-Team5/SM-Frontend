@@ -8,7 +8,7 @@ function Layout() {
         {/* 왼쪽 사이드바 */}
         <Sidebar />
         {/* 메인 컨텐츠 (가운데 정렬, 너비 1064px 반영)*/}
-        <main className="flex-1 max-w-[1064px] bg-[#FFF] p-6 rounded-[10px] shadow-md mt-[25px] mb-[25px]">
+        <main className="flex-1 max-w-[1064px] bg-[#FFF] p-6 rounded-[10px] shadow-md mt-[25px] mb-[25px] main-scrollable">
           <Outlet />
         </main>
       </div>
