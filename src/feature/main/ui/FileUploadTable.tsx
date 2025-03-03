@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -23,69 +22,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Link } from "react-router-dom";
-
-const data: Payment[] = [
-  {
-    id: "001",
-    file: "이미지명",
-    date: "25.06.01",
-  },
-  {
-    id: "002",
-    file: "이미지명",
-    date: "25.06.01",
-  },
-  {
-    id: "003",
-    file: "이미지명",
-    date: "25.06.01",
-  },
-  {
-    id: "004",
-    file: "이미지명",
-    date: "25.06.01",
-  },
-  {
-    id: "005",
-    file: "이미지명",
-    date: "25.06.01",
-  },
-  {
-    id: "006",
-    file: "이미지명",
-    date: "25.06.01",
-  },
-  {
-    id: "007",
-    file: "이미지명",
-    date: "25.06.01",
-  },
-  {
-    id: "008",
-    file: "이미지명",
-    date: "25.06.01",
-  },
-  {
-    id: "009",
-    file: "이미지명",
-    date: "25.06.01",
-  },
-  {
-    id: "010",
-    file: "이미지명",
-    date: "25.06.01",
-  },
-  {
-    id: "011",
-    file: "이미지명",
-    date: "25.06.01",
-  },
-];
+import { useEffect, useState } from "react";
+import { useFileContext } from "@/app/providers/FileProvider";
+import { formatDate } from "@/shared/utils/FormatDate";
+import { ImageModal } from "../../../shared/ui";
+// import { saveFileGetRequest } from "../service";
+// import { useAuth } from "@/app/providers/AuthProvider";
 
 export type Payment = {
-  id: string;
-  file: string;
+  id: number;
+  fileUrl: string;
   date: string;
 };
 
@@ -112,32 +58,43 @@ export const columns: ColumnDef<Payment>[] = [
   {
     accessorKey: "id",
     header: "번호",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("id")}</div>,
+    cell: ({ row }) => <div className="capitalize min-w-[50px]">{row.getValue("id")}</div>,
   },
   {
-    accessorKey: "file",
+    accessorKey: "fileUrl",
     header: "미리보기",
     cell: ({ row }) => (
-      <div className="lowercase text-gray-300 underline">
-        <Link to={""}>{row.getValue("file")}</Link>
+      <div className="lowercase text-gray-300 underline ellipsis">
+        <ImageModal btnName={row.getValue("fileUrl")} imageUrl={row.getValue("fileUrl")} />
       </div>
     ),
   },
   {
     accessorKey: "date",
     header: "날짜",
-    cell: ({ row }) => <div className="lowercase flex justify-end pr-9">{row.getValue("date")}</div>,
+    cell: ({ row }) => <div className="lowercase flex justify-end pr-9">{formatDate(row.getValue("date"))}</div>,
   },
 ];
 
 export function FileUploadTable() {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
+  const { mergeFiles } = useFileContext();
+
+  useEffect(() => {
+    console.log(mergeFiles);
+  }, [mergeFiles]);
+
+  // 삭제하기 버튼을 눌렀을 때 실행되는 함수
+  const handleDelete = () => {
+    console.log("Selected IDs to delete:", rowSelection);
+    // 이곳에서 삭제 로직을 구현하거나, 서버에 삭제 요청을 보낼 수 있습니다.
+  };
 
   const table = useReactTable({
-    data,
+    data: mergeFiles,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -155,13 +112,16 @@ export function FileUploadTable() {
     },
   });
 
+  // 선택된 항목이 있으면 삭제 버튼 활성화
+  const isDeleteButtonEnabled = Object.values(rowSelection).some(Boolean);
   return (
     <div className="w-full">
       <div className="flex justify-between items-center py-4 gap-3.5 mb-9">
         <h3 className="text-gray-800 text-title-sm">업로드 항목</h3>
         <Button
-          className="bg-gray-500 hover:bg-gray-600 cursor-pointer disabled:bg-gray-100 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white"
-          disabled={true}>
+          className="bg-green-500 hover:bg-green-600 cursor-pointer disabled:bg-gray-100 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white"
+          disabled={!isDeleteButtonEnabled}
+          onClick={handleDelete}>
           삭제하기
         </Button>
       </div>

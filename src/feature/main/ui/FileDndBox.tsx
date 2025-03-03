@@ -2,7 +2,7 @@ import { useFileContext } from "@/app/providers/FileProvider";
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
 
 export function FileDndBox() {
-  const { files, setFiles } = useFileContext();
+  const { mergeFiles, updateClientFiles } = useFileContext();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isDragOver, setIsDragOver] = useState(false); // 드래그 상태 추적
@@ -25,13 +25,13 @@ export function FileDndBox() {
     setIsDragOver(false);
 
     const droppedFiles = Array.from(event.dataTransfer.files);
-    setFiles(prevFiles => [...prevFiles, ...droppedFiles]);
+    updateClientFiles(droppedFiles);
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
     const selectedFiles = Array.from(event.target.files);
-    setFiles(prevFiles => [...prevFiles, ...selectedFiles]);
+    updateClientFiles(selectedFiles);
   };
 
   const handleButtonClick = () => {
@@ -40,7 +40,7 @@ export function FileDndBox() {
 
   // 조건부 클래스 적용
   const dragOverClass = isDragOver
-    ? files.length >= 50
+    ? mergeFiles.length >= 50
       ? "bg-red-50 border-red-500 border-solid"
       : "bg-green-50 border-green-500 border-solid"
     : "border-gray-200";
@@ -57,16 +57,16 @@ export function FileDndBox() {
         <button
           type="button"
           className="bg-green-500 hover:bg-green-600 disabled:bg-gray-100 text-white rounded-[10px] text-body-lg h-[50px] w-[300px] cursor-pointer"
-          disabled={files.length >= 50}
+          disabled={mergeFiles.length >= 50}
           onClick={handleButtonClick}>
           파일 선택
         </button>
       </div>
       <div className="w-full text-body-sm flex justify-between mb-10">
         <p className="text-gray-800">
-          <span className="text-gray-800">{files.length}/50(개)</span> | 예상 검증 시간: 00분 00초
+          <span className="text-gray-800">{mergeFiles.length}/50(개)</span> | 예상 검증 시간: 00분 00초
         </p>
-        {files.length >= 50 && <p className="text-red-500">파일 최대 업로드 가능 개수를 초과했습니다</p>}
+        {mergeFiles.length >= 50 && <p className="text-red-500">파일 최대 업로드 가능 개수를 초과했습니다</p>}
       </div>
     </>
   );
