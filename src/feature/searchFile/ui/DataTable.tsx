@@ -7,6 +7,7 @@ import { Pagination, PaginationContent, PaginationItem, PaginationNext, Paginati
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import ApprovalModal from "./ApprovalModal";
+import EditApprovalModal from "./EditModal";
 
 const statuses = ["전체", "승인", "반려", "검증실패", "수정됨"];
 
@@ -26,6 +27,8 @@ export default function DataTable() {
   const [selectedRows, setSelectedRows] = useState<number[]>([]); // 선택된 cell 값들 저장
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
 
   const itemsPerPage = 10; // 페이지별 아이템 개수
 
@@ -45,8 +48,12 @@ export default function DataTable() {
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   const openModal = (row: typeof data[number]) => {
+    console.log(row.status);
     if(row.status === "승인") {
       setIsModalOpen(true);
+    }
+    if(row.status === "검증실패") {
+      setIsEditModalOpen(true);
     }
   }
 
@@ -131,6 +138,7 @@ export default function DataTable() {
         </TableBody>
       </Table>
       <ApprovalModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
+      <EditApprovalModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}/>
 
       <Pagination className="mt-4">
         <PaginationContent>
