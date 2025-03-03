@@ -227,3 +227,11 @@ body {
   background: #f1f1f1; /* 트랙의 배경색 */
   border-radius: 10px; /* 트랙의 모서리 둥글기 */
 }
+
+.ellipsis {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 500px; /* 최대 너비 설정 */
+}
