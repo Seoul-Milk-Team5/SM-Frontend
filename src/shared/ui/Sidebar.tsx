@@ -19,11 +19,11 @@ function Sidebar() {
                 to="/dashboard/file"
                 className={cn(
                   "flex gap-2 -mx-6 px-6 h-[60px] items-center hover:bg-gray-0",
-                  isActive(["/", "/searchfile"])
+                  isActive(["/dashboard/file", "/dashboard/searchfile"])
                     ? "text-green-500 font-normal bg-green-0 hover:bg-green-0"
                     : "text-gray-300"
                 )}>
-                {isActive(["/", "/searchfile"]) ? (
+                {isActive(["/dashboard/file", "/dashboard/searchfile"]) ? (
                   <img src="/icon/activeVerification.svg" alt="active verification" />
                 ) : (
                   <img src="/icon/verification.svg" alt="verification" />
@@ -36,11 +36,11 @@ function Sidebar() {
                 to="/dashboard/userpage"
                 className={cn(
                   "flex gap-2 -mx-6 px-6 h-[60px] items-center rounded hover:bg-gray-0",
-                  isActive(["/adminpage/workview", "/adminpage/adduser", "/userpage"])
+                  isActive(["/dashboard/admin/workview", "/dashboard/admin/adduser", "/dashboard/userpage"])
                     ? "text-green-500 font-normal bg-green-0 hover:bg-green-0"
                     : "text-gray-300"
                 )}>
-                {isActive(["/adminpage/workview", "/adminpage/adduser", "userpage"]) ? (
+                {isActive(["/dashboard/admin/workview", "/dashboard/admin/adduser", "/dashboard/userpage"]) ? (
                   <img src="/icon/activeMytask.svg" alt="active verification" />
                 ) : (
                   <img src="/icon/mytask.svg" alt="mytask" />
