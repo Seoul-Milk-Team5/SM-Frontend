@@ -18,9 +18,11 @@ type DatePickerWithRangeProps = {
   date: DateRange;
   setFilter: Dispatch<SetStateAction<FilterState>>;
   className?: string;
+  disabled?: boolean; // 추가된 부분
+  onSelect?: () => void; // 추가된 부분
 };
 
-function DatePickerWithRange({ date, setFilter, className }: DatePickerWithRangeProps) {
+function DatePickerWithRange({ date, setFilter, className, disabled, onSelect }: DatePickerWithRangeProps) {
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>
@@ -28,7 +30,10 @@ function DatePickerWithRange({ date, setFilter, className }: DatePickerWithRange
           <Button
             id="date"
             variant={"outline"}
-            className={cn("w-[300px] justify-start text-left font-normal", !date && "text-muted-foreground")}>
+            className={cn("w-[300px] justify-start text-left font-normal", !date && "text-muted-foreground")}
+            disabled={disabled} // disabled 적용
+            onClick={onSelect} // 데이트 피커 선택 시 이벤트 실행
+          >
             <CalendarIcon />
             {date?.from ? (
               date.to ? (
@@ -49,16 +54,17 @@ function DatePickerWithRange({ date, setFilter, className }: DatePickerWithRange
             mode="range"
             defaultMonth={date?.from}
             selected={date}
-            onSelect={() =>
-              setFilter(prev => ({
+            onSelect={() => {
+              setFilter((prev) => ({
                 ...prev,
                 date: {
                   limit: 0,
                   from: new Date(),
                   to: addDays(new Date(), 30),
                 },
-              }))
-            }
+              }));
+              onSelect && onSelect(); // onSelect 호출 (Searchbar에서 상태 변경)
+            }}
             numberOfMonths={2}
           />
         </PopoverContent>

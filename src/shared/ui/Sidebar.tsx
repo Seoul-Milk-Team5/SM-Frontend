@@ -41,6 +41,7 @@ function Sidebar() {
                     : "text-gray-300"
                 )}>
                 {isActive(["/dashboard/admin/workview", "/dashboard/admin/adduser", "/dashboard/userpage"]) ? (
+
                   <img src="/icon/activeMytask.svg" alt="active verification" />
                 ) : (
                   <img src="/icon/mytask.svg" alt="mytask" />

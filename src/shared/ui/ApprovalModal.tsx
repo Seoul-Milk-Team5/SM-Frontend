@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ApprovalModalProps } from "..";
-import { approvalData } from "../model/mock/approvalData";
+import { ApprovalModalProps } from "../../feature/searchFile";
+import { approvalData } from "../../feature/searchFile/model/mock/approvalData";
 
 const mockData = approvalData;
 

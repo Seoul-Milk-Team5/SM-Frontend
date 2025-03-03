@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import ApprovalModal from "../../../shared/ui/ApprovalModal";
-import EditApprovalModal from "../../../shared/ui/EditModal";
 
-const statuses = ["전체", "승인", "반려", "검증실패", "수정됨"];
+import ApprovalModal from "@/shared/ui/ApprovalModal";
+import EditApprovalModal from "@/shared/ui/EditModal";
+
 
 const data = Array.from({ length: 100 }, (_, i) => ({
   id: i + 1,
@@ -20,35 +18,19 @@ const data = Array.from({ length: 100 }, (_, i) => ({
   status: ["승인", "반려", "검증실패", "수정됨"][i % 4],
 }));
 
-export default function DataTable() {
-  const [selectedStatus, setSelectedStatus] = useState("전체");
-  const [search, setSearch] = useState("");
+export default function UserTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<number[]>([]); // 선택된 cell 값들 저장
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-
   const itemsPerPage = 10; // 페이지별 아이템 개수
-
-  // 상태별 개수 계산(페이지 쿼리로 10개씩 요청하면 구현 불가능, 아니면 한번에 가져와야 함)
-  const statusCounts = statuses.reduce((acc, status) => {
-    acc[status] = status === "전체" ? data.length : data.filter((item) => item.status === status).length;
-    return acc;
-  }, {} as Record<string, number>);
-
-  const filteredData = data.filter(
-    (item) =>
-      (selectedStatus === "전체" || item.status === selectedStatus) &&
-      (item.provider.includes(search) || item.receiver.includes(search))
-  );
-
+  
+  const filteredData = data;
   const paginatedData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   const openModal = (row: typeof data[number]) => {
-    console.log(row.status);
     if(row.status === "승인") {
       setIsModalOpen(true);
     }
@@ -64,40 +46,16 @@ export default function DataTable() {
   }
 
   return (
-    <div className="p-[46px] bg-[#FFF] rounded-lg">
-      <div className="flex justify-between mb-4">
-        <div className="flex gap-2">
-          <DropdownMenu onOpenChange={setIsDropdownOpen}>
-          <DropdownMenuTrigger className="flex justify-between w-[156px] h-[40px] px-4 py-2 border rounded-lg text-gray-300">
-              {selectedStatus} ({statusCounts[selectedStatus]})
-              <img src={isDropdownOpen ? "/icon/activeDropdown.svg" : "/icon/dropdown.svg"} alt="dropdown" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-[156px]">
-              {statuses.map((status) => (
-              <DropdownMenuItem key={status} onClick={() => setSelectedStatus(status)} className="text-body-md">
-                  <span>{status}</span>
-                  <span className="text-gray-400">({statusCounts[status]})</span>
-              </DropdownMenuItem>
-              ))}
-          </DropdownMenuContent>
-          </DropdownMenu>
-          <div className="flex items-center w-[300px] h-[40px] border rounded-lg px-3">
-            <Input
-              className="w-full h-full !text-body-md placeholder:text-gray-300 border-none shadow-none"
-              placeholder="공급자 또는 공급받는자 검색"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <img src="/icon/search.svg" />
-          </div>
-        </div>
-
-        <div className="flex gap-[15px]">
-          <Button className="!text-body-md-sb text-green-500 w-[111px] h-[40px] bg-[#FFF] border border-green-500 hover:bg-white disabled:opacity-100 disabled:bg-green-200">임시 저장</Button>
-          <Button className="!text-body-md-sb text-[#FFF] w-[111px] h-[40px] bg-green-500 hover:bg-green-600 disabled:opacity-100 disabled:bg-gray-100">삭제하기</Button>
-        </div>
+    <div className="p-[20px] bg-[#FFF] rounded-lg">
+      <div className="flex justify-between mb-7">
+        <span className="text-title-sm text-gray-800">검증 내역</span>
+        <Button
+          className="w-[120px] h-[40px] bg-green-500 hover:bg-green-600 !text-body-md-sb text-[#FFF] disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={selectedRows.length === 0}
+        >
+        내보내기
+        </Button>
       </div>
-      
       <Table>
         <TableHeader className="h-[57px] pointer-events-none">
           <TableRow>
