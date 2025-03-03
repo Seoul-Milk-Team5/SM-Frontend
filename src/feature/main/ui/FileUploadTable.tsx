@@ -81,15 +81,17 @@ export function FileUploadTable() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-
-  // const { getUser } = useAuth();
   const { mergeFiles } = useFileContext();
 
   useEffect(() => {
-    // const token = getUser();
-    // saveFileGetRequest(token).then(result => console.log(result));
     console.log(mergeFiles);
   }, [mergeFiles]);
+
+  // 삭제하기 버튼을 눌렀을 때 실행되는 함수
+  const handleDelete = () => {
+    console.log("Selected IDs to delete:", rowSelection);
+    // 이곳에서 삭제 로직을 구현하거나, 서버에 삭제 요청을 보낼 수 있습니다.
+  };
 
   const table = useReactTable({
     data: mergeFiles,
@@ -110,13 +112,16 @@ export function FileUploadTable() {
     },
   });
 
+  // 선택된 항목이 있으면 삭제 버튼 활성화
+  const isDeleteButtonEnabled = Object.values(rowSelection).some(Boolean);
   return (
     <div className="w-full">
       <div className="flex justify-between items-center py-4 gap-3.5 mb-9">
         <h3 className="text-gray-800 text-title-sm">업로드 항목</h3>
         <Button
-          className="bg-gray-500 hover:bg-gray-600 cursor-pointer disabled:bg-gray-100 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white"
-          disabled={true}>
+          className="bg-green-500 hover:bg-green-600 cursor-pointer disabled:bg-gray-100 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white"
+          disabled={!isDeleteButtonEnabled}
+          onClick={handleDelete}>
           삭제하기
         </Button>
       </div>
