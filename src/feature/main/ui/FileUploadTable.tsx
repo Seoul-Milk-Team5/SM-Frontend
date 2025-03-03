@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -24,6 +23,9 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+// import { saveFileGetRequest } from "../service";
+// import { useAuth } from "@/app/providers/AuthProvider";
 
 const data: Payment[] = [
   {
@@ -131,10 +133,17 @@ export const columns: ColumnDef<Payment>[] = [
 ];
 
 export function FileUploadTable() {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
+
+  // const { getUser } = useAuth();
+
+  useEffect(() => {
+    // const token = getUser();
+    // saveFileGetRequest(token).then(result => console.log(result));
+  }, []);
 
   const table = useReactTable({
     data,
