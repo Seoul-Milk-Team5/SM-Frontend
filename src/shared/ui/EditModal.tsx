@@ -37,7 +37,11 @@ export default function EditApprovalModal({ isOpen, onClose }: EditModalProps) {
               해당 세금계산서는 텍스트 추출 오류로 검증 실패 되었습니다.<br />
               홈택스에서 진위여부를 확인 후 직접 입력해주세요.
             </div>
-            <img src={"https://miricanvas-designhub.zendesk.com/hc/article_attachments/21153709437465"} alt="세금계산서" className="w-[400px] mt-4" />
+            <img 
+              src={"https://miricanvas-designhub.zendesk.com/hc/article_attachments/21153709437465"}
+              alt="세금계산서" 
+              className="w-[600px] h-auto mt-4"
+            />
           </div>
           <div className="flex flex-col justify-center items-center space-y-4 bg-gray-50">
             <Button
