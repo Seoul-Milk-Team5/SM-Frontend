@@ -3,6 +3,7 @@ import Navbar from "../../../shared/ui/Navbar";
 import { useFileContext } from "@/app/providers/FileProvider";
 import { useEffect, useState } from "react";
 import { AuthModal } from "@/shared/ui/AuthModal";
+import { StepProvider } from "@/app/providers/StepProvider";
 
 export function PageHeader() {
   const { files } = useFileContext();
@@ -29,7 +30,9 @@ export function PageHeader() {
           disabled={disable}>
           임시 저장
         </Button>
-        <AuthModal btnName="검사하기" disable={disable} />
+        <StepProvider>
+          <AuthModal btnName="검사하기" disable={disable} />
+        </StepProvider>
       </div>
     </div>
   );
