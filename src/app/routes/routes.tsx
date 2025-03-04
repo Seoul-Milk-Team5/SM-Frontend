@@ -3,7 +3,6 @@ import MainPage from "@/pages/MainPage";
 import UserPage from "@/pages/UserPage";
 import AddUserPage from "@/pages/admin/AddUserPage";
 import ProtectedRoute from "../providers/ProtectedRoute";
-import RoleBasedRedirect from "../providers/RoleBasedRedirect";
 import Layout from "../layouts/Layout";
 import PasswordChangePage from "@/pages/PasswordChangePage";
 import WorkViewPage from "@/pages/admin/WorkViewPage";
@@ -47,7 +46,6 @@ const router = createBrowserRouter([
             ],
           },
           { path: "userpage", element: <UserPage /> },
-          { path: "mypage", element: <RoleBasedRedirect /> },
         ],
       },
     ],

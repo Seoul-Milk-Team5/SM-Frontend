@@ -1,11 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "./AuthProvider";
 
-type UserRole = "ROLE_ADMIN" | "ROLE_NORMAL";
-
-// 실제로는 context나 전역 상태에서 가져와야 함
-// const { userRole } = useAuth();
-const userRole: UserRole = "ROLE_ADMIN";
+const { userRole } = useAuth();
 
 function RoleBasedRedirect() {
   if (userRole === "ROLE_NORMAL") return <Navigate to="/userpage" replace />;
