@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import AuthModalContent from "./\bAuthModalContent";
+import AuthModalContent from "./AuthModalContent";
 import { DialogContent } from "@/components/ui/dialog";
 import OcrModalContent from "@/feature/main/ui/OcrModalContent";
 import HometaxModalContent from "@/feature/main/ui/HometaxModalContent";
