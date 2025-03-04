@@ -1,12 +1,21 @@
 import { Link } from "react-router-dom";
 import { cn } from "../../lib/utils";
 import { useLocation } from "react-router-dom";
+import { useState } from "react";
+import LogoutModal from "./LogoutModal";
+
 
 function Sidebar() {
   const location = useLocation();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const isActive = (path: string | string[]) =>
     Array.isArray(path) ? path.includes(location.pathname) : location.pathname === path;
+
+  const handleLogout = () => {
+    console.log("사용자가 로그아웃되었습니다."); // 실제 로그아웃 로직 추가
+    setIsLogoutModalOpen(false);
+  };
 
   return (
     <aside className="w-[200px] h-[100vh-20px] m-h-[100vh-20px] rounded-[10px] bg-[#FFF] text-gray-300 px-6 pb-6 pt-8 flex flex-col justify-between relative mt-[25px] mb-[25px]">
@@ -66,11 +75,13 @@ function Sidebar() {
           </div>
           <img className="w-[24px]" src="/icon/gear.svg" alt="마이페이지" />
         </div>
-        <div className="flex gap-3 border-t pt-4 text-body-md cursor-pointer">
+        <div className="flex gap-3 border-t pt-4 text-body-md cursor-pointer" onClick={() => setIsLogoutModalOpen(true)}>
           <img src="/icon/logout.svg" alt="logout" />
           로그아웃
         </div>
       </div>
+
+      <LogoutModal isOpen={isLogoutModalOpen} onClose={() => setIsLogoutModalOpen(false)} onConfirmLogout={handleLogout} />
     </aside>
   );
 }
