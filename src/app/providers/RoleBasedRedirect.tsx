@@ -1,12 +1,16 @@
 import { Navigate } from "react-router-dom";
+import { useAuth } from "./AuthProvider";
 
-const userRole : string = "manager"; //context에서 불러오는 값
-// const userRole : string = "member";
+type UserRole = "ROLE_ADMIN" | "ROLE_NORMAL";
+
+// 실제로는 context나 전역 상태에서 가져와야 함
+// const { userRole } = useAuth();
+const userRole: UserRole = "ROLE_ADMIN";
 
 function RoleBasedRedirect() {
-  if (userRole === "member") return <Navigate to="/userpage" replace />;
-  if (userRole === "manager") return <Navigate to="/adminpage/workview" replace />;
+  if (userRole === "ROLE_NORMAL") return <Navigate to="/userpage" replace />;
+  if (userRole === "ROLE_ADMIN") return <Navigate to="/admin/workview" replace />;
   return <Navigate to="/login" replace />;
-};
+}
 
 export default RoleBasedRedirect;

@@ -6,8 +6,10 @@ import { validatePassword } from "../../../shared/utils/validation";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FormState, loginRequest } from "..";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 function LoginForm() {
+  const { login } = useAuth();
   const [formState, setFormState] = useState<FormState>({
     employeeId: "",
     password: "",
@@ -70,7 +72,9 @@ function LoginForm() {
       const response = await loginRequest(loginBody);
       console.log(response);
       if (typeof response?.role === "string") {
+        login(response.role);
         navigate("/dashboard/file");
+
       } else {
         setFormState(prev => ({
           ...prev,
