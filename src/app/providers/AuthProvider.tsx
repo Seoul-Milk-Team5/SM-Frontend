@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react";
+import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction, useEffect } from "react";
 import { getCookie, setCookie } from "../../shared/utils/cookies";
 import { Cookies } from "react-cookie";
 
@@ -16,6 +16,13 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  useEffect(() => {
+    const token = getCookie("access_token");
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   const getUser = () => {
     const token = getCookie("access_token");
