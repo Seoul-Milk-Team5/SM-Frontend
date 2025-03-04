@@ -28,12 +28,15 @@ export const baseHttpClient = () => {
   }
 
   async function post<R, D>(url: string, headers: HeadersInit, data: D): Promise<R> {
+    console.log(headers);
     try {
       const response = await fetch(`${BASE_URL}/${url}`, {
         method: "POST",
         headers: headers,
         body: JSON.stringify(data),
       });
+
+      console.log(response);
 
       if (!response.ok) {
         const errorBody = await response.json();
@@ -50,6 +53,35 @@ export const baseHttpClient = () => {
 
       // 성공적인 응답 처리
       const responseBody = await response.json();
+      console.log(responseBody);
+      return responseBody;
+    } catch (error) {
+      console.error("Fetch error:", error);
+      throw error;
+    }
+  }
+
+  async function postForm<R, D extends BodyInit>(url: string, headers: HeadersInit, data: D): Promise<R> {
+    console.log(headers);
+    try {
+      const response = await fetch(`${BASE_URL}/${url}`, {
+        method: "POST",
+        headers: headers,
+        body: data,
+      });
+
+      console.log(response);
+
+      if (!response.ok) {
+        const errorBody = await response.json();
+        console.log("Response status:", response.status);
+        console.log("Response body:", errorBody);
+        throw new Error("Network response was not ok");
+      }
+
+      // 성공적인 응답 처리
+      const responseBody = await response.json();
+      console.log(responseBody);
       return responseBody;
     } catch (error) {
       console.error("Fetch error:", error);
@@ -107,6 +139,7 @@ export const baseHttpClient = () => {
   return {
     get,
     post,
+    postForm,
     put,
     delete: del,
   };

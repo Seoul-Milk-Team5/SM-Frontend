@@ -12,7 +12,6 @@ export const getFetchHeader = (token = "", contentType: "b" | "a" | "m"): Header
     case "m":
       return {
         Authorization: "Bearer " + token,
-        "Content-Type": "multipart/form-data",
       };
     default:
       return {};
