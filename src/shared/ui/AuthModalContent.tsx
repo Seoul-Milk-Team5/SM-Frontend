@@ -4,8 +4,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "@/components/ui/select";
+import { authRequest, reAuthRequest } from "@/feature/main/service";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 function AuthModalContent({ changeStep }: { changeStep?: (step: number) => void }) {
+  const { getUser } = useAuth();
+  const token = getUser();
+
   // 개별 상태 관리
   const [formData, setFormData] = useState({
     loginTypeLevel: 0,
@@ -20,7 +25,16 @@ function AuthModalContent({ changeStep }: { changeStep?: (step: number) => void 
     agreeThirdParty: false,
   });
 
+  const testData = {
+    supplierRegNumber: "305-02-12501",
+    contractorRegNumber: "305-01-87301",
+    approvalNo: "20240630-10249898-93527501",
+    reportingDate: "2025-03-04",
+    supplyValue: "1234050",
+  };
+
   const [isFormValid, setIsFormValid] = useState(false); // 버튼 활성화 상태
+  const [key, setKey] = useState("");
 
   // 입력값 변경 핸들러 (input, select 공통 사용)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -38,16 +52,33 @@ function AuthModalContent({ changeStep }: { changeStep?: (step: number) => void 
       ...(name === "agreeAll" ? { agreePrivacy: checked, agreeThirdParty: checked } : {}),
     }));
   };
-  const handleAuthRequest = () => {
-    setFormData(prev => ({ ...prev, isRequestConfirmed: true }));
-    // 간편인증 요청 API 연결
 
-    console.log(formData);
+  //
+  const handleAuthRequest = async () => {
+    setFormData(prev => ({ ...prev, isRequestConfirmed: true }));
+
+    const requestData = {
+      loginTypeLevel: formData.loginTypeLevel,
+      userName: formData.userName,
+      phoneNo: formData.firstPhoneNo + formData.phoneNo,
+      identity: formData.identity,
+      telecom: formData.telecom,
+      taxInvoiceInfoList: [testData],
+    };
+
+    // 간편인증 요청 API 연결
+    const response = await authRequest(token, requestData);
+    if (typeof response.result === "object" && "key" in response.result) {
+      setKey(response.result.key);
+    }
+    console.log(response);
   };
 
-  const handleAuthClearAndHomeTaxRequest = () => {
+  const handleAuthClearAndHomeTaxRequest = async () => {
     changeStep?.(3);
     // 간편인증 완료 후 진위여부 확인
+    const response = await reAuthRequest(token, key);
+    console.log(response);
   };
 
   useEffect(() => {
@@ -60,7 +91,7 @@ function AuthModalContent({ changeStep }: { changeStep?: (step: number) => void 
       formData.userName.trim() !== "" &&
         formData.phoneNo.trim() !== "" &&
         formData.identity.trim() !== "" &&
-        formData.telecom.trim() !== "" &&
+        // formData.telecom.trim() !== "" &&
         formData.agreePrivacy &&
         formData.agreeThirdParty
     );
@@ -126,9 +157,9 @@ function AuthModalContent({ changeStep }: { changeStep?: (step: number) => void 
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="SKT">SKT</SelectItem>
-                    <SelectItem value="KT">KT</SelectItem>
-                    <SelectItem value="LGU+">LGU+</SelectItem>
+                    <SelectItem value="0">SKT</SelectItem>
+                    <SelectItem value="1">KT</SelectItem>
+                    <SelectItem value="2">LGU+</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -158,8 +189,6 @@ function AuthModalContent({ changeStep }: { changeStep?: (step: number) => void 
             />
           </div>
         </div>
-
-        {/* 약관 동의 */}
 
         {/* 약관 동의 */}
         <div className="flex flex-col gap-[30px] mt-[70px]">
@@ -201,7 +230,6 @@ function AuthModalContent({ changeStep }: { changeStep?: (step: number) => void 
                 ? "text-green-500 hover:text-green-600 cursor-pointer"
                 : "border-gray-100 text-gray-300 cursor-not-allowed"
             }`}
-            disabled={!isFormValid}
             onClick={handleAuthRequest}>
             인증요청
           </Button>

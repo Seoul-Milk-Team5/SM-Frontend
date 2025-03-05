@@ -16,6 +16,8 @@ interface ResultData {
   suName: string;
   imageUrl: string;
   errorDetails: string[];
+  isTemporary: boolean;
+  createdAt: string;
 }
 
 interface FileData {

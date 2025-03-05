@@ -30,14 +30,13 @@ export const baseHttpClient = () => {
   }
 
   async function post<R, D>(url: string, headers: HeadersInit, data: D): Promise<R> {
-    console.log(headers);
     try {
       const response = await fetch(`${BASE_URL}/${url}`, {
         method: "POST",
         headers: headers,
         body: JSON.stringify(data),
       });
-
+      console.log(response);
       if (!response.ok) {
         const errorBody = await response.json();
         console.log("Response status:", response.status);

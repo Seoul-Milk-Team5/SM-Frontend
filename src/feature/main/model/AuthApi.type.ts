@@ -1,5 +1,5 @@
 export interface AuthRequestBody {
-  loginTypeLevel: string;
+  loginTypeLevel: number;
   userName: string;
   phoneNo: string;
   identity: string;
