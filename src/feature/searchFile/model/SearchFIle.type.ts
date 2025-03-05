@@ -17,7 +17,7 @@ export interface ContentItem {
   id: number;
   suName: string;
   ipName: string;
-  createdAt: string; // ISO8601 날짜 형식
+  createdAt: number[]; // ISO8601 날짜 형식
   url: string;
   processStatus: "UNAPPROVED" | "APPROVED" | "REJECTED"; // 상태값을 Enum으로 정의 가능
 }

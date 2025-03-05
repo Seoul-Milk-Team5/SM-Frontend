@@ -11,8 +11,11 @@ import EditApprovalModal from "../../../shared/ui/EditModal";
 import { searchFileGetRequest } from "../service/SearchFileRequest";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { ApiResponse, ContentItem } from "../model/SearchFIle.type";
-import { formatDate } from "@/shared/utils/FormatDate";
 import PreviewModal from "./PreviewModal";
+import { FormatCreatedAt } from "@/shared/utils/FormatCreatedAt";
+import { getStatusLabel } from "@/shared/utils/getStatusLabel";
+import { TempSaveRequest } from "../service/TempSaveRequest";
+import { DeleteRequest } from "../service/DeleteRequest";
 
 const processStatuses = ["ALL", "UNAPPROVED", "APPROVED", "REJECTED"] as const; //전체, 검증실패, 승인, 반려
 type ProcessStatus = typeof processStatuses[number];
@@ -46,6 +49,56 @@ export default function DataTable() {
     REJECTED: data?.result.rejected || 0,
   }
 
+  const handleTempSave = async () => {
+    if(selectedRows.length === 0) {
+      alert("저장할 항목을 선택하세요.");
+      return;
+    }
+    if (!token) {
+      console.error("인증 토큰이 없습니다.");
+      return;
+    }
+
+    const taxInvoiceIdList = selectedRows.map(rowId => {
+      const rowData = filteredData.find(row => row.id === rowId);
+      return rowData?.id;
+    }).filter(id => id !== undefined);
+    try{
+      await TempSaveRequest(taxInvoiceIdList as number[], token);
+      alert("임시 저장이 완료되었습니다.");
+      setSelectedRows([]);
+      fetchData();
+    } catch (error) {
+      console.log("임시 저장 실패", error);
+    }
+  }
+
+  const handleDelete = async () => {
+    if (selectedRows.length === 0) {
+      alert("삭제할 항목을 선택하세요.");
+      return;
+    }
+    if(!token) {
+      console.error("인증 토큰이 없습니다.");
+      return;
+    }
+
+    const taxInvoiceIdList = selectedRows.map(rowId => {
+      const rowData = filteredData.find(row => row.id === rowId);
+      return rowData?.id;
+    }).filter(id => id !== undefined);
+
+    try{
+      await DeleteRequest(taxInvoiceIdList as number[], token);
+      alert("삭제가 완료되었습니다.");
+      setSelectedRows([]);
+      fetchData();
+    } catch (error) {
+      console.log("삭제 실패", error);
+      alert("삭제하는데 실패했습니다.");
+    }
+  }
+
   const fetchData = async () => {
     if (!token) return; // `search`가 아닌 `poc`을 체크해야 함.
     try {
@@ -66,6 +119,13 @@ export default function DataTable() {
     setPreviewUrl(url);
     setIsPreviewOpen(true);
   }
+  const truncateFileName = (fileName: string, maxLength = 20) => {
+    if (fileName.length <= maxLength) return fileName;
+    const extIndex = fileName.lastIndexOf(".");
+    const ext = fileName.slice(extIndex); // 확장자 추출
+    const baseName = fileName.slice(0, extIndex);
+    return baseName.slice(0, maxLength - ext.length) + "..." + ext;
+  };
 
   useEffect(() => {
     
@@ -95,20 +155,20 @@ export default function DataTable() {
     prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
     );
   }
-
+  
   return (
     <div className="p-[46px] bg-[#FFF] rounded-lg">
       <div className="flex justify-between mb-4">
         <div className="flex gap-2">
           <DropdownMenu onOpenChange={setIsDropdownOpen}>
           <DropdownMenuTrigger className="flex justify-between w-[156px] h-[40px] px-4 py-2 border rounded-lg text-gray-300">
-              {selectedProcessStatus} ({statusCounts[selectedProcessStatus as keyof StatusCount]})
+              {getStatusLabel(selectedProcessStatus)} ({statusCounts[selectedProcessStatus as keyof StatusCount]})
               <img src={isDropdownOpen ? "/icon/activeDropdown.svg" : "/icon/dropdown.svg"} alt="dropdown"/>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-[156px]">
               {processStatuses.map((processStatus) => (
               <DropdownMenuItem key={processStatus} onClick={() => setselectedProcessStatus(processStatus)} className="text-body-md">
-                  <span>{processStatus}</span>
+                  <span>{getStatusLabel(processStatus)}</span>
                   <span className="text-gray-400">({statusCounts[processStatus as keyof StatusCount]})</span>
               </DropdownMenuItem>
               ))}
@@ -126,8 +186,18 @@ export default function DataTable() {
         </div>
 
         <div className="flex gap-[15px]">
-          <Button className="!text-body-md-sb text-green-500 w-[111px] h-[40px] bg-[#FFF] border border-green-500 hover:bg-white disabled:opacity-100 disabled:bg-green-200">임시 저장</Button>
-          <Button className="!text-body-md-sb text-[#FFF] w-[111px] h-[40px] bg-green-500 hover:bg-green-600 disabled:opacity-100 disabled:bg-gray-100">삭제하기</Button>
+          <Button
+            onClick={handleTempSave}
+            className="!text-body-md-sb text-green-500 w-[111px] h-[40px] bg-[#FFF] border border-green-500 hover:bg-white disabled:opacity-100 disabled:bg-green-200"
+          >
+            임시 저장
+          </Button>
+          <Button
+            onClick={handleDelete}
+            className="!text-body-md-sb text-[#FFF] w-[111px] h-[40px] bg-green-500 hover:bg-green-600 disabled:opacity-100 disabled:bg-gray-100"
+          >
+            삭제하기
+          </Button>
         </div>
       </div>
       
@@ -162,7 +232,7 @@ export default function DataTable() {
                 <TableCell>{row.id}</TableCell>
                 <TableCell>{row.suName}</TableCell>
                 <TableCell>{row.ipName}</TableCell>
-                <TableCell>{formatDate(row.createdAt)}</TableCell>
+                <TableCell>{FormatCreatedAt(row.createdAt)}</TableCell>
                 <TableCell 
                   className="text-gray-300 underline cursor-pointer"
                   onClick={(e) => {
@@ -170,11 +240,11 @@ export default function DataTable() {
                     openPreview(row.url);
                   }}
                 >
-                  {row.url}
+                  {truncateFileName(row.url)}
                 </TableCell>
                 <TableCell>
                   <Badge custom={["APPROVED", "REJECTED", "UNAPPROVED"].includes(row.processStatus) ? (row.processStatus as "APPROVED" | "REJECTED" | "UNAPPROVED") : undefined}>
-                    {row.processStatus}
+                    {getStatusLabel(row.processStatus)}
                   </Badge>
                 </TableCell>
               </TableRow>

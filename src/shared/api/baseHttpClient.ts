@@ -81,12 +81,13 @@ export const baseHttpClient = () => {
     }
   }
 
-  async function del<R>(url: string, headers: HeadersInit): Promise<R> {
+  async function del<R, D>(url: string, headers: HeadersInit, data?: D): Promise<R> {
     try {
       const response = await fetch(`${BASE_URL}/${url}`, {
         method: "DELETE",
         headers: headers,
         credentials: "include",
+        body: data ? JSON.stringify(data) : undefined,
       });
 
       if (!response.ok) {

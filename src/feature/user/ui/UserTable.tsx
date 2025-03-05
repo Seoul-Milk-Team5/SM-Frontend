@@ -3,7 +3,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
 
 import ApprovalModal from "@/shared/ui/ApprovalModal";
 import EditApprovalModal from "@/shared/ui/EditModal";
@@ -90,9 +89,7 @@ export default function UserTable() {
                   <TableCell>{row.date}</TableCell>
                   <TableCell className="text-gray-300 underline cursor-pointer">{row.preview}</TableCell>
                   <TableCell>
-                    <Badge custom={["승인", "반려", "검증실패"].includes(row.status) ? (row.status as "승인" | "반려" | "검증실패") : undefined}>
                       {row.status}
-                    </Badge>
                   </TableCell>
                 </TableRow>
               ))
