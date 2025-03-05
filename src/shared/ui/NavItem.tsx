@@ -12,10 +12,9 @@ function NavItem({ path, label }: NavItemProps) {
   return (
     <Link
       to={path}
-      className={`pb-2 border-b-3 hover:underline text-title-md-b ${
+      className={`pb-2 border-b-3 text-title-md-b ${
         isActive ? "border-gray-800  text-gray-800" : "border-transparent text-gray-200"
-      }`}
-    >
+      }`}>
       {label}
     </Link>
   );

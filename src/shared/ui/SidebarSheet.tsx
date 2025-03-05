@@ -1,18 +1,22 @@
-import { Link } from "react-router-dom";
 import { cn } from "../../lib/utils";
-import { useLocation } from "react-router-dom";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader } from "@/components/ui/sidebar";
+import { Link, useLocation } from "react-router-dom";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
-function Sidebar() {
+function SidebarSheet() {
   const location = useLocation();
 
   const isActive = (path: string | string[]) =>
     Array.isArray(path) ? path.includes(location.pathname) : location.pathname === path;
-
   return (
-    <aside className="w-[200px] h-[100vh-20px] m-h-[100vh-20px] rounded-[10px] bg-[#FFF] text-gray-300 px-6 pb-6 pt-8 flex flex-col justify-between relative mt-[25px] mb-[25px] mb:hidden">
+    <Sidebar className="mb:block w-[200px] h-[100vh-20px] m-h-[100vh-20px] rounded-[10px] bg-[#FFF] text-gray-300 px-6 pb-6 pt-8 flex flex-col justify-between relative mt-[25px] mb-[25px]">
       <div>
-        <img src="/logo/Logomark.svg" alt="brand logo" className="w-[158px]" />
-        <nav className="mt-6">
+        <SidebarHeader className="w-full flex flex-row justify-between items-center mt-10 p-7">
+          <img src="/logo/Logomark.svg" alt="brand logo" className="w-[190px]" />
+          <SidebarTrigger className="w-[50px]" />
+        </SidebarHeader>
+
+        <SidebarContent className="mt-6 overflow-x-hidden p-7">
           <ul className="space-y-3">
             <li>
               <Link
@@ -55,9 +59,9 @@ function Sidebar() {
               </Link>
             </li>
           </ul>
-        </nav>
+        </SidebarContent>
       </div>
-      <div className="flex flex-col gap-2 relative">
+      <div className="flex flex-col gap-2 relative mb:absolute mb:bottom-0 mb:w-full mb:p-7">
         <div className="hover:bg-green-0 px-[13px] flex justify-between items-center">
           <div>
             <p className="text-body-md">이름</p>
@@ -70,8 +74,8 @@ function Sidebar() {
           로그아웃
         </div>
       </div>
-    </aside>
+    </Sidebar>
   );
 }
 
-export default Sidebar;
+export default SidebarSheet;

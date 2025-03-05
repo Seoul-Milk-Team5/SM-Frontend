@@ -69,7 +69,7 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
     <Dialog>
       <DialogTrigger asChild>
         <Button
-          className="bg-green-500 hover:bg-green-600 cursor-pointer disabled:bg-green-200 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white"
+          className="bg-green-500 hover:bg-green-600 cursor-pointer disabled:bg-green-200 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white mb:hidden"
           disabled={disable}
           onClick={handleOcrRequest}>
           {btnName}

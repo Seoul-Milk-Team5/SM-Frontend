@@ -6,7 +6,7 @@ interface NavbarProps {
 
 function Navbar({ items }: NavbarProps) {
   return (
-    <nav className="flex space-x-4 mb-10">
+    <nav className="flex space-x-4 mb-10 mb:mb-5">
       {items.map(item => (
         <NavItem key={item.path} path={item.path} label={item.label} />
       ))}
