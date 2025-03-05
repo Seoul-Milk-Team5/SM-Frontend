@@ -50,6 +50,10 @@ function AuthModalContent({ changeStep }: { changeStep?: (step: number) => void 
     // 간편인증 완료 후 진위여부 확인
   };
 
+  useEffect(() => {
+    //ocr 추출된 결과 리스트 불러오는 API 함수 연결
+  }, []);
+
   // 입력 값이 변경될 때마다 유효성 검사 실행
   useEffect(() => {
     setIsFormValid(
