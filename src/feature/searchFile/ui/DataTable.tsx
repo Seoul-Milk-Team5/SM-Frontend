@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,51 +8,75 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import ApprovalModal from "../../../shared/ui/ApprovalModal";
 import EditApprovalModal from "../../../shared/ui/EditModal";
+import { searchFileGetRequest } from "../service/SearchFileRequest";
+import { useAuth } from "@/app/providers/AuthProvider";
+import { ApiResponse, ContentItem } from "../model/SearchFIle.type";
+import { formatDate } from "@/shared/utils/FormatDate";
 
-const statuses = ["전체", "승인", "반려", "검증실패"];
+const processStatuses = ["ALL", "UNAPPROVED", "APPROVED", "REJECTED"] as const; //전체, 검증실패, 승인, 반려
+type ProcessStatus = typeof processStatuses[number];
 
-const data = Array.from({ length: 100 }, (_, i) => ({
-  id: i + 1,
-  provider: "서울우유 강동지점",
-  receiver: "파리바게트 수원역점",
-  date: "25. 06. 14",
-  preview: "IMG_45678910",
-  status: ["승인", "반려", "검증실패"][i % 3],
-}));
+type StatusCount = {
+  ALL: number;
+  UNAPPROVED: number;
+  APPROVED: number;
+  REJECTED: number;
+};
 
 export default function DataTable() {
-  const [selectedStatus, setSelectedStatus] = useState("전체");
+  const [selectedProcessStatus, setselectedProcessStatus] = useState<ProcessStatus>("ALL");
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<number[]>([]); // 선택된 cell 값들 저장
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
-
+  const [data, setData] = useState<ApiResponse | null>(null);
+  const { token } = useAuth();
   const itemsPerPage = 10; // 페이지별 아이템 개수
 
-  // 상태별 개수 계산(페이지 쿼리로 10개씩 요청하면 구현 불가능, 아니면 한번에 가져와야 함)
-  const statusCounts = statuses.reduce((acc, status) => {
-    acc[status] = status === "전체" ? data.length : data.filter((item) => item.status === status).length;
-    return acc;
-  }, {} as Record<string, number>);
+  const statusCounts: StatusCount = {
+    ALL: data?.result.total || 0,
+    UNAPPROVED: data?.result.unapproved || 0,
+    APPROVED: data?.result.approved || 0,
+    REJECTED: data?.result.rejected || 0,
+  }
 
-  const filteredData = data.filter(
-    (item) =>
-      (selectedStatus === "전체" || item.status === selectedStatus) &&
-      (item.provider.includes(search) || item.receiver.includes(search))
-  );
+  const fetchData = async () => {
+    if (!token) return; // `search`가 아닌 `poc`을 체크해야 함.
+    try {
+      const response = await searchFileGetRequest(
+        token,
+        search,  // poc 값이 어디서 오는지 확인 필요
+        selectedProcessStatus === "ALL" ? undefined : selectedProcessStatus, 
+        currentPage,
+        itemsPerPage
+      );
+      setData(response);
+    } catch (error) {
+      console.log("검증내역 값을 가져오는데 실패", error);
+    }
+  };
 
-  const paginatedData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  useEffect(() => {
+    
+    fetchData();
+    console.log(data);
+  }, [token, selectedProcessStatus, currentPage]);
 
-  const openModal = (row: typeof data[number]) => {
-    console.log(row.status);
-    if(row.status === "승인") {
+  const filteredData = data?.result.page.content || [];
+  const totalPages = data?.result.page.totalPages || 1;
+
+  useEffect(() => {
+    console.log("현재 state data 값:", data); 
+  }, [data]); // `data` 값이 변경될 때마다 로그 찍기
+
+  const openModal = (row: ContentItem) => {
+    console.log(row.processStatus);
+    if(row.processStatus === "APPROVED") {
       setIsModalOpen(true);
     }
-    if(row.status === "검증실패") {
+    if(row.processStatus === "UNAPPROVED") {
       setIsEditModalOpen(true);
     }
   }
@@ -69,14 +93,14 @@ export default function DataTable() {
         <div className="flex gap-2">
           <DropdownMenu onOpenChange={setIsDropdownOpen}>
           <DropdownMenuTrigger className="flex justify-between w-[156px] h-[40px] px-4 py-2 border rounded-lg text-gray-300">
-              {selectedStatus} ({statusCounts[selectedStatus]})
-              <img src={isDropdownOpen ? "/icon/activeDropdown.svg" : "/icon/dropdown.svg"} alt="dropdown" />
+              {selectedProcessStatus} ({statusCounts[selectedProcessStatus as keyof StatusCount]})
+              <img src={isDropdownOpen ? "/icon/activeDropdown.svg" : "/icon/dropdown.svg"} alt="dropdown"/>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-[156px]">
-              {statuses.map((status) => (
-              <DropdownMenuItem key={status} onClick={() => setSelectedStatus(status)} className="text-body-md">
-                  <span>{status}</span>
-                  <span className="text-gray-400">({statusCounts[status]})</span>
+              {processStatuses.map((processStatus) => (
+              <DropdownMenuItem key={processStatus} onClick={() => setselectedProcessStatus(processStatus)} className="text-body-md">
+                  <span>{processStatus}</span>
+                  <span className="text-gray-400">({statusCounts[processStatus as keyof StatusCount]})</span>
               </DropdownMenuItem>
               ))}
           </DropdownMenuContent>
@@ -88,7 +112,7 @@ export default function DataTable() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            <img src="/icon/search.svg" />
+            <img src="/icon/search.svg" onClick={fetchData} className="cursor-pointer"/>
           </div>
         </div>
 
@@ -111,8 +135,8 @@ export default function DataTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {paginatedData.length > 0 ? (
-            paginatedData.map((row) => (
+          {filteredData.length > 0 ? (
+            filteredData.map((row) => (
               <TableRow 
                 key={row.id} 
                 className={`h-[68px] ${selectedRows.includes(row.id) ? "bg-green-0 hover:bg-green-0" : ""}`}
@@ -127,13 +151,13 @@ export default function DataTable() {
                   />
                 </TableCell>
                 <TableCell>{row.id}</TableCell>
-                <TableCell>{row.provider}</TableCell>
-                <TableCell>{row.receiver}</TableCell>
-                <TableCell>{row.date}</TableCell>
-                <TableCell className="text-gray-300 underline cursor-pointer">{row.preview}</TableCell>
+                <TableCell>{row.suName}</TableCell>
+                <TableCell>{row.ipName}</TableCell>
+                <TableCell>{formatDate(row.createdAt)}</TableCell>
+                <TableCell className="text-gray-300 underline cursor-pointer">{row.url}</TableCell>
                 <TableCell>
-                  <Badge custom={["승인", "반려", "검증실패"].includes(row.status) ? (row.status as "승인" | "반려" | "검증실패") : undefined}>
-                    {row.status}
+                  <Badge custom={["APPROVED", "REJECTED", "UNAPPROVED"].includes(row.processStatus) ? (row.processStatus as "APPROVED" | "REJECTED" | "UNAPPROVED") : undefined}>
+                    {row.processStatus}
                   </Badge>
                 </TableCell>
               </TableRow>
