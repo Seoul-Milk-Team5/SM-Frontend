@@ -36,6 +36,10 @@ function AuthModalContent({ changeStep }: { changeStep?: (step: number) => void 
   const [isFormValid, setIsFormValid] = useState(false); // 버튼 활성화 상태
   const [key, setKey] = useState("");
 
+  useEffect(() => {
+    //ocr 추출된 결과 리스트 불러오는 API 함수 연결
+  }, []);
+
   // 입력값 변경 핸들러 (input, select 공통 사용)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -53,7 +57,7 @@ function AuthModalContent({ changeStep }: { changeStep?: (step: number) => void 
     }));
   };
 
-  //
+  // 간편인증
   const handleAuthRequest = async () => {
     setFormData(prev => ({ ...prev, isRequestConfirmed: true }));
 
@@ -74,16 +78,12 @@ function AuthModalContent({ changeStep }: { changeStep?: (step: number) => void 
     console.log(response);
   };
 
+  // 진위 여부 확인
   const handleAuthClearAndHomeTaxRequest = async () => {
     changeStep?.(3);
-    // 간편인증 완료 후 진위여부 확인
     const response = await reAuthRequest(token, key);
     console.log(response);
   };
-
-  useEffect(() => {
-    //ocr 추출된 결과 리스트 불러오는 API 함수 연결
-  }, []);
 
   // 입력 값이 변경될 때마다 유효성 검사 실행
   useEffect(() => {
