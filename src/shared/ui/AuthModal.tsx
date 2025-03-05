@@ -8,6 +8,8 @@ import { useStep } from "@/app/providers/StepProvider";
 import { useFileContext } from "@/app/providers/FileProvider";
 import { ocrPostRequest } from "@/feature/main/service/OcrRequest";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface AuthModalProps {
   btnName: string;
@@ -17,7 +19,10 @@ interface AuthModalProps {
 export function AuthModal({ btnName, disable }: AuthModalProps) {
   const { steps, setSteps } = useStep();
   const { files } = useFileContext();
-  const { getUser } = useAuth();
+  const { getUser, logout } = useAuth();
+
+  const [loadingText, setLoadingComent] = useState("");
+  const navigate = useNavigate();
 
   const maxWidthClass = {
     1: "sm:max-w-[450px] max-h-[40vh]",
@@ -31,8 +36,33 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
 
   const handleOcrRequest = async () => {
     const token = getUser();
-    const response = await ocrPostRequest(token, files?.clientFiles ?? []);
-    console.log(response);
+    setLoadingComent("파일에서 텍스트 추출 중입니다.");
+
+    try {
+      const response = await ocrPostRequest(token, files?.clientFiles ?? []);
+
+      if (response.success) {
+        setLoadingComent("텍스트 추출이 완료되었습니다.");
+        setTimeout(() => {
+          setSteps(2);
+        }, 1500);
+      } else {
+        // 요청은 성공했지만 결과가 실패일 경우
+        setLoadingComent("텍스트 추출에 실패했습니다. 다시 시도해주세요.");
+      }
+    } catch (error: any) {
+      if (error.message.includes("401")) {
+        setLoadingComent("로그인이 만료되었습니다.");
+        logout();
+        navigate("/");
+      } else if (error.message.includes("500")) {
+        setLoadingComent("서버 오류가 발생했습니다.");
+      } else if (error.message.includes("403")) {
+        setLoadingComent("서버 오류가 발생했습니다.");
+      } else {
+        setLoadingComent(error.message || "OCR 요청 중 오류가 발생했습니다.");
+      }
+    }
   };
 
   return (
@@ -51,7 +81,7 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
             className={`flex transition-transform duration-500 ease-in-out`}
             style={{ transform: `translateX(-${(steps - 1) * 100}%)` }}>
             <div className="w-full flex-shrink-0 h-full overflow-y-auto">
-              <OcrModalContent changeStep={handleChangeModalStep} />
+              <OcrModalContent loadingText={loadingText} />
             </div>
             <div className="w-full flex-shrink-0 h-full overflow-y-auto">
               <AuthModalContent changeStep={handleChangeModalStep} />

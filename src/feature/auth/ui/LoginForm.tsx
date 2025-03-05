@@ -6,6 +6,7 @@ import { validatePassword } from "../../../shared/utils/validation";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FormState, loginRequest } from "..";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 function LoginForm() {
   const [formState, setFormState] = useState<FormState>({
@@ -16,6 +17,7 @@ function LoginForm() {
     isIdValid: true,
     isPasswordValid: true,
   });
+  const { login } = useAuth();
 
   const navigate = useNavigate();
 
@@ -69,6 +71,8 @@ function LoginForm() {
     try {
       const response = await loginRequest(loginBody);
       console.log(response);
+      login();
+
       if (typeof response?.role === "string") {
         navigate("/dashboard/file");
       } else {

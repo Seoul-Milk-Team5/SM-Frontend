@@ -2,9 +2,9 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "./AuthProvider";
 
 function ProtectedRoute() {
-  const { getUser } = useAuth();
+  const { isAuthenticated } = useAuth();
 
-  if (getUser()) {
+  if (isAuthenticated) {
     return <Navigate to="/dashboard/file" replace />;
   } else {
     return <Outlet />;

@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react";
-import { getCookie, setCookie } from "../../shared/utils/cookies";
+import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction, useEffect } from "react";
+import { getCookie } from "../../shared/utils/cookies";
 import { Cookies } from "react-cookie";
 
 const cookies = new Cookies();
@@ -7,7 +7,7 @@ const cookies = new Cookies();
 interface AuthContextType {
   isAuthenticated: boolean;
   setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
-  login: (token: string) => void;
+  login: () => void;
   logout: () => void;
   getUser: () => string;
 }
@@ -17,13 +17,21 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
+  useEffect(() => {
+    const token = getCookie("access_token");
+
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  });
+
   const getUser = () => {
     const token = getCookie("access_token");
     return token;
   };
 
-  const login = (token: string) => {
-    setCookie("access_token", token, { path: "/", secure: true, httpOnly: false });
+  const login = () => {
+    // setCookie("access_token", token, { path: "/", secure: true, httpOnly: false });
     setIsAuthenticated(true);
   };
 
