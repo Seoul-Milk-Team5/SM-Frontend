@@ -5,7 +5,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 export const baseHttpClient = () => {
   async function get<R>(url: string, headers: HeadersInit, params?: Record<string, any>): Promise<R> {
     const urlParams = new URLSearchParams(params).toString();
-
+    console.log(urlParams);
     try {
       const response = await fetch(`${BASE_URL}/${url}?${urlParams}`, {
         method: "GET",

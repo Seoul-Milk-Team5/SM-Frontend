@@ -12,6 +12,7 @@ import { searchFileGetRequest } from "../service/SearchFileRequest";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { ApiResponse, ContentItem } from "../model/SearchFIle.type";
 import { formatDate } from "@/shared/utils/FormatDate";
+import PreviewModal from "./PreviewModal";
 
 const processStatuses = ["ALL", "UNAPPROVED", "APPROVED", "REJECTED"] as const; //전체, 검증실패, 승인, 반려
 type ProcessStatus = typeof processStatuses[number];
@@ -32,6 +33,9 @@ export default function DataTable() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [data, setData] = useState<ApiResponse | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
   const { token } = useAuth();
   const itemsPerPage = 10; // 페이지별 아이템 개수
 
@@ -57,6 +61,11 @@ export default function DataTable() {
       console.log("검증내역 값을 가져오는데 실패", error);
     }
   };
+
+  const openPreview = (url: string) => {
+    setPreviewUrl(url);
+    setIsPreviewOpen(true);
+  }
 
   useEffect(() => {
     
@@ -154,7 +163,15 @@ export default function DataTable() {
                 <TableCell>{row.suName}</TableCell>
                 <TableCell>{row.ipName}</TableCell>
                 <TableCell>{formatDate(row.createdAt)}</TableCell>
-                <TableCell className="text-gray-300 underline cursor-pointer">{row.url}</TableCell>
+                <TableCell 
+                  className="text-gray-300 underline cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openPreview(row.url);
+                  }}
+                >
+                  {row.url}
+                </TableCell>
                 <TableCell>
                   <Badge custom={["APPROVED", "REJECTED", "UNAPPROVED"].includes(row.processStatus) ? (row.processStatus as "APPROVED" | "REJECTED" | "UNAPPROVED") : undefined}>
                     {row.processStatus}
@@ -177,6 +194,7 @@ export default function DataTable() {
       </Table>
       <ApprovalModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
       <EditApprovalModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}/>
+      <PreviewModal isOpen={isPreviewOpen} onClose={() => setIsPreviewOpen(false)} fileUrl={previewUrl!} />
 
       <Pagination className="mt-4">
         <PaginationContent>
