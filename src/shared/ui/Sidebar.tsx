@@ -58,7 +58,7 @@ function Sidebar() {
         </nav>
       </div>
       <div className="flex flex-col gap-2 relative">
-        <div className="hover:bg-green-0 px-[13px] flex justify-between items-center">
+        <div className="hover:bg-green-0 flex justify-between items-center">
           <div>
             <p className="text-body-md">이름</p>
             <p className="text-label-xs">0000000</p>

@@ -33,7 +33,7 @@ export function PageHeader() {
 
   return (
     <div className="flex justify-between items-center mb:justify-start mb:gap-5">
-      <SidebarTrigger className="mb:mb-5" />
+      {windowSize.windowWidth < 850 && <SidebarTrigger className="mb:mb-5" />}
       <Navbar items={navItems} />
       <div className="flex items-center gap-3.5 mb-10 mb:mb-5 mb:absolute mb:right-14">
         <Button
