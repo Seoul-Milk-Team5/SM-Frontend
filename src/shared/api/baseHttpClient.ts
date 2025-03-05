@@ -60,7 +60,6 @@ export const baseHttpClient = () => {
   }
 
   async function postForm<R, D extends BodyInit>(url: string, headers: HeadersInit, data: D): Promise<R> {
-    console.log(headers);
     try {
       const response = await fetch(`${BASE_URL}/${url}`, {
         method: "POST",

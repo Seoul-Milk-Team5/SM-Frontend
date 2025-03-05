@@ -84,7 +84,7 @@ export function FileUploadTable() {
 
   useEffect(() => {
     const token = getUser();
-    // saveFileGetRequest(token).then(result => console.log(result));
+    saveFileGetRequest(token).then(result => console.log(result));
 
     console.log(mergeFiles);
   }, []);

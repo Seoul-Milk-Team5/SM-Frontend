@@ -6,9 +6,12 @@ import { AuthModal } from "@/shared/ui/AuthModal";
 import { StepProvider } from "@/app/providers/StepProvider";
 import useBrowserSize from "@/shared/hooks/useBrowserSize";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { saveFilePostRequest } from "../service";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 export function PageHeader() {
   const { files } = useFileContext();
+  const { getUser } = useAuth();
   const [disable, setDisable] = useState(true);
   const windowSize = useBrowserSize();
 
@@ -31,6 +34,11 @@ export function PageHeader() {
       ? "bg-green-500  cursor-pointer disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-[#fff]"
       : "border-green-500 hover:text-green-600 cursor-pointer disabled:opacity-100 py-3.5 px-6 text-body-md-sb disabled:border-gray-100 disabled:text-gray-300 text-green-500";
 
+  const handleFileSaveRequest = async () => {
+    const token = getUser();
+    const response = await saveFilePostRequest(token, files?.clientFiles ?? []);
+    console.log(response);
+  };
   return (
     <div className="flex justify-between items-center mb:justify-start mb:gap-5">
       {windowSize.windowWidth < 850 && <SidebarTrigger className="mb:mb-5" />}
@@ -39,7 +47,8 @@ export function PageHeader() {
         <Button
           variant={windowSize.windowWidth < 850 ? "default" : "outline"}
           className={`${buttonClassName}`}
-          disabled={disable}>
+          disabled={disable}
+          onClick={handleFileSaveRequest}>
           {windowSize.windowWidth < 850 ? "저장하기" : "임시 저장"}
         </Button>
         <StepProvider>
