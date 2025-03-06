@@ -5,3 +5,6 @@ export * from "./InputWithLabel";
 export * from "./NavItem";
 export * from "./Navbar";
 export * from "./Sidebar";
+export * from "./BusinessInfo";
+export * from "./EditModal";
+export * from "./ApprovalModal";

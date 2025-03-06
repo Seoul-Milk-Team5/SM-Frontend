@@ -3,10 +3,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button";
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
-
-import ApprovalModal from "@/shared/ui/ApprovalModal";
-import EditApprovalModal from "@/shared/ui/EditModal";
 
 
 const data = Array.from({ length: 100 }, (_, i) => ({
@@ -15,14 +11,14 @@ const data = Array.from({ length: 100 }, (_, i) => ({
   receiver: "파리바게트 수원역점",
   date: "25. 06. 14",
   preview: "IMG_45678910",
-  status: ["승인", "반려", "검증실패", "수정됨"][i % 4],
+  status: ["승인", "반려", "검증실패"][i % 3],
 }));
 
 export default function UserTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<number[]>([]); // 선택된 cell 값들 저장
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+//   const [isModalOpen, setIsModalOpen] = useState(false);
+//   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const itemsPerPage = 10; // 페이지별 아이템 개수
   
@@ -30,14 +26,14 @@ export default function UserTable() {
   const paginatedData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-  const openModal = (row: typeof data[number]) => {
-    if(row.status === "승인") {
-      setIsModalOpen(true);
-    }
-    if(row.status === "검증실패") {
-      setIsEditModalOpen(true);
-    }
-  }
+//   const openModal = (row: typeof data[number]) => {
+//     if(row.status === "승인") {
+//       setIsModalOpen(true);
+//     }
+//     if(row.status === "검증실패") {
+//       setIsEditModalOpen(true);
+//     }
+//   }
 
   const toggleRowSelection = (id: number) => {
     setSelectedRows((prev) =>
@@ -69,34 +65,43 @@ export default function UserTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {paginatedData.map((row) => (
-            <TableRow 
-              key={row.id} 
-              className={`h-[68px] ${selectedRows.includes(row.id) ? "bg-green-0 hover:bg-green-0" : ""}`}
-              onClick={() => openModal(row)}
-            >
-              <TableCell className="w-[70px]">
-                <Checkbox 
-                  className="h-[24px] w-[24px] bg-gray-50 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
-                  checked={selectedRows.includes(row.id)}
-                  onCheckedChange={() => toggleRowSelection(row.id)}
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </TableCell>
-              <TableCell>{row.id}</TableCell>
-              <TableCell>{row.provider}</TableCell>
-              <TableCell>{row.receiver}</TableCell>
-              <TableCell>{row.date}</TableCell>
-              <TableCell className="text-gray-300 underline cursor-pointer">{row.preview}</TableCell>
-              <TableCell>
-                <Badge custom={["승인", "반려", "검증실패", "수정됨"].includes(row.status) ? (row.status as "승인" | "반려" | "검증실패" | "수정됨") : undefined}>{row.status}</Badge>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
+          {paginatedData.length > 0 ? (
+              paginatedData.map((row) => (
+                <TableRow 
+                  key={row.id} 
+                  className={`h-[68px] ${selectedRows.includes(row.id) ? "bg-green-0 hover:bg-green-0" : ""}`}
+                >
+                  <TableCell className="w-[70px]">
+                    <Checkbox 
+                      className="h-[24px] w-[24px] bg-gray-50 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
+                      checked={selectedRows.includes(row.id)}
+                      onCheckedChange={() => toggleRowSelection(row.id)}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </TableCell>
+                  <TableCell>{row.id}</TableCell>
+                  <TableCell>{row.provider}</TableCell>
+                  <TableCell>{row.receiver}</TableCell>
+                  <TableCell>{row.date}</TableCell>
+                  <TableCell className="text-gray-300 underline cursor-pointer">{row.preview}</TableCell>
+                  <TableCell>
+                      {row.status}
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={7} className="h-24 text-center">
+                  <div className="flex flex-col items-center pt-[100px] pb-[130px] gap-7">
+                  <img className="w-[80px]" src="/icon/noResult.svg" alt="검색결과 없음" />
+                  <p className="text-body-sm text-gray-300">업로드된 세금계산서 파일이 없습니다.</p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
+            </TableBody>
+
       </Table>
-      <ApprovalModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
-      <EditApprovalModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}/>
 
       <Pagination className="mt-4">
         <PaginationContent>

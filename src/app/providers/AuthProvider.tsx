@@ -1,21 +1,24 @@
-import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction, useEffect } from "react";
-import { getCookie } from "../../shared/utils/cookies";
-import { Cookies } from "react-cookie";
 
-const cookies = new Cookies();
+import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction, useEffect } from "react";
+import { Cookies } from "react-cookie";
+import { deleteCookie, getCookie } from "@/shared/utils";
+
 
 interface AuthContextType {
   isAuthenticated: boolean;
   setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
   login: () => void;
+  userRole: string | null;
+  token: string | null;
+  login: (role: string) => void;
   logout: () => void;
-  getUser: () => string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
     const token = getCookie("access_token");
@@ -30,18 +33,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return token;
   };
 
-  const login = () => {
+  const login = (role: string) => {
     // setCookie("access_token", token, { path: "/", secure: true, httpOnly: false });
     setIsAuthenticated(true);
+    setUserRole(role);
+
   };
 
   const logout = () => {
-    cookies.remove("access_token", { path: "/" }); // 직접 삭제
-    setIsAuthenticated(false);
+    deleteCookie("access_token");
+    setUserRole(null);
+    delete axios.defaults.headers.common["Authorization"];
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, login, logout, getUser }}>
+    <AuthContext.Provider value={{ isAuthenticated, userRole, token, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
