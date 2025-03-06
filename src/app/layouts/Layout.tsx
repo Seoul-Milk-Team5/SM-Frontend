@@ -1,11 +1,19 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Sidebar from "../../shared/ui/Sidebar";
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import SidebarSheet from "@/shared/ui/SidebarSheet";
 import useBrowserSize from "@/shared/hooks/useBrowserSize";
+import { useAuth } from "../providers/AuthProvider";
 
 function Layout() {
   const windowSize = useBrowserSize();
+  const { isAuthenticated } = useAuth();
+
+  const location = useLocation();
+
+  if (!isAuthenticated && location.pathname !== "/") {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <div className="bg-gray-50 min-h-screen flex justify-center items-center px-8">
