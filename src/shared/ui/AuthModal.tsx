@@ -87,7 +87,7 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
               <AuthModalContent changeStep={handleChangeModalStep} />
             </div>
             <div className="w-full flex-shrink-0 h-full overflow-y-auto">
-              <HometaxModalContent changeStep={handleChangeModalStep} />
+              <HometaxModalContent />
             </div>
           </div>
         </div>

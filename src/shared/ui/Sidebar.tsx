@@ -49,7 +49,7 @@ function Sidebar() {
               </Link>
             </li>
             <li>
-              <Link to="/notice" className={cn("flex gap-2 -mx-6 px-6 h-[60px] items-center rounded hover:bg-gray-0")}>
+              <Link to="#" className={cn("flex gap-2 -mx-6 px-6 h-[60px] items-center rounded hover:bg-gray-0")}>
                 <img src="/icon/notice.svg" alt="notice" />
                 공지사항
               </Link>

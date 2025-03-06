@@ -1,11 +1,11 @@
 import MilkCartonAnimation from "@/shared/ui/MilkCartonAnimation";
 import { useEffect } from "react";
 
-interface HometaxModalContentProps {
-  changeStep: (number: number) => void;
-}
+// interface HometaxModalContentProps {
+//   changeStep: (number: number) => void;
+// }
 
-function HometaxModalContent({ changeStep }: HometaxModalContentProps) {
+function HometaxModalContent() {
   useEffect(() => {});
   return (
     <div className="flex flex-col gap-4 items-center">

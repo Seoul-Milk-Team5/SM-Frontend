@@ -8,7 +8,6 @@ interface ImageModalProps {
 
 export function ImageModal({ btnName, imageUrl }: ImageModalProps) {
   const isPdf = imageUrl ? imageUrl.endsWith(".pdf") : false;
-  console.log(isPdf);
 
   return (
     <Dialog>
