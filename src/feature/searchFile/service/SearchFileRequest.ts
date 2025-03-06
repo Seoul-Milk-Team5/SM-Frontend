@@ -20,7 +20,6 @@ export async function searchFileGetRequest(
         };
 
         const url = `api/validation/history/search`;
-        console.log(url, params);
         
         const response = await baseHttpClient().get<ApiResponse>(url, HEADER, params);
         return response;

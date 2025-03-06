@@ -1,3 +1,11 @@
+export interface ApprovalModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  index: string | null;
+  rowId: number | null;
+};
+
+
 export type ApprovedData = {
   code: number;
   message: string;

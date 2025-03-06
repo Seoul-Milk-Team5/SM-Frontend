@@ -38,6 +38,8 @@ export default function DataTable() {
   const [data, setData] = useState<ApiResponse | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<string | null>(null);
+  const [selectedRowId, setSeletedRowId] = useState<number | null>(null);
 
   const { token } = useAuth();
   const itemsPerPage = 10; // 페이지별 아이템 개수
@@ -140,9 +142,11 @@ export default function DataTable() {
     console.log("현재 state data 값:", data); 
   }, [data]); // `data` 값이 변경될 때마다 로그 찍기
 
-  const openModal = (row: ContentItem) => {
-    console.log(row.processStatus);
+  const openModal = (row: ContentItem, index: number) => {
+    console.log("조회된 모달의 아이디입니다 : ", row.id);
     if(row.processStatus === "APPROVED") {
+      setSelectedIndex(String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0"));
+      setSeletedRowId(row.id);
       setIsModalOpen(true);
     }
     if(row.processStatus === "UNAPPROVED") {
@@ -215,11 +219,11 @@ export default function DataTable() {
         </TableHeader>
         <TableBody>
           {filteredData.length > 0 ? (
-            filteredData.map((row) => (
+            filteredData.map((row, index) => (
               <TableRow 
                 key={row.id} 
                 className={`h-[68px] ${selectedRows.includes(row.id) ? "bg-green-0 hover:bg-green-0" : ""}`}
-                onClick={() => openModal(row)}
+                onClick={() => openModal(row, index)}
               >
                 <TableCell className="w-[70px]">
                   <Checkbox 
@@ -229,7 +233,9 @@ export default function DataTable() {
                     onClick={(e) => e.stopPropagation()}
                   />
                 </TableCell>
-                <TableCell>{row.id}</TableCell>
+                <TableCell>
+                  {String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}
+                </TableCell>
                 <TableCell>{row.suName}</TableCell>
                 <TableCell>{row.ipName}</TableCell>
                 <TableCell>{FormatCreatedAt(row.createdAt)}</TableCell>
@@ -262,7 +268,7 @@ export default function DataTable() {
         </TableBody>
 
       </Table>
-      <ApprovalModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
+      <ApprovalModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} index={selectedIndex} rowId={selectedRowId}/>
       <EditApprovalModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}/>
       <PreviewModal isOpen={isPreviewOpen} onClose={() => setIsPreviewOpen(false)} fileUrl={previewUrl!} />
 

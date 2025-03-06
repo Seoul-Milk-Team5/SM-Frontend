@@ -4,9 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Checkbox } from "@/components/ui/checkbox";
 
-import ApprovalModal from "@/shared/ui/ApprovalModal";
-import EditApprovalModal from "@/shared/ui/EditModal";
-
 
 const data = Array.from({ length: 100 }, (_, i) => ({
   id: i + 1,
@@ -20,8 +17,8 @@ const data = Array.from({ length: 100 }, (_, i) => ({
 export default function UserTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<number[]>([]); // 선택된 cell 값들 저장
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+//   const [isModalOpen, setIsModalOpen] = useState(false);
+//   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const itemsPerPage = 10; // 페이지별 아이템 개수
   
@@ -29,14 +26,14 @@ export default function UserTable() {
   const paginatedData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-  const openModal = (row: typeof data[number]) => {
-    if(row.status === "승인") {
-      setIsModalOpen(true);
-    }
-    if(row.status === "검증실패") {
-      setIsEditModalOpen(true);
-    }
-  }
+//   const openModal = (row: typeof data[number]) => {
+//     if(row.status === "승인") {
+//       setIsModalOpen(true);
+//     }
+//     if(row.status === "검증실패") {
+//       setIsEditModalOpen(true);
+//     }
+//   }
 
   const toggleRowSelection = (id: number) => {
     setSelectedRows((prev) =>
@@ -73,7 +70,6 @@ export default function UserTable() {
                 <TableRow 
                   key={row.id} 
                   className={`h-[68px] ${selectedRows.includes(row.id) ? "bg-green-0 hover:bg-green-0" : ""}`}
-                  onClick={() => openModal(row)}
                 >
                   <TableCell className="w-[70px]">
                     <Checkbox 
@@ -106,8 +102,6 @@ export default function UserTable() {
             </TableBody>
 
       </Table>
-      <ApprovalModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}/>
-      <EditApprovalModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}/>
 
       <Pagination className="mt-4">
         <PaginationContent>

@@ -1,8 +1,6 @@
 import { baseHttpClient } from "@/shared/api";
 import { getFetchHeader } from "@/shared/utils";
 
-
-
 export async function DeleteRequest(
   taxInvoiceIdList : number[],
   token: string,
