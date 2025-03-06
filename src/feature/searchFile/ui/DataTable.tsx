@@ -130,9 +130,7 @@ export default function DataTable() {
   };
 
   useEffect(() => {
-    
     fetchData();
-    console.log(data);
   }, [token, selectedProcessStatus, currentPage]);
 
   const filteredData = data?.result.page.content || [];
@@ -144,9 +142,10 @@ export default function DataTable() {
 
   const openModal = (row: ContentItem, index: number) => {
     console.log("조회된 모달의 아이디입니다 : ", row.id);
+    setSelectedIndex(String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0"));
+    setSeletedRowId(row.id);
+
     if(row.processStatus === "APPROVED") {
-      setSelectedIndex(String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0"));
-      setSeletedRowId(row.id);
       setIsModalOpen(true);
     }
     if(row.processStatus === "UNAPPROVED") {
@@ -269,7 +268,7 @@ export default function DataTable() {
 
       </Table>
       <ApprovalModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} index={selectedIndex} rowId={selectedRowId}/>
-      <EditApprovalModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}/>
+      <EditApprovalModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} index={selectedIndex} rowId={selectedRowId}/>
       <PreviewModal isOpen={isPreviewOpen} onClose={() => setIsPreviewOpen(false)} fileUrl={previewUrl!} />
 
       <Pagination className="mt-4">

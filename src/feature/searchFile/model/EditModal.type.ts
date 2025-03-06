@@ -2,6 +2,8 @@
 export interface EditModalProps {
   isOpen: boolean;
   onClose: () => void;
+  index: string | null;
+  rowId: number | null;
 }
 
 export interface UnapprovalData {

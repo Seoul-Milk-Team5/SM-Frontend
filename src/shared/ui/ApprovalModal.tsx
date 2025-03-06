@@ -2,13 +2,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/app/providers/AuthProvider";
-import { ApprovalModalProps, ApprovedData } from "../model";
-import { ApprovedGetRequest } from "../api/ApprovedGetRequest";
+
+import { InvoiceViewRequest } from "../api/InvoiceViewRequest";
+import { ModalData, ModalProps } from "../model";
 
 
-export default function ApprovalModal({ isOpen, onClose, index, rowId}: ApprovalModalProps) {
+
+export default function ApprovalModal({ isOpen, onClose, index, rowId}: ModalProps) {
   // console.log(rowId);
-  const [invoiceInfo, setInvoiceInfo] = useState<ApprovedData | null>(null);
+  const [invoiceInfo, setInvoiceInfo] = useState<ModalData | null>(null);
 
   const { token } = useAuth();
 
@@ -23,7 +25,7 @@ export default function ApprovalModal({ isOpen, onClose, index, rowId}: Approval
     }
 
     try{
-      const response = await ApprovedGetRequest(token, rowId);
+      const response = await InvoiceViewRequest(token, rowId);
       setInvoiceInfo(response);
     } catch (error) {
       console.log("상세 정보 조회 실패", error);
@@ -57,9 +59,9 @@ export default function ApprovalModal({ isOpen, onClose, index, rowId}: Approval
           <div className="flex justify-between"><span className="text-gray-300">공급받는자명</span><span>{invoiceInfo?.result.ipName}</span></div>
           <div className="flex justify-between mb-3"><span className="text-gray-300">공급받는자 사업자등록번호</span><span>{invoiceInfo?.result.ipId}</span></div>
           
-          <div className="flex justify-between border-t border-[#EEEFEF] pt-3"><span className="text-gray-300">총 공급가액</span><span>{invoiceInfo?.result.taxTotal}</span></div>
+          <div className="flex justify-between border-t border-[#EEEFEF] pt-3"><span className="text-gray-300">총 공급가액</span><span>{invoiceInfo?.result.chargeTotal}</span></div>
           <div className="flex justify-between"><span className="text-gray-300">총 세액</span><span>{invoiceInfo?.result.taxTotal}</span></div>
-          <div className="flex justify-between"><span className="text-gray-300">총액(공급가액+세액)</span><span>{invoiceInfo?.result.taxTotal}</span></div>
+          <div className="flex justify-between"><span className="text-gray-300">총액(공급가액+세액)</span><span>{invoiceInfo?.result.grandTotal}</span></div>
         </div>
         
         <Button className="w-full h-[60px] mt-6 bg-green-500 hover:bg-green-600 text-white py-3 text-lg" onClick={onClose}>확인</Button>

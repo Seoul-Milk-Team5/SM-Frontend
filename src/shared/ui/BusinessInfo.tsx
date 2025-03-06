@@ -1,4 +1,4 @@
-export default function BusinessInfo({ label, name }: { label: string; name: string }) {
+export default function BusinessInfo({ label, name }: { label: string; name: string | undefined }) {
   return(
     <div className="flex flex-col items-center">
       <span className="text-body-md text-gray-300">{label}</span>

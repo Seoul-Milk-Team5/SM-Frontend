@@ -1,4 +1,4 @@
-export interface ApprovalModalProps {
+export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   index: string | null;
@@ -6,7 +6,7 @@ export interface ApprovalModalProps {
 };
 
 
-export type ApprovedData = {
+export type ModalData = {
   code: number;
   message: string;
   result: {
@@ -17,6 +17,8 @@ export type ApprovedData = {
     ipName: string;
     ipId: string;
     taxTotal: string;
+    chargeTotal: string;
+    grandTotal: string;
     processStatus: "UNAPPROVED" | "APPROVED" | "REJECTED";
     url: string;
   };
