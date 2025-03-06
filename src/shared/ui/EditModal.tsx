@@ -82,7 +82,7 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId }: Edi
     console.log("formData변경됨", formData);
   }, [formData]);  // formData가 변경될 때마다 로그 찍기
 
-
+  const isPDF = formData?.result.url?.endsWith(".pdf");
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -93,7 +93,7 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId }: Edi
      </DialogHeader>
         <div className="grid grid-cols-2 gap-6">
           <div className="flex flex-col justify-center items-center gap-6">
-            <div className="text-body-md text-gray-300">{index}</div>
+            <div className="text-body-md text-gray-300 mt-2">{index}</div>
             <div className="flex gap-[50px]">
               <BusinessInfo label="공급자" name={formData?.result.suName}/>
               <img src="/icon/arrow.svg"/>
@@ -105,11 +105,19 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId }: Edi
               홈택스에서 진위여부를 확인 후 직접 입력해주세요.
             </div>
             {formData?.result.url && (
-              <img 
-                src={formData.result.url}
-                alt="세금계산서" 
-                className="w-[600px] h-auto mt-4"
-              />        
+              isPDF ? (
+                <iframe
+                  src={formData.result.url}
+                  className="w-[550px] h-[400px] mt-4"
+                  title="세금계산서 PDF"
+                ></iframe>
+              ) : (
+                <img
+                  src={formData.result.url}
+                  alt="세금계산서"
+                  className="w-[600px] h-auto mt-4"
+                />
+              )
             )}
           </div>
           <div className="flex flex-col justify-center items-center space-y-4 bg-gray-50">
@@ -122,7 +130,7 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId }: Edi
               진위여부 확인하기
             </Button>
             <div className="flex flex-col gap-4 w-[400px] text-body-sm ">
-              <FormInput label="작성일자" name="erDat" value={formData?.result.erDat} onChange={handleChange} width="90px" />
+              <FormInput label="작성일자" name="erDat" value={formData?.result.erDat} onChange={handleChange} width="110px" />
               <FormInput label="승인번호" name="issueId" value={formData?.result.issueId} onChange={handleChange} width="250px" />
               <FormInput label="공급자 사업자등록번호" name="suId" value={formData?.result.suId} onChange={handleChange} />
               <FormInput label="공급받는자 등록번호" name="ipId" value={formData?.result.ipId} onChange={handleChange} />
