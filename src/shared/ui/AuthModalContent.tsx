@@ -6,10 +6,18 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from "@/components/ui/select";
 import { authRequest, reAuthRequest } from "@/feature/main/service";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { useNavigate } from "react-router-dom";
+import { OcrData } from "@/feature/main";
 
-function AuthModalContent({ changeStep }: { changeStep?: (step: number) => void }) {
+interface AuthModalContentProps {
+  changeStep?: (step: number) => void;
+  ocrData?: OcrData[] | undefined;
+}
+
+function AuthModalContent({ changeStep, ocrData }: AuthModalContentProps) {
   const { getUser } = useAuth();
   const token = getUser();
+  const navigate = useNavigate();
 
   // 개별 상태 관리
   const [formData, setFormData] = useState({
@@ -25,20 +33,14 @@ function AuthModalContent({ changeStep }: { changeStep?: (step: number) => void 
     agreeThirdParty: false,
   });
 
-  const testData = {
-    supplierRegNumber: "305-02-12501",
-    contractorRegNumber: "305-01-87301",
-    approvalNo: "20240630-10249898-93527501",
-    reportingDate: "2025-03-04",
-    supplyValue: "1234050",
-  };
-
   const [isFormValid, setIsFormValid] = useState(false); // 버튼 활성화 상태
   const [key, setKey] = useState("");
+  const [ocrBody, setOcrBody] = useState<OcrData[]>();
 
   useEffect(() => {
     //ocr 추출된 결과 리스트 불러오는 API 함수 연결
-  }, []);
+    setOcrBody(ocrData);
+  }, [ocrData]);
 
   // 입력값 변경 핸들러 (input, select 공통 사용)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -61,13 +63,22 @@ function AuthModalContent({ changeStep }: { changeStep?: (step: number) => void 
   const handleAuthRequest = async () => {
     setFormData(prev => ({ ...prev, isRequestConfirmed: true }));
 
+    const ocrReDataArray =
+      ocrBody?.map(data => ({
+        supplierRegNumber: data.extractedData.supplier_registration_number,
+        contractorRegNumber: data.extractedData.recipient_registration_number,
+        approvalNo: data.extractedData.approval_number,
+        reportingDate: data.extractedData.issue_date,
+        supplyValue: data.extractedData.chargeTotal,
+      })) ?? [];
+
     const requestData = {
       loginTypeLevel: formData.loginTypeLevel,
       userName: formData.userName,
       phoneNo: formData.firstPhoneNo + formData.phoneNo,
       identity: formData.identity,
       telecom: formData.telecom,
-      taxInvoiceInfoList: [testData],
+      taxInvoiceInfoList: ocrReDataArray,
     };
 
     // 간편인증 요청 API 연결
@@ -75,14 +86,18 @@ function AuthModalContent({ changeStep }: { changeStep?: (step: number) => void 
     if (typeof response.result === "object" && "key" in response.result) {
       setKey(response.result.key);
     }
-    console.log(response);
   };
 
   // 진위 여부 확인
   const handleAuthClearAndHomeTaxRequest = async () => {
     changeStep?.(3);
     const response = await reAuthRequest(token, key);
-    console.log(response);
+    if (response.success) {
+      setTimeout(() => {
+        navigate("/dashboard/searchfile");
+        changeStep?.(1);
+      }, 1500);
+    }
   };
 
   // 입력 값이 변경될 때마다 유효성 검사 실행

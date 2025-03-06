@@ -12,7 +12,7 @@ function Layout() {
   const location = useLocation();
 
   if (!isAuthenticated && location.pathname !== "/") {
-    return <Navigate to="/" replace />;
+    return <Navigate to={location.pathname} replace />;
   }
 
   return (

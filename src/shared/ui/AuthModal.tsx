@@ -10,6 +10,7 @@ import { ocrPostRequest } from "@/feature/main/service/OcrRequest";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { OcrData } from "@/feature/main";
 
 interface AuthModalProps {
   btnName: string;
@@ -22,6 +23,7 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
   const { getUser, logout } = useAuth();
 
   const [loadingText, setLoadingComent] = useState("");
+  const [ocrData, setOcrData] = useState<OcrData[]>();
   const navigate = useNavigate();
 
   const maxWidthClass = {
@@ -40,6 +42,12 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
 
     try {
       const response = await ocrPostRequest(token, files?.clientFiles ?? []);
+
+      const fileCount = files?.clientFiles.length;
+      console.log(response.result);
+
+      const limitedResults = response.result.slice(0, fileCount);
+      setOcrData(limitedResults);
 
       if (response.success) {
         setLoadingComent("텍스트 추출이 완료되었습니다.");
@@ -84,7 +92,7 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
               <OcrModalContent loadingText={loadingText} />
             </div>
             <div className="w-full flex-shrink-0 h-full overflow-y-auto">
-              <AuthModalContent changeStep={handleChangeModalStep} />
+              <AuthModalContent changeStep={handleChangeModalStep} ocrData={ocrData} />
             </div>
             <div className="w-full flex-shrink-0 h-full overflow-y-auto">
               <HometaxModalContent />
