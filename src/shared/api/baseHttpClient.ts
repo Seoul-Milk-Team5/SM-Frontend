@@ -5,7 +5,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 export const baseHttpClient = () => {
   async function get<R>(url: string, headers: HeadersInit, params?: Record<string, any>): Promise<R> {
     const urlParams = new URLSearchParams(params).toString();
-
+    console.log(urlParams);
     try {
       const response = await fetch(`${BASE_URL}/${url}?${urlParams}`, {
         method: "GET",
@@ -81,12 +81,13 @@ export const baseHttpClient = () => {
     }
   }
 
-  async function del<R>(url: string, headers: HeadersInit): Promise<R> {
+  async function del<R, D>(url: string, headers: HeadersInit, data?: D): Promise<R> {
     try {
       const response = await fetch(`${BASE_URL}/${url}`, {
         method: "DELETE",
         headers: headers,
         credentials: "include",
+        body: data ? JSON.stringify(data) : undefined,
       });
 
       if (!response.ok) {

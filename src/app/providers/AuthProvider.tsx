@@ -1,39 +1,45 @@
-import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from "react";
-import { getCookie, setCookie } from "../../shared/utils/cookies";
-import { Cookies } from "react-cookie";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import axios from "axios";
+import { deleteCookie, getCookie } from "@/shared/utils";
 
-const cookies = new Cookies();
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
-  login: (token: string) => void;
+  userRole: string | null;
+  token: string | null;
+  login: (role: string) => void;
   logout: () => void;
-  getUser: () => string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
-  const getUser = () => {
-    const token = getCookie("access_token");
-    return token;
-  };
 
-  const login = (token: string) => {
-    setCookie("access_token", token, { path: "/", secure: true, httpOnly: false });
-    setIsAuthenticated(true);
+  const token = getCookie("access_token");
+  const isAuthenticated = !!token;
+
+  useEffect(() => {
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    } else {
+      delete axios.defaults.headers.common["Authorization"];
+    }
+  }, [token]);
+
+  const login = (role: string) => {
+    setUserRole(role);
   };
 
   const logout = () => {
-    cookies.remove("access_token", { path: "/" }); // 직접 삭제
-    setIsAuthenticated(false);
+    deleteCookie("access_token");
+    setUserRole(null);
+    delete axios.defaults.headers.common["Authorization"];
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, login, logout, getUser }}>
+    <AuthContext.Provider value={{ isAuthenticated, userRole, token, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -6,8 +6,10 @@ import { validatePassword } from "../../../shared/utils/validation";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { FormState, loginRequest } from "..";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 function LoginForm() {
+  const { login } = useAuth();
   const [formState, setFormState] = useState<FormState>({
     employeeId: "",
     password: "",
@@ -70,7 +72,9 @@ function LoginForm() {
       const response = await loginRequest(loginBody);
       console.log(response);
       if (typeof response?.role === "string") {
+        login(response.role);
         navigate("/dashboard/file");
+
       } else {
         setFormState(prev => ({
           ...prev,
@@ -90,7 +94,7 @@ function LoginForm() {
       <div className="flex flex-col items-center mb-8">
         {/* 브랜드 로고 추가 */}
         <img src="/logo/Logomark.svg" alt="Company Logo" className="w-64 h-20 sm:w-80 sm:h-20 object-contain" />
-        <p className="text-center text-gray-800 text-body-md font-pretendard font-light">
+        <p className="text-center text-gray-800 text-body-sm font-pretendard font-light">
           초일류 유제품 전문기업으로 나아가는 길에 <br className="sm:hidden" />
           언제나 당신이 있습니다.
         </p>

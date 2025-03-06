@@ -2,15 +2,17 @@
 export interface EditModalProps {
   isOpen: boolean;
   onClose: () => void;
+  index: string | null;
+  rowId: number | null;
 }
 
 export interface UnapprovalData {
   id: string,
   approvalNumber: string;
   createdAt: string;
-  supplierName: string;
+  suBusinessName: string;
   supplierBusinessNumber: string;
-  receiverName: string;
+  ipBusinessName: string;
   receiverBusinessNumber: string;
   supplyAmount: string;
   imageUrl: string;

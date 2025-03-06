@@ -1,12 +1,25 @@
 import { Link } from "react-router-dom";
 import { cn } from "../../lib/utils";
 import { useLocation } from "react-router-dom";
+import { useState } from "react";
+import LogoutModal from "./LogoutModal";
+import { useAuth } from "@/app/providers/AuthProvider";
+
 
 function Sidebar() {
   const location = useLocation();
+  const { userRole } = useAuth();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const isActive = (path: string | string[]) =>
     Array.isArray(path) ? path.includes(location.pathname) : location.pathname === path;
+
+  const handleLogout = () => {
+    console.log("사용자가 로그아웃되었습니다."); // 실제 로그아웃 로직 추가
+    setIsLogoutModalOpen(false);
+  };
+
+  const taskManagementPath = userRole === "ROLE_ADMIN" ? "/dashboard/admin/workview" : "/dashboard/userpage";
 
   return (
     <aside className="w-[200px] h-[100vh-20px] m-h-[100vh-20px] rounded-[10px] bg-[#FFF] text-gray-300 px-6 pb-6 pt-8 flex flex-col justify-between relative mt-[25px] mb-[25px]">
@@ -33,13 +46,14 @@ function Sidebar() {
             </li>
             <li>
               <Link
-                to="/dashboard/userpage"
+                to={taskManagementPath} // 동적 경로 적용
                 className={cn(
                   "flex gap-2 -mx-6 px-6 h-[60px] items-center rounded hover:bg-gray-0",
                   isActive(["/dashboard/admin/workview", "/dashboard/admin/adduser", "/dashboard/userpage"])
                     ? "text-green-500 font-normal bg-green-0 hover:bg-green-0"
                     : "text-gray-300"
-                )}>
+                )}
+              >
                 {isActive(["/dashboard/admin/workview", "/dashboard/admin/adduser", "/dashboard/userpage"]) ? (
 
                   <img src="/icon/activeMytask.svg" alt="active verification" />
@@ -66,11 +80,13 @@ function Sidebar() {
           </div>
           <img className="w-[24px]" src="/icon/gear.svg" alt="마이페이지" />
         </div>
-        <div className="flex gap-3 border-t pt-4 text-body-md cursor-pointer">
+        <div className="flex gap-3 border-t pt-4 text-body-md cursor-pointer" onClick={() => setIsLogoutModalOpen(true)}>
           <img src="/icon/logout.svg" alt="logout" />
           로그아웃
         </div>
       </div>
+
+      <LogoutModal isOpen={isLogoutModalOpen} onClose={() => setIsLogoutModalOpen(false)} onConfirmLogout={handleLogout} />
     </aside>
   );
 }
