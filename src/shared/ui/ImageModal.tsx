@@ -7,19 +7,29 @@ interface ImageModalProps {
 }
 
 export function ImageModal({ btnName, imageUrl }: ImageModalProps) {
+  const isPdf = imageUrl ? imageUrl.endsWith(".pdf") : false;
+
   return (
     <Dialog>
       <DialogTrigger asChild className="reset-styles">
         <Button variant="outline">{btnName}</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[905px]">
+      <DialogContent className="sm:max-w-[905px] h-[700px]">
         <DialogHeader>
           <div className="flex items-center gap-2">
             <img className="w-[24px] h-[24px]" src="/icon/file.svg" alt="파일 아이콘" />
-            <p className="text-body-lg text-gray-500">{imageUrl}</p>
+            <p className="text-body-lg text-gray-500 ellipsis">{imageUrl}</p>
           </div>
         </DialogHeader>
-        <img src={imageUrl} alt="세금계산서" />
+        {imageUrl ? (
+          isPdf ? (
+            <iframe src={imageUrl + "#toolbar=0&navpanes=0&scrollbar=0"} className="flex-grow w-full h-[50vh]" />
+          ) : (
+            <img src={imageUrl} alt="미리보기 이미지" className="w-full h-auto object-contain" />
+          )
+        ) : (
+          <p className="text-center text-gray-500">미리볼 파일이 없습니다.</p>
+        )}
       </DialogContent>
     </Dialog>
   );

@@ -7,6 +7,12 @@ module.exports = {
   safelist: ["text-body-sm"],
   theme: {
     extend: {
+      screens: {
+        mb: { max: "850px" },
+        // tbc: { min: "768px", max: "1023px" },
+        // tbr: { min: "1024px", max: "1439px" },
+        pc: { min: "1440px" },
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -71,8 +77,8 @@ module.exports = {
           900: "#610008",
         },
         green: {
-		        0: "#F1FCF7",
-           50: "#E6F5EE",
+          0: "#F1FCF7",
+          50: "#E6F5EE",
           100: "#B0DFCB",
           200: "#8AD0B2",
           300: "#54BA8E",

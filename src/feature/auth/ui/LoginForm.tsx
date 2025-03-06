@@ -18,6 +18,7 @@ function LoginForm() {
     isIdValid: true,
     isPasswordValid: true,
   });
+  const { login } = useAuth();
 
   const navigate = useNavigate();
 
@@ -71,6 +72,8 @@ function LoginForm() {
     try {
       const response = await loginRequest(loginBody);
       console.log(response);
+      login();
+
       if (typeof response?.role === "string") {
         login(response.role);
         navigate("/dashboard/file");

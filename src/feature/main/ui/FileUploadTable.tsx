@@ -1,6 +1,5 @@
 import {
   ColumnDef,
-  ColumnFiltersState,
   SortingState,
   VisibilityState,
   flexRender,
@@ -26,8 +25,8 @@ import { useEffect, useState } from "react";
 import { useFileContext } from "@/app/providers/FileProvider";
 import { formatDate } from "@/shared/utils/FormatDate";
 import { ImageModal } from "../../../shared/ui";
-// import { saveFileGetRequest } from "../service";
-// import { useAuth } from "@/app/providers/AuthProvider";
+import { saveFileGetRequest } from "../service";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 export type Payment = {
   id: number;
@@ -78,14 +77,23 @@ export const columns: ColumnDef<Payment>[] = [
 
 export function FileUploadTable() {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  const { mergeFiles } = useFileContext();
+  const { mergeFiles, setFiles } = useFileContext();
+  const { getUser } = useAuth();
 
   useEffect(() => {
+    const token = getUser();
+    saveFileGetRequest(token).then(result =>
+      setFiles(prev => ({
+        ...prev,
+        result: result.result.content,
+        clientFiles: [],
+      }))
+    );
+
     console.log(mergeFiles);
-  }, [mergeFiles]);
+  }, []);
 
   // 삭제하기 버튼을 눌렀을 때 실행되는 함수
   const handleDelete = () => {
@@ -97,7 +105,6 @@ export function FileUploadTable() {
     data: mergeFiles,
     columns,
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -106,7 +113,6 @@ export function FileUploadTable() {
     onRowSelectionChange: setRowSelection,
     state: {
       sorting,
-      columnFilters,
       columnVisibility,
       rowSelection,
     },
@@ -170,25 +176,32 @@ export function FileUploadTable() {
       <div className="flex items-center justify-end space-x-2 py-4">
         <Pagination>
           <PaginationContent>
+            {/* 이전 버튼 */}
             <PaginationItem>
-              <PaginationPrevious href="#" />
+              <PaginationPrevious onClick={() => table.previousPage()} />
             </PaginationItem>
+
+            {/* 동적으로 페이지 번호 생성 */}
+            {Array.from({ length: table.getPageCount() }, (_, index) => (
+              <PaginationItem key={index}>
+                <PaginationLink
+                  isActive={table.getState().pagination.pageIndex === index}
+                  onClick={() => table.setPageIndex(index)}>
+                  {index + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+
+            {/* 페이지가 많으면 ... 표시 */}
+            {table.getPageCount() > 5 && (
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )}
+
+            {/* 다음 버튼 */}
             <PaginationItem>
-              <PaginationLink href="#">1</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#" isActive>
-                2
-              </PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">3</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext href="#" />
+              <PaginationNext onClick={() => table.nextPage()} />
             </PaginationItem>
           </PaginationContent>
         </Pagination>

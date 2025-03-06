@@ -1,11 +1,15 @@
 import { useFileContext } from "@/app/providers/FileProvider";
+import useBrowserSize from "@/shared/hooks/useBrowserSize";
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function FileDndBox() {
   const { mergeFiles, updateClientFiles } = useFileContext();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isDragOver, setIsDragOver] = useState(false); // 드래그 상태 추적
+  const windowSize = useBrowserSize();
+  const navigate = useNavigate();
 
   const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -35,7 +39,11 @@ export function FileDndBox() {
   };
 
   const handleButtonClick = () => {
-    fileInputRef.current?.click();
+    if (windowSize.windowWidth < 850) {
+      navigate("/dashboard/mobile");
+    } else {
+      fileInputRef.current?.click();
+    }
   };
 
   // 조건부 클래스 적용

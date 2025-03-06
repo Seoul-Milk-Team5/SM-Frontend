@@ -1,6 +1,8 @@
+import { Cookies } from "react-cookie";
 import { setCookie } from "../utils";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
+const cookies = new Cookies();
 
 export const baseHttpClient = () => {
   async function get<R>(url: string, headers: HeadersInit, params?: Record<string, any>): Promise<R> {
@@ -46,6 +48,37 @@ export const baseHttpClient = () => {
 
       if (accessToken) {
         setCookie("access_token", accessToken, { path: "/", secure: true, httpOnly: false });
+      }
+
+      // 성공적인 응답 처리
+      const responseBody = await response.json();
+      return responseBody;
+    } catch (error) {
+      console.error("Fetch error:", error);
+      throw error;
+    }
+  }
+
+  async function postForm<R, D extends BodyInit>(url: string, headers: HeadersInit, data: D): Promise<R> {
+    try {
+      const response = await fetch(`${BASE_URL}/${url}`, {
+        method: "POST",
+        headers: headers,
+        body: data,
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error(`OCR 요청 중 오류가 발생했습니다. | ${response.status}`);
+        }
+        if (response.status === 403) {
+          cookies.remove("access_token", { path: "/" });
+          throw new Error(`로그인이 만료되었습니다. | ${response.status}`);
+        }
+        const errorBody = await response.json();
+        console.log("Response status:", response.status);
+        console.log("Response body:", errorBody);
+        throw new Error("OCR 요청 중 오류가 발생했습니다.");
       }
 
       // 성공적인 응답 처리
@@ -108,6 +141,7 @@ export const baseHttpClient = () => {
   return {
     get,
     post,
+    postForm,
     put,
     delete: del,
   };
