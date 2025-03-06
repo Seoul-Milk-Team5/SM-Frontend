@@ -23,7 +23,7 @@ export async function saveFilePostRequest(token: string, files: File[]): Promise
   const formData = new FormData();
   const fileArray = Array.from(files);
 
-  fileArray.forEach(file => formData.append("images", file));
+  fileArray.forEach(file => formData.append("files", file));
 
   try {
     return await baseHttpClient().postForm<SaveFilePostResponse, FormData>("api/image/tmp/mark", HEADER, formData);

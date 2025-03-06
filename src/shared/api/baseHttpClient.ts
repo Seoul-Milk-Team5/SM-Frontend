@@ -36,7 +36,7 @@ export const baseHttpClient = () => {
         headers: headers,
         body: JSON.stringify(data),
       });
-      console.log(response);
+
       if (!response.ok) {
         const errorBody = await response.json();
         console.log("Response status:", response.status);
