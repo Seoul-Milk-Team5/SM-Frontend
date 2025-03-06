@@ -32,6 +32,7 @@ export default function DataTable() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<number[]>([]); // 선택된 cell 값들 저장
+  // const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);

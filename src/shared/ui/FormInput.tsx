@@ -1,8 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { FormInputProps } from "../model";
 
-
-export default function FormInput({ label, name, value, onChange, width = "150px" }: FormInputProps) {
+function FormInput({ label, name, value, onChange, width = "150px" }: FormInputProps) {
   return (
     <div className="flex justify-between">
       <label>{label}</label>
@@ -10,4 +9,5 @@ export default function FormInput({ label, name, value, onChange, width = "150px
     </div>
   );
 };
-  
+
+export default FormInput;

@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { EditModalProps } from "../../feature/searchFile/model/EditModal.type";
 import BusinessInfo from "./BusinessInfo";
-import FormInput from "./formInput";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { InvoiceViewRequest } from "../api/InvoiceViewRequest";
 import { ModalData } from "../model";
+import FormInput from "./FormInput";
 
 
 
