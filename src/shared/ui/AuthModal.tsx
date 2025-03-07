@@ -8,46 +8,32 @@ import { useStep } from "@/app/providers/StepProvider";
 import { useFileContext } from "@/app/providers/FileProvider";
 import { ocrPostRequest } from "@/feature/main/service/OcrRequest";
 import { useAuth } from "@/app/providers/AuthProvider";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { OcrData } from "@/feature/main";
 
 interface AuthModalProps {
   btnName: string;
   disable: boolean;
-  step?: number; // ocr 추출 로딩을 건너뛰기 위해
-  style?: string; // 버튼 스타일
-  userInput?: OcrData[]; // editModal의 사용자 입력 값(taxInvoiceInfoList)
-  taxInvoiceId?: number | null;
 }
 
-export function AuthModal({ btnName, disable, step, style, userInput, taxInvoiceId}: AuthModalProps) {
+export function AuthModal({ btnName, disable }: AuthModalProps) {
   const { steps, setSteps } = useStep();
   const { files } = useFileContext();
   const { getUser, logout } = useAuth();
 
-  const [currentStep, setCurrentStep] = useState(step ?? steps);
-  useEffect(() => {
-    if (step !== undefined) {
-      setSteps(step);
-      setCurrentStep(step);
-    }
-  }, [step, setSteps]);
-
   const [loadingText, setLoadingComent] = useState("");
   const [ocrData, setOcrData] = useState<OcrData[]>();
-  const [isEditRequest, setIsEditRequest] = useState(false);
   const navigate = useNavigate();
 
   const maxWidthClass = {
     1: "sm:max-w-[450px] max-h-[40vh]",
     2: "sm:max-w-[1025px] max-h-[100vh]",
     3: "sm:max-w-[450px] max-h-[40vh]",
-  }[currentStep];
+  }[steps];
 
   const handleChangeModalStep = (number: number) => {
     setSteps(number);
-    setCurrentStep(number);
   };
 
   const handleOcrRequest = async () => {
@@ -55,18 +41,17 @@ export function AuthModal({ btnName, disable, step, style, userInput, taxInvoice
     setLoadingComent("파일에서 텍스트 추출 중입니다.");
 
     try {
-      const response = await ocrPostRequest(token, files?.clientFiles ?? []);
-      const fileCount = files?.clientFiles.length;
+      const response = await ocrPostRequest(token, files as any);
+      const fileCount = (files?.clientFiles?.length ?? 0) + (files?.result?.length ?? 0);
       console.log(response.result);
 
       const limitedResults = response.result.slice(0, fileCount);
       setOcrData(limitedResults);
-      // console.log("ocr추출값", limitedResults);
 
       if (response.success) {
         setLoadingComent("텍스트 추출이 완료되었습니다.");
         setTimeout(() => {
-          handleChangeModalStep(2);
+          setSteps(2);
         }, 1500);
       } else {
         // 요청은 성공했지만 결과가 실패일 경우
@@ -87,24 +72,13 @@ export function AuthModal({ btnName, disable, step, style, userInput, taxInvoice
     }
   };
 
-  useEffect(() => {
-    if(userInput && userInput.length > 0) {
-      setIsEditRequest(true); //사용자의 입력값이 있을경우 true
-    } else {
-      setIsEditRequest(false);
-    }
-  }, [userInput]);
-
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button
-          className={`bg-green-500 hover:bg-green-600 cursor-pointer disabled:bg-green-200 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white mb:hidden ${style}`}
+          className="bg-green-500 hover:bg-green-600 cursor-pointer disabled:bg-green-200 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white mb:hidden"
           disabled={disable}
-          onClick={userInput ? undefined : handleOcrRequest}> {/* 여기 userInput 전달 할 때 비활성화 필요 */}
-          {style && (
-            <img src="/icon/step2.svg"/>
-          )}
+          onClick={handleOcrRequest}>
           {btnName}
         </Button>
       </DialogTrigger>
@@ -112,17 +86,12 @@ export function AuthModal({ btnName, disable, step, style, userInput, taxInvoice
         <div className="overflow-hidden h-full">
           <div
             className={`flex transition-transform duration-500 ease-in-out`}
-            style={{ transform: `translateX(-${(currentStep - 1) * 100}%)` }}>
+            style={{ transform: `translateX(-${(steps - 1) * 100}%)` }}>
             <div className="w-full flex-shrink-0 h-full overflow-y-auto">
               <OcrModalContent loadingText={loadingText} />
             </div>
             <div className="w-full flex-shrink-0 h-full overflow-y-auto">
-              <AuthModalContent
-                changeStep={handleChangeModalStep}
-                ocrData={userInput ?? ocrData}
-                isEditRequest={isEditRequest}
-                taxInvoiceId={taxInvoiceId}
-              />
+              <AuthModalContent changeStep={handleChangeModalStep} ocrData={ocrData} />
             </div>
             <div className="w-full flex-shrink-0 h-full overflow-y-auto">
               <HometaxModalContent />

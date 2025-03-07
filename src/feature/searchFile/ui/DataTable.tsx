@@ -27,6 +27,7 @@ import { FormatCreatedAt } from "@/shared/utils/FormatCreatedAt";
 import { getStatusLabel } from "@/shared/utils/getStatusLabel";
 import { TempSaveRequest } from "../service/TempSaveRequest";
 import { DeleteRequest } from "../service/DeleteRequest";
+import { StepProvider } from "@/app/providers/StepProvider";
 
 const processStatuses = ["ALL", "UNAPPROVED", "APPROVED", "REJECTED"] as const; //전체, 검증실패, 승인, 반려
 type ProcessStatus = (typeof processStatuses)[number];
@@ -291,12 +292,14 @@ export default function DataTable() {
         index={selectedIndex}
         rowId={selectedRowId}
       />
-      <EditApprovalModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        index={selectedIndex}
-        rowId={selectedRowId}
-      />
+      <StepProvider>
+        <EditApprovalModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          index={selectedIndex}
+          rowId={selectedRowId}
+        />
+      </StepProvider>
       <PreviewModal isOpen={isPreviewOpen} onClose={() => setIsPreviewOpen(false)} fileUrl={previewUrl!} />
 
       <Pagination className="mt-4">
