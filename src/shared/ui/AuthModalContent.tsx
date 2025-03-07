@@ -73,6 +73,7 @@ function AuthModalContent({ changeStep, ocrData }: AuthModalContentProps) {
       })) ?? [];
 
     console.log(ocrReDataArray);
+    console.log(formData.firstPhoneNo + formData.phoneNo);
 
     const requestData = {
       loginTypeLevel: formData.loginTypeLevel,
@@ -183,9 +184,9 @@ function AuthModalContent({ changeStep, ocrData }: AuthModalContentProps) {
                 </SelectContent>
               </Select>
             )}
-            <Select onValueChange={value => handleSelectChange("firstPhoneNo", value)} defaultValue="010">
+            <Select onValueChange={value => handleSelectChange("firstPhoneNo", value)}>
               <SelectTrigger className="w-[180px] h-[45px] bg-[#fff] border-gray-100">
-                <SelectValue placeholder="010" />
+                <SelectValue placeholder="선택" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
