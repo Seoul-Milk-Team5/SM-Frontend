@@ -7,7 +7,7 @@ export interface SaveFileGetResponse {
     size: number;
     content: [
       {
-        id: number;
+        imageId: number;
         employeeId: string;
         status: string;
         issueId: string;
