@@ -67,7 +67,9 @@ function MobileMainPage() {
 
   // ✅ 저장 버튼 클래스 동적 변경
   const buttonClass =
-    files?.clientFiles.length || (0 > 0 && !isSaving) ? "bg-green-500 hover:bg-green-600" : "bg-gray-100";
+    files?.clientFiles.length || (0 > 0 && !isSaving)
+      ? "bg-green-500 hover:bg-green-600 opacity-100"
+      : "bg-gray-100 opacity-100";
 
   return (
     <>
@@ -87,7 +89,7 @@ function MobileMainPage() {
           </Button>
         </div>
       </div>
-      <section className="w-full mx-auto pb-[100px]">
+      <section className="w-full mx-auto pb-[120px]">
         <div className="w-full grid grid-cols-3 gap-3 place-items-center">
           <input
             type="file"
@@ -137,7 +139,7 @@ function MobileMainPage() {
         </div>
         <div>
           <Button
-            className={`${buttonClass} w-full h-[100px] absolute bottom-0 left-0 rounded-none`}
+            className={`${buttonClass} w-full h-[100px] fixed bottom-0 left-0 rounded-none`}
             onClick={handleFileSaveRequest}
             disabled={isSaving || files?.clientFiles.length === 0}>
             {isSaving ? "저장 중..." : `총 ${files?.clientFiles.length ?? 0}장 저장하기`}
