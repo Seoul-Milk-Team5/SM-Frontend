@@ -14,6 +14,7 @@ function MobileMainPage() {
   // ✅ 선택된 파일 ID를 저장하는 상태
   const [selectedFiles, setSelectedFiles] = useState<Set<number>>(new Set());
   const [isSelecting, setIsSelecting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false); // ✅ 저장 버튼 상태 관리
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
@@ -54,13 +55,19 @@ function MobileMainPage() {
     });
   };
 
+  // ✅ 저장 버튼 클릭 시 처리
   const handleFileSaveRequest = async () => {
+    if (!files?.clientFiles.length) return; // 파일이 없으면 실행 안 함
+
+    setIsSaving(true); // ✅ 저장 중 상태 설정
     const token = getUser();
-    const response = await saveFilePostRequest(token, files?.clientFiles ?? []);
-    console.log(response);
+    await saveFilePostRequest(token, files.clientFiles);
+    setIsSaving(false); // ✅ 저장 완료 후 버튼 비활성화 상태 변경
   };
 
-  const buttonClass = files?.clientFiles.length || 0 > 1 ? "bg-green-500 hover:bg-green-600" : "bg-gray-100";
+  // ✅ 저장 버튼 클래스 동적 변경
+  const buttonClass =
+    files?.clientFiles.length || (0 > 0 && !isSaving) ? "bg-green-500 hover:bg-green-600" : "bg-gray-100";
 
   return (
     <>
@@ -80,7 +87,7 @@ function MobileMainPage() {
           </Button>
         </div>
       </div>
-      <section className="w-full mx-auto">
+      <section className="w-full mx-auto pb-[100px]">
         <div className="w-full grid grid-cols-3 gap-3 place-items-center">
           <input
             type="file"
@@ -131,8 +138,9 @@ function MobileMainPage() {
         <div>
           <Button
             className={`${buttonClass} w-full h-[100px] absolute bottom-0 left-0 rounded-none`}
-            onClick={handleFileSaveRequest}>
-            총 {files?.clientFiles.length}장 저장하기
+            onClick={handleFileSaveRequest}
+            disabled={isSaving || files?.clientFiles.length === 0}>
+            {isSaving ? "저장 중..." : `총 ${files?.clientFiles.length ?? 0}장 저장하기`}
           </Button>
         </div>
       </section>

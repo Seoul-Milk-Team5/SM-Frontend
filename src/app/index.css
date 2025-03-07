@@ -267,19 +267,7 @@ body {
 
 @media (max-width: 850px) {
   body {
-    overflow: auto;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  .main-scrollable {
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    touch-action: auto;
-  }
-
-  body::-webkit-scrollbar {
-    display: none;
+    overflow-y: auto;
   }
   .ellipsis {
     max-width: 50px; /* 850px 이하일 때 더 작은 너비 적용 */
