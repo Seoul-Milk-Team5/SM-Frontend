@@ -114,6 +114,30 @@ export const baseHttpClient = () => {
     }
   }
 
+  async function patch<R, D>(url: string, headers: HeadersInit, data: D): Promise<R> {
+    try {
+      const response = await fetch(`${BASE_URL}/${url}`, {
+        method: "PATCH",
+        headers: headers,
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.json();
+        console.log("Response status:", response.status);
+        console.log("Response body:", errorBody);
+        throw new Error("Network response was not ok");
+      }
+
+      // 성공적인 응답 처리
+      const responseBody = await response.json();
+      return responseBody;
+    } catch (error) {
+      console.error("Fetch error:", error);
+      throw error;
+    }
+  }
+
   async function del<R, D>(url: string, headers: HeadersInit, data?: D): Promise<R> {
     try {
       const response = await fetch(`${BASE_URL}/${url}`, {
@@ -143,6 +167,7 @@ export const baseHttpClient = () => {
     post,
     postForm,
     put,
+    patch,
     delete: del,
   };
 };

@@ -21,7 +21,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useEffect, useState } from "react";
 import { useFileContext } from "@/app/providers/FileProvider";
 import { ImageModal } from "../../../shared/ui";
-import { saveFileGetRequest } from "../service";
+import { saveFileGetRequest, saveFilePatchRequest } from "../service";
 import { useAuth } from "@/app/providers/AuthProvider";
 
 export type Payment = {
@@ -122,6 +122,12 @@ export function FileUploadTable() {
   // 선택된 항목이 있으면 삭제 버튼 활성화
   const isDeleteButtonEnabled = selectedIds.length > 0;
 
+  const handleFileDelete = async () => {
+    const token = getUser();
+    const response = await saveFilePatchRequest(token, selectedIds);
+    console.log(response);
+  };
+
   return (
     <div className="w-full">
       <div className="flex justify-between items-center py-4 gap-3.5 mb-9">
@@ -129,7 +135,7 @@ export function FileUploadTable() {
         <Button
           className="bg-green-500 hover:bg-green-600 cursor-pointer disabled:bg-gray-100 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white"
           disabled={!isDeleteButtonEnabled}
-          onClick={() => console.log("선택된 파일 ID:", selectedIds)}>
+          onClick={handleFileDelete}>
           삭제하기
         </Button>
       </div>
