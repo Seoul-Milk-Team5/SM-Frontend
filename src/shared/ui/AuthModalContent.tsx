@@ -8,7 +8,7 @@ import { authRequest, reAuthRequest } from "@/feature/main/service";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { OcrData } from "@/feature/main";
-import { editInvoiceRequest } from "../api/EditInvoiceRequest";
+import { editInvoiceRequest } from "../api/editInvoiceRequest";
 
 
 interface AuthModalContentProps {
@@ -95,10 +95,10 @@ function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: 
 
     const editRequestData = {
       taxInvoiceId: taxInvoiceId ?? 0,
-      issueId: ocrBody?.[0]?.extractedData?.approval_number || "",
-      erDat: ocrBody?.[0]?.extractedData?.issue_date || "",
-      suId: ocrBody?.[0]?.extractedData?.supplier_registration_number || "",
-      ipId: ocrBody?.[0]?.extractedData?.recipient_registration_number || "",
+      issueId: ocrBody?.[0]?.extractedData?.issueId || "",
+      erDat: ocrBody?.[0]?.extractedData?.erDat || "",
+      suId: ocrBody?.[0]?.extractedData?.suId || "",
+      ipId: ocrBody?.[0]?.extractedData?.ipId || "",
       chargeTotal: Number(ocrBody?.[0]?.extractedData?.chargeTotal || 0),
     }
     

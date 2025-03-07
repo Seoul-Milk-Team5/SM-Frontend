@@ -68,10 +68,10 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId}: Edit
       // 초기 데이터로 OcrData 객체 설정
       const initialOcrData: OcrData = {
         extractedData: {
-          approval_number: response.result.issueId,
-          recipient_registration_number: response.result.ipId,
-          supplier_registration_number: response.result.suId,
-          issue_date: response.result.erDat,
+          issueId: response.result.issueId,
+          ipId: response.result.ipId,
+          suId: response.result.suId,
+          erDat: response.result.erDat,
           chargeTotal: response.result.taxTotal,
         },
       };
@@ -96,10 +96,10 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId}: Edit
       // formData 변경을 기반으로 userInput 업데이트
       const updatedUserInput: OcrData = {
         extractedData: {
-          approval_number: updatedFormData.result.issueId,
-          recipient_registration_number: updatedFormData.result.ipId,
-          supplier_registration_number: updatedFormData.result.suId,
-          issue_date: updatedFormData.result.erDat,
+          issueId: updatedFormData.result.issueId,
+          ipId: updatedFormData.result.ipId,
+          suId: updatedFormData.result.suId,
+          erDat: updatedFormData.result.erDat,
           chargeTotal: updatedFormData.result.taxTotal,
         },
       };
