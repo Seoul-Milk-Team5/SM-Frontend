@@ -18,9 +18,10 @@ interface AuthModalProps {
   step?: number; // ocr 추출 로딩을 건너뛰기 위해
   style?: string; // 버튼 스타일
   userInput?: OcrData[]; // editModal의 사용자 입력 값(taxInvoiceInfoList)
+  taxInvoiceId?: number | null;
 }
 
-export function AuthModal({ btnName, disable, step, style, userInput}: AuthModalProps) {
+export function AuthModal({ btnName, disable, step, style, userInput, taxInvoiceId}: AuthModalProps) {
   const { steps, setSteps } = useStep();
   const { files } = useFileContext();
   const { getUser, logout } = useAuth();
@@ -35,6 +36,7 @@ export function AuthModal({ btnName, disable, step, style, userInput}: AuthModal
 
   const [loadingText, setLoadingComent] = useState("");
   const [ocrData, setOcrData] = useState<OcrData[]>();
+  const [isEditRequest, setIsEditRequest] = useState(false);
   const navigate = useNavigate();
 
   const maxWidthClass = {
@@ -85,6 +87,14 @@ export function AuthModal({ btnName, disable, step, style, userInput}: AuthModal
     }
   };
 
+  useEffect(() => {
+    if(userInput && userInput.length > 0) {
+      setIsEditRequest(true); //사용자의 입력값이 있을경우 true
+    } else {
+      setIsEditRequest(false);
+    }
+  }, [userInput]);
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -107,7 +117,12 @@ export function AuthModal({ btnName, disable, step, style, userInput}: AuthModal
               <OcrModalContent loadingText={loadingText} />
             </div>
             <div className="w-full flex-shrink-0 h-full overflow-y-auto">
-              <AuthModalContent changeStep={handleChangeModalStep} ocrData={userInput ?? ocrData} />
+              <AuthModalContent
+                changeStep={handleChangeModalStep}
+                ocrData={userInput ?? ocrData}
+                isEditRequest={isEditRequest}
+                taxInvoiceId={taxInvoiceId}
+              />
             </div>
             <div className="w-full flex-shrink-0 h-full overflow-y-auto">
               <HometaxModalContent />

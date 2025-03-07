@@ -11,7 +11,7 @@ import { StepProvider } from "@/app/providers/StepProvider";
 import { AuthModal } from "./AuthModal";
 import { OcrData } from "@/feature/main";
 
-export default function EditApprovalModal({ isOpen, onClose, index, rowId }: EditModalProps) {
+export default function EditApprovalModal({ isOpen, onClose, index, rowId}: EditModalProps) {
   const [formData, setFormData] = useState<ModalData>({
     code: 0,
     message: "",
@@ -187,7 +187,14 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId }: Edi
                 올바른 내역이 입력되었는지 다시 한 번 확인해주세요.
               </p>
               <StepProvider>
-                <AuthModal btnName="저장하기" disable={false} step={2} style="h-[50px] w-[400px] !text-title-sm" userInput={userInput} />
+                <AuthModal 
+                  btnName="저장하기" 
+                  disable={false} 
+                  step={2} 
+                  style="h-[50px] w-[400px] !text-title-sm" 
+                  userInput={userInput}
+                  taxInvoiceId={rowId}
+                />
               </StepProvider>
             </div>
           </div>

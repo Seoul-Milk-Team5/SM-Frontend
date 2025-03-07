@@ -155,9 +155,9 @@ export default function DataTable() {
   const filteredData = data?.result.page.content || [];
   const totalPages = data?.result.page.totalPages || 1;
 
-  useEffect(() => {
-    console.log("현재 state data 값:", data);
-  }, [data]); // `data` 값이 변경될 때마다 로그 찍기
+  // useEffect(() => {
+  //   console.log("현재 state data 값:", data);
+  // }, [data]); // `data` 값이 변경될 때마다 로그 찍기
 
   const openModal = (row: ContentItem, index: number) => {
     // console.log("조회된 모달의 아이디입니다 : ", row.id);

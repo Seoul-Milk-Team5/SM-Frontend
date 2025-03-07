@@ -8,13 +8,16 @@ import { authRequest, reAuthRequest } from "@/feature/main/service";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { OcrData } from "@/feature/main";
+import { editInvoiceRequest } from "../api/EditInvoiceRequest";
 
 interface AuthModalContentProps {
   changeStep?: (step: number) => void;
   ocrData?: OcrData[] | undefined;
+  isEditRequest?: boolean;
+  taxInvoiceId?: number | null;
 }
 
-function AuthModalContent({ changeStep, ocrData }: AuthModalContentProps) {
+function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: AuthModalContentProps) {
   const { getUser } = useAuth();
   const token = getUser();
   const navigate = useNavigate();
@@ -85,6 +88,21 @@ function AuthModalContent({ changeStep, ocrData }: AuthModalContentProps) {
       taxInvoiceInfoList: ocrReDataArray,
     };
 
+    const editRequestData = {
+      taxInvoiceId: taxInvoiceId ?? 0,
+      issueId: ocrBody?.[0]?.extractedData?.approval_number || "",
+      erDat: ocrBody?.[0]?.extractedData?.issue_date || "",
+      suId: ocrBody?.[0]?.extractedData?.supplier_registration_number || "",
+      ipId: ocrBody?.[0]?.extractedData?.recipient_registration_number || "",
+      chargeTotal: Number(ocrBody?.[0]?.extractedData?.chargeTotal || 0),
+    }
+    
+    if (isEditRequest) { // 사용자 입력이 있을 경우 = 수정 요청
+      console.log("요청할 데이터: ", editRequestData);
+      const response = await editInvoiceRequest(token, editRequestData);
+      console.log("수정 결과", response);
+    }
+
     // 간편인증 요청 API 연결
     const response = await authRequest(token, requestData);
     if (typeof response.result === "object" && "key" in response.result) {
@@ -97,10 +115,17 @@ function AuthModalContent({ changeStep, ocrData }: AuthModalContentProps) {
     changeStep?.(3);
     const response = await reAuthRequest(token, key);
     if (response.success) {
-      setTimeout(() => {
-        navigate("/dashboard/searchfile");
-        changeStep?.(1);
-      }, 1500);
+      if(isEditRequest) {
+        setTimeout(() => {
+          window.location.reload(); // 페이지 새로고침(임시)
+          changeStep?.(1);
+        })
+      } else {
+        setTimeout(() => {
+          navigate("/dashboard/searchfile");
+          changeStep?.(1);
+        }, 1500);        
+      }
     }
   };
 
