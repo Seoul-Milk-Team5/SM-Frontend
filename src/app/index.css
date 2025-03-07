@@ -257,6 +257,12 @@ body {
   max-width: 500px; /* 최대 너비 설정 */
 }
 
+@media (max-width: 850px) {
+  .ellipsis {
+    max-width: 50px; /* 850px 이하일 때 더 작은 너비 적용 */
+  }
+}
+
 .reset-styles {
   all: unset;
   display: revert; /* 요소의 기본 display 값을 복원합니다 */
