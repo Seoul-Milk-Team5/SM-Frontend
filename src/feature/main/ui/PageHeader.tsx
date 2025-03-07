@@ -6,11 +6,11 @@ import { AuthModal } from "@/shared/ui/AuthModal";
 import { StepProvider } from "@/app/providers/StepProvider";
 import useBrowserSize from "@/shared/hooks/useBrowserSize";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { saveFilePostRequest } from "../service";
+import { saveFileGetRequest, saveFilePostRequest } from "../service";
 import { useAuth } from "@/app/providers/AuthProvider";
 
 export function PageHeader() {
-  const { files } = useFileContext();
+  const { files, setFiles } = useFileContext();
   const { getUser } = useAuth();
   const [disable, setDisable] = useState(true);
   const windowSize = useBrowserSize();
@@ -31,19 +31,30 @@ export function PageHeader() {
 
   const buttonClassName =
     windowSize.windowWidth < 850
-      ? "bg-green-500  cursor-pointer disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-[#fff]"
+      ? "bg-green-500  cursor-pointer disabled:opacity-100 py-3.5 px-4 text-body-md-sb text-[#fff]"
       : "border-green-500 hover:text-green-600 cursor-pointer disabled:opacity-100 py-3.5 px-6 text-body-md-sb disabled:border-gray-100 disabled:text-gray-300 text-green-500";
 
   const handleFileSaveRequest = async () => {
     const token = getUser();
     const response = await saveFilePostRequest(token, files?.clientFiles ?? []);
     console.log(response);
+    if (response.success) {
+      const updatedData = await saveFileGetRequest(token);
+      setFiles(prev => ({
+        ...prev,
+        result: updatedData.result.content, // ✅ 서버 응답으로 result 업데이트
+        clientFiles: [], // ✅ 클라이언트 파일 목록 초기화
+      }));
+    }
   };
   return (
-    <div className="flex justify-between items-center mb:justify-start mb:gap-5">
-      {windowSize.windowWidth < 850 && <SidebarTrigger className="mb:mb-5" />}
-      <Navbar items={navItems} />
-      <div className="flex items-center gap-3.5 mb-10 mb:mb-5 mb:absolute mb:right-14">
+    <div className="flex justify-between items-center mb:justify-between mb:gap-5">
+      <div className="flex items-center gap-3">
+        {windowSize.windowWidth < 850 && <SidebarTrigger className="mb:mb-5" />}
+        <Navbar items={navItems} />
+      </div>
+
+      <div className="flex items-center gap-3.5 mb-10 mb:mb-5 mb:justify-end">
         <Button
           variant={windowSize.windowWidth < 850 ? "default" : "outline"}
           className={`${buttonClassName}`}

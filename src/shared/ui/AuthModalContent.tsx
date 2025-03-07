@@ -73,12 +73,15 @@ function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: 
 
     const ocrReDataArray =
       ocrBody?.map(data => ({
-        supplierRegNumber: data.extractedData.supplier_registration_number,
-        contractorRegNumber: data.extractedData.recipient_registration_number,
-        approvalNo: data.extractedData.approval_number,
-        reportingDate: data.extractedData.issue_date,
+        supplierRegNumber: data.extractedData.ipId,
+        contractorRegNumber: data.extractedData.suId,
+        approvalNo: data.extractedData.issueId,
+        reportingDate: data.extractedData.erDat,
         supplyValue: data.extractedData.chargeTotal,
       })) ?? [];
+
+    console.log(ocrReDataArray);
+    console.log(formData.firstPhoneNo + formData.phoneNo);
 
     const requestData = {
       loginTypeLevel: formData.loginTypeLevel,
@@ -88,6 +91,7 @@ function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: 
       telecom: formData.telecom,
       taxInvoiceInfoList: ocrReDataArray,
     };
+
 
     const editRequestData = {
       taxInvoiceId: taxInvoiceId ?? 0,
@@ -103,6 +107,9 @@ function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: 
       const response = await editInvoiceRequest(token, editRequestData);
       console.log("수정 결과", response);
     }
+
+    console.log(requestData);
+
 
     // 간편인증 요청 API 연결
     const response = await authRequest(token, requestData);
@@ -211,7 +218,7 @@ function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: 
             )}
             <Select onValueChange={value => handleSelectChange("firstPhoneNo", value)}>
               <SelectTrigger className="w-[180px] h-[45px] bg-[#fff] border-gray-100">
-                <SelectValue placeholder="010" />
+                <SelectValue placeholder="선택" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>

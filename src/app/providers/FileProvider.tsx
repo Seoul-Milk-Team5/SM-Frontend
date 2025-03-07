@@ -1,8 +1,9 @@
+import { FormatCreatedAt } from "@/shared/utils/FormatCreatedAt";
 import { createContext, useContext, useState, useEffect, Dispatch, SetStateAction, ReactNode } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 interface ResultData {
-  id: number;
+  imageId: number;
   employeeId: string;
   status: string;
   issueId: string;
@@ -18,15 +19,17 @@ interface ResultData {
   errorDetails: string[];
   isTemporary: string;
   createdAt: string;
+  uploadDate: number[];
 }
 
-interface FileData {
+export interface FileData {
   result: ResultData[];
   clientFiles: File[];
 }
 
 interface MergeFileData {
   id: number;
+  fileId: number | string;
   date: string;
   fileUrl: string;
 }
@@ -85,12 +88,14 @@ function FileProvider({ children }: { children: ReactNode }) {
           const fileIndex = files.clientFiles.findIndex(file => file.name === result.imageUrl);
           return {
             id: currentId++, // 숫자 ID 할당 후 증가
-            date: result.erDat,
+            fileId: result.imageId,
+            date: FormatCreatedAt(result.uploadDate),
             fileUrl: fileIndex !== -1 ? clientFileData[fileIndex].url : result.imageUrl,
           };
         }),
         ...clientFileData.map(file => ({
           id: currentId++, // 클라이언트 파일에 대한 숫자 ID 할당 후 증가
+          fileId: file.id,
           date: file.date,
           fileUrl: file.url,
         })),

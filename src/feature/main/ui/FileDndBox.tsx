@@ -1,5 +1,6 @@
 import { useFileContext } from "@/app/providers/FileProvider";
 import useBrowserSize from "@/shared/hooks/useBrowserSize";
+import { formatTimeFromFiles } from "@/shared/utils/FormatTime";
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -60,11 +61,14 @@ export function FileDndBox() {
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         className={`w-full py-[60px] border-1 border-dashed ${dragOverClass} rounded-[10px] flex flex-col items-center justify-center gap-7 text-center bg-[#fff] mb-7`}>
-        <p className="text-body-lg text-gray-800">세금계산서 파일을 끌어다 놓거나 선택하세요.</p>
+        <p className="text-body-lg text-gray-800">
+          세금계산서 파일을
+          <br className="pc:hidden mb:block" /> 끌어다 놓거나 선택하세요.
+        </p>
         <input type="file" ref={fileInputRef} className="hidden" multiple onChange={handleFileChange} />
         <button
           type="button"
-          className="bg-green-500 hover:bg-green-600 disabled:bg-gray-100 text-white rounded-[10px] text-body-lg h-[50px] w-[300px] cursor-pointer"
+          className="bg-green-500 hover:bg-green-600 disabled:bg-gray-100 text-white rounded-[10px] text-body-lg h-[50px] w-[300px] cursor-pointer mb:w-[70%]"
           disabled={mergeFiles.length >= 50}
           onClick={handleButtonClick}>
           파일 선택
@@ -72,7 +76,8 @@ export function FileDndBox() {
       </div>
       <div className="w-full text-body-sm flex justify-between mb-10">
         <p className="text-gray-800">
-          <span className="text-gray-800">{mergeFiles.length}/50(개)</span> | 예상 검증 시간: 00분 00초
+          <span className="text-gray-800">{mergeFiles.length}/50(개)</span>{" "}
+          {`| 예상 검증 시간: ${formatTimeFromFiles(mergeFiles.length)}`}
         </p>
         {mergeFiles.length >= 50 && <p className="text-red-500">파일 최대 업로드 가능 개수를 초과했습니다</p>}
       </div>
