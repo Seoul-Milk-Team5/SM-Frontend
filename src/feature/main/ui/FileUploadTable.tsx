@@ -63,7 +63,7 @@ export const columns: ColumnDef<Payment>[] = [
     accessorKey: "fileUrl",
     header: "미리보기",
     cell: ({ row }) => (
-      <div className="lowercase text-gray-300 underline ellipsis ellipsis-mobile">
+      <div className="lowercase text-gray-300 underline ellipsis">
         <ImageModal btnName={row.getValue("fileUrl")} imageUrl={row.getValue("fileUrl")} />
       </div>
     ),

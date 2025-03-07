@@ -18,7 +18,7 @@ export function ImageModal({ btnName, imageUrl }: ImageModalProps) {
         <DialogHeader>
           <div className="flex items-center gap-2">
             <img className="w-[24px] h-[24px]" src="/icon/file.svg" alt="파일 아이콘" />
-            <p className="text-body-lg text-gray-500 ellipsis">{imageUrl}</p>
+            <p className="text-body-lg text-gray-500 ellipsis2">{imageUrl}</p>
           </div>
         </DialogHeader>
         {imageUrl ? (
