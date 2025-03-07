@@ -183,7 +183,7 @@ function AuthModalContent({ changeStep, ocrData }: AuthModalContentProps) {
                 </SelectContent>
               </Select>
             )}
-            <Select onValueChange={value => handleSelectChange("firstPhoneNo", value)}>
+            <Select onValueChange={value => handleSelectChange("firstPhoneNo", value)} defaultValue="010">
               <SelectTrigger className="w-[180px] h-[45px] bg-[#fff] border-gray-100">
                 <SelectValue placeholder="010" />
               </SelectTrigger>
