@@ -7,10 +7,10 @@ export interface OcrPostResponse {
 
 export interface OcrData {
   extractedData: {
-    approval_number: string;
-    recipient_registration_number: string;
-    supplier_registration_number: string;
-    issue_date: string;
+    issueId: string;
+    suId: string;
+    ipId: string;
+    erDat: string;
     chargeTotal: string;
   };
 }

@@ -41,9 +41,8 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
     setLoadingComent("파일에서 텍스트 추출 중입니다.");
 
     try {
-      const response = await ocrPostRequest(token, files?.clientFiles ?? []);
-
-      const fileCount = files?.clientFiles.length;
+      const response = await ocrPostRequest(token, files as any);
+      const fileCount = (files?.clientFiles?.length ?? 0) + (files?.result?.length ?? 0);
       console.log(response.result);
 
       const limitedResults = response.result.slice(0, fileCount);

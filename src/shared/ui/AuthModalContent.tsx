@@ -65,12 +65,14 @@ function AuthModalContent({ changeStep, ocrData }: AuthModalContentProps) {
 
     const ocrReDataArray =
       ocrBody?.map(data => ({
-        supplierRegNumber: data.extractedData.supplier_registration_number,
-        contractorRegNumber: data.extractedData.recipient_registration_number,
-        approvalNo: data.extractedData.approval_number,
-        reportingDate: data.extractedData.issue_date,
+        supplierRegNumber: data.extractedData.ipId,
+        contractorRegNumber: data.extractedData.suId,
+        approvalNo: data.extractedData.issueId,
+        reportingDate: data.extractedData.erDat,
         supplyValue: data.extractedData.chargeTotal,
       })) ?? [];
+
+    console.log(ocrReDataArray);
 
     const requestData = {
       loginTypeLevel: formData.loginTypeLevel,
@@ -80,6 +82,8 @@ function AuthModalContent({ changeStep, ocrData }: AuthModalContentProps) {
       telecom: formData.telecom,
       taxInvoiceInfoList: ocrReDataArray,
     };
+
+    console.log(requestData);
 
     // 간편인증 요청 API 연결
     const response = await authRequest(token, requestData);

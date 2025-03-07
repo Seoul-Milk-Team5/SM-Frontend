@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect, Dispatch, SetStateActio
 import { v4 as uuidv4 } from "uuid";
 
 interface ResultData {
-  id: number;
+  imageId: number;
   employeeId: string;
   status: string;
   issueId: string;
@@ -20,7 +20,7 @@ interface ResultData {
   createdAt: string;
 }
 
-interface FileData {
+export interface FileData {
   result: ResultData[];
   clientFiles: File[];
 }
