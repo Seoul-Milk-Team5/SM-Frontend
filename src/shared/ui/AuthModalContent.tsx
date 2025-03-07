@@ -22,7 +22,7 @@ function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: 
   const { getUser } = useAuth();
   const token = getUser();
   const navigate = useNavigate();
-  console.log("요청할 ocrData", ocrData);
+
   // 개별 상태 관리
   const [formData, setFormData] = useState({
     loginTypeLevel: 0,
