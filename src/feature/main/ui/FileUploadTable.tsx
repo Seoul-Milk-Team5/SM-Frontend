@@ -45,7 +45,7 @@ export function FileUploadTable() {
         clientFiles: [],
       }))
     );
-  }, []);
+  }, [selectedIds]);
 
   const toggleRowSelection = (id: number) => {
     setSelectedIds(prev => {
@@ -126,6 +126,10 @@ export function FileUploadTable() {
     const token = getUser();
     const response = await saveFilePatchRequest(token, selectedIds);
     console.log(response);
+
+    if (response.success) {
+      setSelectedIds([]);
+    }
   };
 
   return (

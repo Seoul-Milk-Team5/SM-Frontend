@@ -6,11 +6,11 @@ import { AuthModal } from "@/shared/ui/AuthModal";
 import { StepProvider } from "@/app/providers/StepProvider";
 import useBrowserSize from "@/shared/hooks/useBrowserSize";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { saveFilePostRequest } from "../service";
+import { saveFileGetRequest, saveFilePostRequest } from "../service";
 import { useAuth } from "@/app/providers/AuthProvider";
 
 export function PageHeader() {
-  const { files } = useFileContext();
+  const { files, setFiles } = useFileContext();
   const { getUser } = useAuth();
   const [disable, setDisable] = useState(true);
   const windowSize = useBrowserSize();
@@ -38,6 +38,14 @@ export function PageHeader() {
     const token = getUser();
     const response = await saveFilePostRequest(token, files?.clientFiles ?? []);
     console.log(response);
+    if (response.success) {
+      const updatedData = await saveFileGetRequest(token);
+      setFiles(prev => ({
+        ...prev,
+        result: updatedData.result.content, // ✅ 서버 응답으로 result 업데이트
+        clientFiles: [], // ✅ 클라이언트 파일 목록 초기화
+      }));
+    }
   };
   return (
     <div className="flex justify-between items-center mb:justify-between mb:gap-5">

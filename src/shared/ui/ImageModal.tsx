@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 interface ImageModalProps {
   btnName: string;
@@ -14,6 +14,7 @@ export function ImageModal({ btnName, imageUrl }: ImageModalProps) {
       <DialogTrigger asChild className="reset-styles">
         <Button variant="outline">{btnName}</Button>
       </DialogTrigger>
+      <DialogTitle></DialogTitle>
       <DialogContent className="sm:max-w-[905px] h-[700px]">
         <DialogHeader>
           <div className="flex items-center gap-2">
