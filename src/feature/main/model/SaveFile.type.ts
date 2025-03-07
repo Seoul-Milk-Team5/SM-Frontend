@@ -23,6 +23,7 @@ export interface SaveFileGetResponse {
         errorDetails: string[];
         isTemporary: string;
         createdAt: string;
+        uploadDate: number[];
       },
     ];
     number: number;

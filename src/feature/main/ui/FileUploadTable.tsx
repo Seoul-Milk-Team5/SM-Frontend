@@ -1,7 +1,4 @@
 import {
-  ColumnDef,
-  SortingState,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -23,7 +20,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useEffect, useState } from "react";
 import { useFileContext } from "@/app/providers/FileProvider";
-import { formatDate } from "@/shared/utils/FormatDate";
 import { ImageModal } from "../../../shared/ui";
 import { saveFileGetRequest } from "../service";
 import { useAuth } from "@/app/providers/AuthProvider";
@@ -34,51 +30,9 @@ export type Payment = {
   date: string;
 };
 
-export const columns: ColumnDef<Payment>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-        onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={value => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "id",
-    header: "번호",
-    cell: ({ row }) => <div className="capitalize min-w-[50px]">{row.getValue("id")}</div>,
-  },
-  {
-    accessorKey: "fileUrl",
-    header: "미리보기",
-    cell: ({ row }) => (
-      <div className="lowercase text-gray-300 underline ellipsis">
-        <ImageModal btnName={row.getValue("fileUrl")} imageUrl={row.getValue("fileUrl")} />
-      </div>
-    ),
-  },
-  {
-    accessorKey: "date",
-    header: "날짜",
-    cell: ({ row }) => <div className="lowercase flex justify-end pr-9">{formatDate(row.getValue("date"))}</div>,
-  },
-];
-
 export function FileUploadTable() {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const [selectedIds, setSelectedIds] = useState<number[]>([]); // ✅ 선택된 ID 저장
   const { mergeFiles, setFiles } = useFileContext();
   const { getUser } = useAuth();
 
@@ -91,35 +45,83 @@ export function FileUploadTable() {
         clientFiles: [],
       }))
     );
-
-    console.log(mergeFiles);
   }, []);
 
-  // 삭제하기 버튼을 눌렀을 때 실행되는 함수
-  const handleDelete = () => {
-    console.log("Selected IDs to delete:", rowSelection);
-    // 이곳에서 삭제 로직을 구현하거나, 서버에 삭제 요청을 보낼 수 있습니다.
+  const toggleRowSelection = (id: number) => {
+    setSelectedIds(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(fileId => fileId !== id); // 이미 있으면 제거
+      } else {
+        return [...prev, id]; // 없으면 추가
+      }
+    });
   };
 
   const table = useReactTable({
     data: mergeFiles,
-    columns,
-    onSortingChange: setSorting,
+    columns: [
+      {
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+            onCheckedChange={value => {
+              table.toggleAllPageRowsSelected(!!value);
+              if (value) {
+                setSelectedIds(mergeFiles.map(file => file.fileId as number));
+              } else {
+                setSelectedIds([]);
+              }
+            }}
+            aria-label="Select all"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={value => {
+              row.toggleSelected(!!value);
+              toggleRowSelection(row.original.fileId as number);
+            }}
+            aria-label="Select row"
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "id",
+        header: "번호",
+        cell: ({ row }) => <div className="capitalize min-w-[50px]">{row.getValue("id")}</div>,
+      },
+      {
+        accessorKey: "fileUrl",
+        header: "미리보기",
+        cell: ({ row }) => (
+          <div className="lowercase text-gray-300 underline ellipsis">
+            <ImageModal btnName={row.getValue("fileUrl")} imageUrl={row.getValue("fileUrl")} />
+          </div>
+        ),
+      },
+      {
+        accessorKey: "date",
+        header: "날짜",
+        cell: ({ row }) => <div className="lowercase flex justify-end pr-9">{row.getValue("date")}</div>,
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     state: {
-      sorting,
-      columnVisibility,
       rowSelection,
     },
   });
 
   // 선택된 항목이 있으면 삭제 버튼 활성화
-  const isDeleteButtonEnabled = Object.values(rowSelection).some(Boolean);
+  const isDeleteButtonEnabled = selectedIds.length > 0;
+
   return (
     <div className="w-full">
       <div className="flex justify-between items-center py-4 gap-3.5 mb-9">
@@ -127,7 +129,7 @@ export function FileUploadTable() {
         <Button
           className="bg-green-500 hover:bg-green-600 cursor-pointer disabled:bg-gray-100 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white"
           disabled={!isDeleteButtonEnabled}
-          onClick={handleDelete}>
+          onClick={() => console.log("선택된 파일 ID:", selectedIds)}>
           삭제하기
         </Button>
       </div>
@@ -162,7 +164,7 @@ export function FileUploadTable() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell colSpan={4} className="h-24 text-center">
                   <div className="flex flex-col items-center pt-[100px] pb-[130px] gap-7">
                     <img className="w-[80px]" src="/icon/noResult.svg" alt="검색결과 없음" />
                     <p className="text-body-sm text-gray-300">업로드된 세금계산서 파일이 없습니다.</p>
