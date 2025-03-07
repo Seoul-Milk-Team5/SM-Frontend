@@ -8,7 +8,7 @@ import { authRequest, reAuthRequest } from "@/feature/main/service";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { OcrData } from "@/feature/main";
-import { editInvoiceRequest } from "../api/editInvoiceRequest";
+import { editInvoiceRequest } from "../api/EditInvoiceRequest";
 
 
 interface AuthModalContentProps {

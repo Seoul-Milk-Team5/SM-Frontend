@@ -117,7 +117,7 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId}: Edit
   const isPDF = formData?.result.url?.endsWith(".pdf");
 
   const maxWidthClass = {
-    1: "sm:max-w-[1100px] max-h-[677px]",
+    1: "sm:max-w-[1100px] max-h-[100vh]",
     2: "sm:max-w-[1025px] max-h-[100vh]",
     3: "sm:max-w-[450px] max-h-[40vh]",
   }[steps];
@@ -135,13 +135,13 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId}: Edit
       <DialogHeader className="hidden">
         <DialogTitle></DialogTitle>
       </DialogHeader>
-      <DialogContent className={`${maxWidthClass} !max-w-none !p-0 sm:max-h-[80vh] sm:overflow-auto`}>
+      <DialogContent className={`${maxWidthClass} !p-0 sm:overflow-auto`}>
         <div className="overflow-hidden h-full">
           <div
             className={`flex transition-transform duration-500 ease-in-out`}
             style={{ transform: `translateX(-${(steps - 1) * 100}%)` }}
           >
-            <div className="w-full flex-shrink-0 h-full overflow-y-auto">
+            <div className="w-full flex-shrink-0 overflow-y-auto">
               <div className="grid grid-cols-2 gap-6">
                 <div className="flex flex-col justify-center items-center gap-6">
                   <div className="text-body-md text-gray-300 mt-2">{index}</div>
@@ -211,7 +211,7 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId}: Edit
                       <br />
                       올바른 내역이 입력되었는지 다시 한 번 확인해주세요.
                     </p>
-                    <Button onClick={handleStepTwo}>
+                    <Button onClick={handleStepTwo} className="h-[50px] w-[400px] mt-2 !text-title-sm bg-green-500 hover:bg-green-600" >
                       <img src="/icon/step2.svg"/>
                       저장하기
                     </Button>
