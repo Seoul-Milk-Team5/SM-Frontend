@@ -27,6 +27,7 @@ import { FormatCreatedAt } from "@/shared/utils/FormatCreatedAt";
 import { getStatusLabel } from "@/shared/utils/getStatusLabel";
 import { TempSaveRequest } from "../service/TempSaveRequest";
 import { DeleteRequest } from "../service/DeleteRequest";
+import { StepProvider } from "@/app/providers/StepProvider";
 
 const processStatuses = ["ALL", "UNAPPROVED", "APPROVED", "REJECTED"] as const; //전체, 검증실패, 승인, 반려
 type ProcessStatus = (typeof processStatuses)[number];
@@ -155,12 +156,12 @@ export default function DataTable() {
   const filteredData = data?.result.page.content || [];
   const totalPages = data?.result.page.totalPages || 1;
 
-  useEffect(() => {
-    console.log("현재 state data 값:", data);
-  }, [data]); // `data` 값이 변경될 때마다 로그 찍기
+  // useEffect(() => {
+  //   console.log("현재 state data 값:", data);
+  // }, [data]); // `data` 값이 변경될 때마다 로그 찍기
 
   const openModal = (row: ContentItem, index: number) => {
-    console.log("조회된 모달의 아이디입니다 : ", row.id);
+    // console.log("조회된 모달의 아이디입니다 : ", row.id);
     setSelectedIndex(String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0"));
     setSeletedRowId(row.id);
 
@@ -291,12 +292,14 @@ export default function DataTable() {
         index={selectedIndex}
         rowId={selectedRowId}
       />
-      <EditApprovalModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        index={selectedIndex}
-        rowId={selectedRowId}
-      />
+      <StepProvider>
+        <EditApprovalModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          index={selectedIndex}
+          rowId={selectedRowId}
+        />
+      </StepProvider>
       <PreviewModal isOpen={isPreviewOpen} onClose={() => setIsPreviewOpen(false)} fileUrl={previewUrl!} />
 
       <Pagination className="mt-4">
