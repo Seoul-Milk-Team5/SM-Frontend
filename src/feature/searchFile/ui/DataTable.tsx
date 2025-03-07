@@ -160,7 +160,7 @@ export default function DataTable() {
   }, [data]); // `data` 값이 변경될 때마다 로그 찍기
 
   const openModal = (row: ContentItem, index: number) => {
-    console.log("조회된 모달의 아이디입니다 : ", row.id);
+    // console.log("조회된 모달의 아이디입니다 : ", row.id);
     setSelectedIndex(String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0"));
     setSeletedRowId(row.id);
 

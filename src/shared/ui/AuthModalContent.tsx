@@ -18,7 +18,7 @@ function AuthModalContent({ changeStep, ocrData }: AuthModalContentProps) {
   const { getUser } = useAuth();
   const token = getUser();
   const navigate = useNavigate();
-
+  console.log("요청할 ocrData", ocrData);
   // 개별 상태 관리
   const [formData, setFormData] = useState({
     loginTypeLevel: 0,
@@ -62,6 +62,10 @@ function AuthModalContent({ changeStep, ocrData }: AuthModalContentProps) {
   // 간편인증
   const handleAuthRequest = async () => {
     setFormData(prev => ({ ...prev, isRequestConfirmed: true }));
+
+    if(!ocrBody) {
+      console.log("ocr 데이터가 없어요!")
+    }
 
     const ocrReDataArray =
       ocrBody?.map(data => ({

@@ -1,16 +1,19 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState, useEffect } from "react";
 import { EditModalProps } from "../../feature/searchFile/model/EditModal.type";
 import BusinessInfo from "./BusinessInfo";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { InvoiceViewRequest } from "../api/InvoiceViewRequest";
 import { ModalData } from "../model";
 import FormInput from "./FormInput";
+import { StepProvider } from "@/app/providers/StepProvider";
+import { AuthModal } from "./AuthModal";
+import { OcrData } from "@/feature/main";
 
 export default function EditApprovalModal({ isOpen, onClose, index, rowId }: EditModalProps) {
   const [formData, setFormData] = useState<ModalData>({
-    code: 0, // 기본값 설정
+    code: 0,
     message: "",
     success: false,
     result: {
@@ -23,10 +26,13 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId }: Edi
       taxTotal: "",
       chargeTotal: "",
       grandTotal: "",
-      processStatus: "UNAPPROVED", // 기본값
+      processStatus: "UNAPPROVED",
       url: "",
     },
   });
+
+  const [userInput, setUserInput] = useState<OcrData[]>([]); // OcrData 배열로 초기화
+
   const { getUser } = useAuth();
 
   const fetchData = async () => {
@@ -53,6 +59,18 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId }: Edi
           ...response.result,
         },
       }));
+
+      // 초기 데이터로 OcrData 객체 설정
+      const initialOcrData: OcrData = {
+        extractedData: {
+          approval_number: response.result.issueId,
+          recipient_registration_number: response.result.ipId,
+          supplier_registration_number: response.result.suId,
+          issue_date: response.result.erDat,
+          chargeTotal: response.result.taxTotal,
+        },
+      };
+      setUserInput([initialOcrData]); // OcrData 배열로 설정
     } catch (error) {
       console.log("상세정보를 가져오는데 실패", error);
     }
@@ -61,13 +79,28 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId }: Edi
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    setFormData(prev => ({
-      ...prev!,
-      result: {
-        ...prev!.result,
-        [name]: value, // 변경된 값 반영
-      },
-    }));
+    setFormData(prev => {
+      const updatedFormData = {
+        ...prev!,
+        result: {
+          ...prev!.result,
+          [name]: value,
+        },
+      };
+
+      // formData 변경을 기반으로 userInput 업데이트
+      const updatedUserInput: OcrData = {
+        extractedData: {
+          approval_number: updatedFormData.result.issueId,
+          recipient_registration_number: updatedFormData.result.ipId,
+          supplier_registration_number: updatedFormData.result.suId,
+          issue_date: updatedFormData.result.erDat,
+          chargeTotal: updatedFormData.result.taxTotal,
+        },
+      };
+      setUserInput([updatedUserInput]); // 배열로 설정
+      return updatedFormData;
+    });
   };
 
   useEffect(() => {
@@ -75,10 +108,6 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId }: Edi
       fetchData();
     }
   }, [isOpen, rowId]);
-
-  useEffect(() => {
-    console.log("formData변경됨", formData);
-  }, [formData]); // formData가 변경될 때마다 로그 찍기
 
   const isPDF = formData?.result.url?.endsWith(".pdf");
 
@@ -157,10 +186,9 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId }: Edi
                 <br />
                 올바른 내역이 입력되었는지 다시 한 번 확인해주세요.
               </p>
-              <Button className="h-[50px] w-[400px] !text-title-sm bg-green-500 text-white hover:bg-green-600">
-                <img src="/icon/step2.svg" />
-                저장하기
-              </Button>
+              <StepProvider>
+                <AuthModal btnName="저장하기" disable={false} step={2} style="h-[50px] w-[400px] !text-title-sm" userInput={userInput} />
+              </StepProvider>
             </div>
           </div>
         </div>
