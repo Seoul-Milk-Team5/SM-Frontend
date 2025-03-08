@@ -45,14 +45,16 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
       const response = await ocrPostRequest(token, files as any);
 
       if (response.success) {
+        console.log(response);
         const fileCount = (files?.clientFiles?.length ?? 0) + (files?.result?.length ?? 0);
 
-        const filteredResults = response.result.filter(
-          item => item.extractedData && Object.values(item.extractedData).some(value => value !== "")
-        );
+        // const filteredResults = response.result.filter(
+        //   item => item.extractedData && Object.values(item.extractedData).some(value => value !== "")
+        // );
 
         // fileCount 만큼 제한하여 저장
-        const limitedResults = filteredResults.slice(0, fileCount);
+        const limitedResults = response.result.slice(0, fileCount);
+        console.log(limitedResults);
         setOcrData(limitedResults);
 
         setLoadingComent("텍스트 추출이 완료되었습니다.");

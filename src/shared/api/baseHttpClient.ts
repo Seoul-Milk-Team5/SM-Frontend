@@ -41,6 +41,10 @@ export const baseHttpClient = () => {
         const errorBody = await response.json();
         console.log("Response status:", response.status);
         console.log("Response body:", errorBody);
+
+        if (response.status === 500) {
+          throw new Error(`서버 에러가 발생했습니다. | ${response.status}`);
+        }
         throw new Error("Network response was not ok");
       }
 
