@@ -10,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 import { OcrData } from "@/feature/main";
 import { editInvoiceRequest } from "../api/editInvoiceRequest";
 
-
 interface AuthModalContentProps {
   changeStep?: (step: number) => void;
   ocrData?: OcrData[] | undefined;
@@ -67,17 +66,17 @@ function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: 
   const handleAuthRequest = async () => {
     setFormData(prev => ({ ...prev, isRequestConfirmed: true }));
 
-    if(!ocrBody) {
-      console.log("ocr 데이터가 없어요!")
+    if (!ocrBody) {
+      console.log("ocr 데이터가 없어요!");
     }
 
     const ocrReDataArray =
       ocrBody?.map(data => ({
-        supplierRegNumber: data.extractedData.ipId,
-        contractorRegNumber: data.extractedData.suId,
-        approvalNo: data.extractedData.issueId,
-        reportingDate: data.extractedData.erDat,
-        supplyValue: data.extractedData.chargeTotal,
+        supplierRegNumber: data.extractedData.ipId || "",
+        contractorRegNumber: data.extractedData.suId || "",
+        approvalNo: data.extractedData.issueId || "",
+        reportingDate: data.extractedData.erDat || "",
+        supplyValue: data.extractedData.chargeTotal || "",
       })) ?? [];
 
     console.log(ocrReDataArray);
@@ -92,7 +91,6 @@ function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: 
       taxInvoiceInfoList: ocrReDataArray,
     };
 
-
     const editRequestData = {
       taxInvoiceId: taxInvoiceId ?? 0,
       issueId: ocrBody?.[0]?.extractedData?.issueId || "",
@@ -100,16 +98,16 @@ function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: 
       suId: ocrBody?.[0]?.extractedData?.suId || "",
       ipId: ocrBody?.[0]?.extractedData?.ipId || "",
       chargeTotal: Number(ocrBody?.[0]?.extractedData?.chargeTotal || 0),
-    }
-    
-    if (isEditRequest) { // 사용자 입력이 있을 경우 = 수정 요청
+    };
+
+    if (isEditRequest) {
+      // 사용자 입력이 있을 경우 = 수정 요청
       console.log("요청할 데이터: ", editRequestData);
       const response = await editInvoiceRequest(token, editRequestData);
       console.log("수정 결과", response);
     }
 
     console.log(requestData);
-
 
     // 간편인증 요청 API 연결
     const response = await authRequest(token, requestData);
@@ -123,16 +121,16 @@ function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: 
     changeStep?.(3);
     const response = await reAuthRequest(token, key);
     if (response.success) {
-      if(isEditRequest) {
+      if (isEditRequest) {
         setTimeout(() => {
           window.location.reload(); // 페이지 새로고침(임시)
           changeStep?.(1);
-        })
+        });
       } else {
         setTimeout(() => {
           navigate("/dashboard/searchfile");
           changeStep?.(1);
-        }, 1500);        
+        }, 1500);
       }
     }
   };
