@@ -187,13 +187,13 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId}: Edit
                       width="250px"
                     />
                     <FormInput
-                      label="공급자 사업자등록번호"
+                      label="공급받는자 사업자등록번호"
                       name="suId"
                       value={formData?.result.suId}
                       onChange={handleChange}
                     />
                     <FormInput
-                      label="공급받는자 등록번호"
+                      label="공급자 사업자등록번호"
                       name="ipId"
                       value={formData?.result.ipId}
                       onChange={handleChange}
