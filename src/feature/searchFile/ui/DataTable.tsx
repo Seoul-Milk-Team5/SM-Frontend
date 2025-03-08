@@ -177,12 +177,20 @@ export default function DataTable() {
     setSelectedRows(prev => (prev.includes(id) ? prev.filter(rowId => rowId !== id) : [...prev, id]));
   };
 
+  const toggleSelectAll = () => {
+    setSelectedRows(prev => {
+      const currentPageRowIds = filteredData.map(row => row.id);
+      return prev.length === currentPageRowIds.length ? [] : currentPageRowIds;
+    });
+  };
+    
+
   return (
     <div className="p-[46px] bg-[#FFF] rounded-lg">
       <div className="flex justify-between mb-4">
         <div className="flex gap-2">
           <DropdownMenu onOpenChange={setIsDropdownOpen}>
-            <DropdownMenuTrigger className="flex justify-between w-[156px] h-[40px] px-4 py-2 border rounded-lg text-gray-300">
+            <DropdownMenuTrigger className="flex justify-between w-[156px] h-[40px] px-4 py-2 border rounded-lg text-gray-300 cursor-pointer">
               {getStatusLabel(selectedProcessStatus)} ({statusCounts[selectedProcessStatus as keyof StatusCount]})
               <img src={isDropdownOpen ? "/icon/activeDropdown.svg" : "/icon/dropdown.svg"} alt="dropdown" />
             </DropdownMenuTrigger>
@@ -224,9 +232,15 @@ export default function DataTable() {
       </div>
 
       <Table>
-        <TableHeader className="h-[57px] pointer-events-none">
+        <TableHeader className="h-[57px]">
           <TableRow>
-            <TableHead></TableHead>
+            <TableHead>
+            <Checkbox
+              checked={filteredData.length > 0 && filteredData.every(row => selectedRows.includes(row.id))}
+              onCheckedChange={toggleSelectAll}
+              className="h-[24px] w-[24px] bg-gray-50 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
+            />
+            </TableHead>
             <TableHead>번호</TableHead>
             <TableHead>공급자</TableHead>
             <TableHead>공급받는자</TableHead>
@@ -240,11 +254,11 @@ export default function DataTable() {
             filteredData.map((row, index) => (
               <TableRow
                 key={row.id}
-                className={`h-[68px] ${selectedRows.includes(row.id) ? "bg-green-0 hover:bg-green-0" : ""}`}
+                className={`h-[68px] cursor-pointer ${selectedRows.includes(row.id) ? "bg-green-0 hover:bg-green-0" : ""}`}
                 onClick={() => openModal(row, index)}>
                 <TableCell className="w-[70px]">
                   <Checkbox
-                    className="h-[24px] w-[24px] bg-gray-50 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
+                    className="h-[24px] w-[24px] bg-gray-50 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500 cursor-pointer"
                     checked={selectedRows.includes(row.id)}
                     onCheckedChange={() => toggleRowSelection(row.id)}
                     onClick={e => e.stopPropagation()}
