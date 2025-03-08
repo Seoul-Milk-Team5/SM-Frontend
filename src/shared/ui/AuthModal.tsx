@@ -42,13 +42,16 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
 
     try {
       const response = await ocrPostRequest(token, files as any);
-      const fileCount = (files?.clientFiles?.length ?? 0) + (files?.result?.length ?? 0);
-      console.log(response.result);
-
-      const limitedResults = response.result.slice(0, fileCount);
-      setOcrData(limitedResults);
-
       if (response.success) {
+        const fileCount = (files?.clientFiles?.length ?? 0) + (files?.result?.length ?? 0);
+
+        const filteredResults = response.result.filter(
+          item => item.extractedData && Object.values(item.extractedData).some(value => value !== "")
+        );
+        // fileCount 만큼 제한하여 저장
+        const limitedResults = filteredResults.slice(0, fileCount);
+        setOcrData(limitedResults);
+
         setLoadingComent("텍스트 추출이 완료되었습니다.");
         setTimeout(() => {
           setSteps(2);
@@ -65,7 +68,7 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
       } else if (error.message.includes("500")) {
         setLoadingComent("서버 오류가 발생했습니다.");
       } else if (error.message.includes("403")) {
-        setLoadingComent("서버 오류가 발생했습니다.");
+        setLoadingComent("로그인이 만료되었습니다.");
       } else {
         setLoadingComent(error.message || "OCR 요청 중 오류가 발생했습니다.");
       }

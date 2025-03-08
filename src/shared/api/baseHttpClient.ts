@@ -68,9 +68,6 @@ export const baseHttpClient = () => {
       });
 
       if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error(`OCR 요청 중 오류가 발생했습니다. | ${response.status}`);
-        }
         if (response.status === 403) {
           cookies.remove("access_token", { path: "/" });
           throw new Error(`로그인이 만료되었습니다. | ${response.status}`);
@@ -78,7 +75,7 @@ export const baseHttpClient = () => {
         const errorBody = await response.json();
         console.log("Response status:", response.status);
         console.log("Response body:", errorBody);
-        throw new Error("OCR 요청 중 오류가 발생했습니다.");
+        throw new Error("API 요청 중 오류가 발생했습니다.");
       }
 
       // 성공적인 응답 처리
