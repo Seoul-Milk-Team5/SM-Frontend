@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -120,7 +120,7 @@ export default function DataTable() {
     }
   };
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const token = getUser();
     if (!token) return; // `search`가 아닌 `poc`을 체크해야 함.
     try {
@@ -135,7 +135,7 @@ export default function DataTable() {
     } catch (error) {
       console.log("검증내역 값을 가져오는데 실패", error);
     }
-  };
+  }, [search, selectedProcessStatus, currentPage, itemsPerPage]);
 
   const openPreview = (url: string) => {
     setPreviewUrl(url);
@@ -300,6 +300,7 @@ export default function DataTable() {
           )}
         </TableBody>
       </Table>
+      {/* 모달 */}
       <ApprovalModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -314,8 +315,13 @@ export default function DataTable() {
           rowId={selectedRowId}
         />
       </StepProvider>
-      <PreviewModal isOpen={isPreviewOpen} onClose={() => setIsPreviewOpen(false)} fileUrl={previewUrl!} />
+      <PreviewModal
+        isOpen={isPreviewOpen} 
+        onClose={() => setIsPreviewOpen(false)} 
+        fileUrl={previewUrl!} 
+      />
 
+      {/* 페이지네이션 */}
       <Pagination className="mt-4">
         <PaginationContent>
           <PaginationItem>

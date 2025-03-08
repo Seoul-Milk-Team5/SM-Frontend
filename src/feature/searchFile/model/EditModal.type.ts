@@ -4,6 +4,7 @@ export interface EditModalProps {
   onClose: () => void;
   index: string | null;
   rowId: number | null;
+  //dataTableFetch?: () => Promise<void>;
 }
 
 export interface UnapprovalData {

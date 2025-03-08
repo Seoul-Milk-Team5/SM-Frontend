@@ -15,6 +15,7 @@ interface AuthModalContentProps {
   ocrData?: OcrData[] | undefined;
   isEditRequest?: boolean;
   taxInvoiceId?: number | null;
+  // dataTableFetch?: () => Promise<void>;
 }
 
 function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: AuthModalContentProps) {
@@ -122,8 +123,12 @@ function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: 
     const response = await reAuthRequest(token, key);
     if (response.success) {
       if (isEditRequest) {
-        setTimeout(() => {
-          window.location.reload(); // 페이지 새로고침(임시)
+        setTimeout(async () => {
+          window.location.reload(); // fetchData로 대체 예정.
+          // if (dataTableFetch) {
+          //   console.log("데이터 재요청중!!!");
+          //   await dataTableFetch();
+          // }
           changeStep?.(1);
         });
       } else {
