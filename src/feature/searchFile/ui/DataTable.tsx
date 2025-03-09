@@ -25,7 +25,6 @@ import { ApiResponse, ContentItem } from "../model/SearchFIle.type";
 import PreviewModal from "./PreviewModal";
 import { FormatCreatedAt } from "@/shared/utils/FormatCreatedAt";
 import { getStatusLabel } from "@/shared/utils/getStatusLabel";
-import { TempSaveRequest } from "../service/TempSaveRequest";
 import { DeleteRequest } from "../service/DeleteRequest";
 import { StepProvider } from "@/app/providers/StepProvider";
 
@@ -62,33 +61,6 @@ export default function DataTable() {
     UNAPPROVED: data?.result.unapproved || 0,
     APPROVED: data?.result.approved || 0,
     REJECTED: data?.result.rejected || 0,
-  };
-
-  const handleTempSave = async () => {
-    const token = getUser();
-    if (selectedRows.length === 0) {
-      alert("저장할 항목을 선택하세요.");
-      return;
-    }
-    if (!token) {
-      console.error("인증 토큰이 없습니다.");
-      return;
-    }
-
-    const taxInvoiceIdList = selectedRows
-      .map(rowId => {
-        const rowData = filteredData.find(row => row.id === rowId);
-        return rowData?.id;
-      })
-      .filter(id => id !== undefined);
-    try {
-      await TempSaveRequest(taxInvoiceIdList as number[], token);
-      alert("임시 저장이 완료되었습니다.");
-      setSelectedRows([]);
-      fetchData();
-    } catch (error) {
-      console.log("임시 저장 실패", error);
-    }
   };
 
   const handleDelete = async () => {
@@ -164,10 +136,6 @@ export default function DataTable() {
   const filteredData = data?.result.page.content || [];
   const totalPages = data?.result.page.totalPages || 1;
 
-  // useEffect(() => {
-  //   console.log("현재 state data 값:", data);
-  // }, [data]); // `data` 값이 변경될 때마다 로그 찍기
-
   const openModal = (row: ContentItem, index: number) => {
     // console.log("조회된 모달의 아이디입니다 : ", row.id);
     setSelectedIndex(String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0"));
@@ -226,11 +194,6 @@ export default function DataTable() {
         </div>
 
         <div className="flex gap-[15px]">
-          <Button
-            onClick={handleTempSave}
-            className="!text-body-md-sb text-green-500 w-[111px] h-[40px] bg-[#FFF] border border-green-500 hover:bg-white disabled:opacity-100 disabled:bg-green-200">
-            임시 저장
-          </Button>
           <Button
             onClick={handleDelete}
             className="!text-body-md-sb text-[#FFF] w-[111px] h-[40px] bg-green-500 hover:bg-green-600 disabled:opacity-100 disabled:bg-gray-100">
