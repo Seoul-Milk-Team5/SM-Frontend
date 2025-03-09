@@ -1,30 +1,49 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { getStatusLabel } from "@/shared/utils/getStatusLabel";
+import { useAuth } from "@/app/providers/AuthProvider";
+import { useSearch } from "@/app/providers/UserSearchProvider";
+import { OcrSearchRequest } from "@/shared/api";
+import { ApiResponse, InvoiceContent } from "@/shared/model";
+import { TruncateFileName } from "@/shared/utils";
 
-
-const data = Array.from({ length: 100 }, (_, i) => ({
-  id: i + 1,
-  provider: "서울우유 강동지점",
-  receiver: "파리바게트 수원역점",
-  date: "25. 06. 14",
-  preview: "IMG_45678910",
-  status: ["승인", "반려", "검증실패"][i % 3],
-}));
 
 export default function UserTable() {
+  const { getUser } = useAuth();
+  const { getSearchParams } = useSearch();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<number[]>([]); // 선택된 cell 값들 저장
+  const [data, setData] = useState<InvoiceContent[]>([]);
+  const [totalPages, setTotalPages] = useState<number>(0); // 총 페이지 수
+  const [totalElements, setTotalElements] = useState<number>(0); // 총 데이터 개수
 //   const [isModalOpen, setIsModalOpen] = useState(false);
 //   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
+
   const itemsPerPage = 10; // 페이지별 아이템 개수
+
+  const fetchData = async () => {
+    const searchParams = getSearchParams();
+    const token = getUser();
+    try{
+      const response = await OcrSearchRequest(token, searchParams);
+      const data = response.result.content;
+      setData(data);
+      setTotalElements(response.result.totalElements);
+      setTotalPages(response.result.totalPages);
+    } catch (error) {
+      console.log("업무 데이터를 불러오는데 실패했습니다.", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, [currentPage, getSearchParams]); // 페이지가 바뀌거나 params를 바꾼뒤 조회를 누르면 fetch
   
-  const filteredData = data;
-  const paginatedData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
 //   const openModal = (row: typeof data[number]) => {
 //     if(row.status === "승인") {
@@ -65,8 +84,8 @@ export default function UserTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {paginatedData.length > 0 ? (
-              paginatedData.map((row) => (
+          {data.length > 0 ? (
+              data.map((row) => (
                 <TableRow 
                   key={row.id} 
                   className={`h-[68px] ${selectedRows.includes(row.id) ? "bg-green-0 hover:bg-green-0" : ""}`}
@@ -80,12 +99,21 @@ export default function UserTable() {
                     />
                   </TableCell>
                   <TableCell>{row.id}</TableCell>
-                  <TableCell>{row.provider}</TableCell>
-                  <TableCell>{row.receiver}</TableCell>
-                  <TableCell>{row.date}</TableCell>
-                  <TableCell className="text-gray-300 underline cursor-pointer">{row.preview}</TableCell>
+                  <TableCell>{row.ipName}</TableCell>
+                  <TableCell>{row.suName}</TableCell>
+                  <TableCell>{row.erDat}</TableCell>
+                  <TableCell className="text-gray-300 underline cursor-pointer">
+                    {TruncateFileName(row.imageUrl)}
+                  </TableCell>
                   <TableCell>
-                      {row.status}
+                    <Badge custom={
+                      ["APPROVED", "REJECTED", "UNAPPROVED"].includes(row.status)
+                        ? (row.status as "APPROVED" | "REJECTED" | "UNAPPROVED")
+                        : undefined
+                    }>
+                      {getStatusLabel(row.status as "APPROVED" | "REJECTED" | "UNAPPROVED")}
+                                  
+                    </Badge>
                   </TableCell>
                 </TableRow>
               ))

@@ -4,7 +4,7 @@ import { getFetchHeader } from "../utils";
 
 export async function OcrSearchRequest(token: string, params: SearchParams): Promise<ApiResponse> {
   const HEADER = getFetchHeader(token, "a");
-  const url = '/api/ocr/search';
+  const url = 'api/ocr/search';
 
   try{
     const response = await baseHttpClient().get<ApiResponse>(url, HEADER, params);

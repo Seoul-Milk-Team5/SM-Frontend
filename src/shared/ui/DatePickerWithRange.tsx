@@ -10,8 +10,6 @@ import { Dispatch, SetStateAction } from "react";
 
 type FilterState = {
   date: { limit: number; from: Date; to: Date };
-  companyName: string;
-  fileType: string;
 };
 
 type DatePickerWithRangeProps = {

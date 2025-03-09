@@ -5,7 +5,7 @@ export interface ApiResponse {
   success: boolean;
 }
   
-interface Result {
+export interface Result {
   totalElements: number;
   totalPages: number;
   size: number;
@@ -19,7 +19,7 @@ interface Result {
   empty: boolean;
 }
   
-interface InvoiceContent {
+export interface InvoiceContent {
   id: number;
   employeeId: string;
   status: string;
@@ -48,7 +48,7 @@ interface Sort {
   unsorted: boolean;
 }
   
-interface Pageable {
+export interface Pageable {
   offset: number;
   sort: Sort;
   pageNumber: number;

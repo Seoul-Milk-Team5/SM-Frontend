@@ -1,65 +1,92 @@
+import { useSearch } from "@/app/providers/UserSearchProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import DatePickerWithRange from "@/shared/ui/DatePickerWithRange";
+import { getStatusLabel } from "@/shared/utils/getStatusLabel";
 import { useState } from "react";
 
 export default function Searchbar() {
+  const { setFilters } = useSearch();
   const [filter, setFilter] = useState({
-    date: { limit: 0, from: new Date(), to: new Date() },
-    companyName: "",
-    fileType: "",
+    date: null,
+    period: 0,
+    provider: "",
+    consumer: "",
+    status: "",
+    page: 1,
+    size: 10,
   });
+
+  const initialFilter = {
+    date: null,
+    period: 0,
+    provider: "",
+    consumer: "",
+    status: "",
+    page: 1,
+    size: 10,
+  };
 
   const [selectedPeriod, setSelectedPeriod] = useState<number | null>(null);
   const [isCustomDateSelected, setIsCustomDateSelected] = useState(false);
   const [selectedApproval, setSelectedApproval] = useState<string | null>("전체");
 
-  const [name, setName] = useState({
-    suBusinessName: "",
-    ipBusinessName: "",
-  });
-
+  // period 선택
   const handlePeriodSelect = (limit: number) => {
     setSelectedPeriod(limit);
     setIsCustomDateSelected(false);
     setFilter((prev) => ({
       ...prev,
-      date: { limit, from: new Date(), to: new Date() },
+      period: limit,
     }));
   };
 
-  const handleCustomDateSelect = () => {
-    setSelectedPeriod(null);
-    setIsCustomDateSelected(true);
-  };
-
+  // 공급자와 소비자 입력값 처리
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setName((prev) => ({
+    setFilter((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: value,  // 필터 상태에서 직접 업데이트
     }));
   };
 
   const handleApprovalSelect = (status: string) => {
-    setSelectedApproval(status);
+    if (status === "ALL") {
+      setSelectedApproval("ALL");
+      setFilter((prev) => ({
+        ...prev,
+        status: "",  // "ALL"을 선택하면 빈 문자열로 설정
+      }));
+    } else {
+      setSelectedApproval(status);
+      setFilter((prev) => ({
+        ...prev,
+        status,  // 다른 승인 상태는 그대로 처리
+      }));
+    }
   };
+  
 
   const handleReset = () => {
     setSelectedPeriod(null);
     setIsCustomDateSelected(false);
     setSelectedApproval("전체");
-    setName({ suBusinessName: "", ipBusinessName: "" });
-    setFilter({ date: { limit: 0, from: new Date(), to: new Date() }, companyName: "", fileType: "" });
+    setFilter(initialFilter);
+    setFilters(initialFilter);
   };
 
-  // 버튼 비활성화 여부를 계산하는 조건
   const isDisabled =
     selectedPeriod === null &&
     !isCustomDateSelected &&
     selectedApproval === "전체" &&
-    name.suBusinessName.trim() === "" &&
-    name.ipBusinessName.trim() === "";
+    filter.provider.trim() === "" &&
+    filter.consumer.trim() === "";
+
+  const handleSearchFilter = () => {
+    setFilters(filter);
+    console.log("다음 데이터를 조회합니다.", filter);
+  };
+
+  
 
   return (
     <div>
@@ -82,6 +109,7 @@ export default function Searchbar() {
           <Button
             className="!text-[#FFF] bg-green-500 h-[40px] w-[120px] hover:bg-green-600 !text-body-md-sb disabled:opacity-100 disabled:bg-gray-100 disabled:text-[#FFF]"
             disabled={isDisabled}
+            onClick={handleSearchFilter}
           >
             조회하기
           </Button>
@@ -108,12 +136,6 @@ export default function Searchbar() {
               </Button>
             ))}
           </div>
-          <DatePickerWithRange
-            date={filter.date}
-            setFilter={setFilter}
-            disabled={selectedPeriod !== null}
-            onSelect={handleCustomDateSelect}
-          />
         </div>
       </div>
       {/* 공급자 */}
@@ -121,9 +143,9 @@ export default function Searchbar() {
         <div className="flex space-x-[68px] items-center">
           <span className="text-body-md-m text-gray-500">공급자</span>
           <Input
-            name="suBusinessName"
+            name="provider" // 필드명을 filter에 맞춰 설정
             placeholder="상호 (법인명)"
-            value={name.suBusinessName}
+            value={filter.provider} // filter에서 가져온 값을 사용
             onChange={handleInputChange}
             className="w-[313px] h-[40px]"
           />
@@ -131,9 +153,9 @@ export default function Searchbar() {
         <div className="flex space-x-[30px] items-center">
           <span className="text-body-md-m text-gray-500">공급받는자</span>
           <Input
-            name="ipBusinessName"
+            name="consumer" // 필드명을 filter에 맞춰 설정
             placeholder="상호 (법인명)"
-            value={name.ipBusinessName}
+            value={filter.consumer} // filter에서 가져온 값을 사용
             onChange={handleInputChange}
             className="w-[313px] h-[40px]"
           />
@@ -143,7 +165,7 @@ export default function Searchbar() {
       <div className="flex space-x-[48px] mt-7 items-center">
         <span className="text-body-md-m text-gray-500">승인 여부</span>
         <div className="flex gap-2 mt-2">
-          {["전체", "승인", "반려", "검증실패"].map((status) => (
+          {["ALL", "APPROVED", "REJECTED", "UNAPPROVED"].map((status) => (
             <Button
               key={status}
               onClick={() => handleApprovalSelect(status)}
@@ -153,7 +175,7 @@ export default function Searchbar() {
                   : "text-gray-800 border-gray-100"
               } bg-[#FFF] hover:bg-white w-[72px] h-[39px]`}
             >
-              {status}
+              {getStatusLabel(status as "ALL"| "APPROVED" | "REJECTED" | "UNAPPROVED")}
             </Button>
           ))}
         </div>
