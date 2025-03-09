@@ -123,10 +123,7 @@ function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: 
       if (response.success) {
         changeStep?.(3);
         if (isEditRequest) {
-          setTimeout(() => {
-            window.location.reload(); // 페이지 새로고침(임시)
-            changeStep?.(1);
-          });
+          changeStep?.(1);
         } else {
           setTimeout(() => {
             navigate("/dashboard/searchfile");
