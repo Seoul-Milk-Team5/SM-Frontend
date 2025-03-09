@@ -131,15 +131,12 @@ function AuthModalContent({
     const response = await reAuthRequest(token, key);
     if (response.success) {
       if (isEditRequest) {
-        setTimeout(async () => {
-          // window.location.reload(); // fetchData로 대체 예정.
-          if (dataTableFetch) {
-            console.log("업데이트 성공 데이터를 다시 불러옵니다.");
-            await dataTableFetch();
-            editModalClose?.();
-          }
-          changeStep?.(1);
-        });
+        if (dataTableFetch) {
+          console.log("업데이트 성공 데이터를 다시 불러옵니다.");
+          await dataTableFetch();
+          editModalClose?.();
+        }
+        changeStep?.(1);
       } else {
         setTimeout(() => {
           navigate("/dashboard/searchfile");

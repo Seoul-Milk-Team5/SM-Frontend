@@ -4,7 +4,6 @@ import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import LogoutModal from "./LogoutModal";
 import { useAuth } from "@/app/providers/AuthProvider";
-import { deleteCookie } from "../utils";
 
 
 function Sidebar() {
@@ -12,14 +11,13 @@ function Sidebar() {
   const { userRole } = useAuth();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const navigate = useNavigate();
-  const { setIsAuthenticated } = useAuth();
+  const { logout } = useAuth();
 
   const isActive = (path: string | string[]) =>
     Array.isArray(path) ? path.includes(location.pathname) : location.pathname === path;
 
   const handleLogout = () => {
-    deleteCookie("access_token");
-    setIsAuthenticated(false);
+    logout();
     console.log("사용자가 로그아웃되었습니다.");
     navigate("/"); 
     setIsLogoutModalOpen(false);
