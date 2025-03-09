@@ -92,6 +92,19 @@ export default function UserTable() {
     });
   };
 
+  const formatDate = (dateArray: number[]): string => {
+    if (dateArray.length < 3) {
+      throw new Error("Invalid date array. At least [year, month, day] are required.");
+    }
+  
+    const [year, month, day] = dateArray;
+    const formattedYear = String(year).slice(2); // 연도 두 자리
+    const formattedMonth = String(month).padStart(2, "0"); // 01~12 보장
+    const formattedDay = String(day).padStart(2, "0"); // 01~31 보장
+  
+    return `${formattedYear}.${formattedMonth}.${formattedDay}`;
+  };
+
   return (
     <div className="p-[20px] bg-[#FFF] rounded-lg">
       <div className="flex justify-between mb-7">
@@ -140,7 +153,7 @@ export default function UserTable() {
                   <TableCell>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</TableCell>
                   <TableCell>{row.ipName}</TableCell>
                   <TableCell>{row.suName}</TableCell>
-                  <TableCell>{row.erDat}</TableCell>
+                  <TableCell>{formatDate(row.createAt)}</TableCell>
                   <TableCell 
                     className="text-gray-300 underline cursor-pointer"
                     onClick={e => {
@@ -157,7 +170,7 @@ export default function UserTable() {
                         : undefined
                     }>
                       {getStatusLabel(row.status as "APPROVED" | "REJECTED" | "UNAPPROVED")}
-                                  
+                            
                     </Badge>
                   </TableCell>
                 </TableRow>

@@ -4,8 +4,9 @@ interface SearchFilters {
   provider?: string;
   consumer?: string;
   employeeId?: string;
-  date?: { from: Date; to: Date } | null;
-  period?: number;
+  startDate?: Date | undefined;
+  endDate?: Date | undefined;
+  period?: number | null;
   status?: string | null;
   page?: number;
   size?: number;
@@ -24,11 +25,13 @@ export const UserSearchProvider = ({ children }: { children: ReactNode }) => {
     provider: "",
     consumer: "",
     employeeId: "",
-    date: null,
-    period: 0,
+    startDate: undefined,
+    endDate: undefined,
+    period: null,
     status: null,
     page: 1,
     size: 10,
+
   });
 
   const setFilters = (newFilters: Partial<SearchFilters>) => {
@@ -36,7 +39,7 @@ export const UserSearchProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getSearchParams = () => {
-    const { provider, consumer, employeeId, date, period, status, page, size } = filters;
+    const { provider, consumer, employeeId, period, status, page, size, startDate, endDate } = filters;
 
     const searchParams: { [key: string]: any } = {
       provider,
@@ -46,12 +49,9 @@ export const UserSearchProvider = ({ children }: { children: ReactNode }) => {
       status,
       page,
       size,
+      startDate,
+      endDate,
     };
-
-    if (date) {
-      searchParams.dateFrom = date.from?.toISOString();
-      searchParams.dateTo = date.to?.toISOString();
-    }
 
     return Object.fromEntries(Object.entries(searchParams).filter(([_, v]) => v != null));
   };

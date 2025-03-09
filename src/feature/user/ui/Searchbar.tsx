@@ -1,29 +1,34 @@
 import { useSearch } from "@/app/providers/UserSearchProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import DatePickerWithRange from "@/shared/ui/DatePickerWithRange";
+
 import { getStatusLabel } from "@/shared/utils/getStatusLabel";
 import { useState } from "react";
+import { DateRange } from "react-day-picker";
 
 export default function Searchbar() {
   const { setFilters } = useSearch();
   const [filter, setFilter] = useState({
-    date: null,
-    period: 0,
+    period: null as number | null,
     provider: "",
     consumer: "",
     status: null as string | null,
     page: 1,
     size: 10,
+    startDate: undefined as Date | undefined ,
+    endDate: undefined as Date | undefined,
   });
 
   const initialFilter = {
-    date: null,
-    period: 0,
+    period: null,
     provider: "",
     consumer: "",
     status: null,
     page: 1,
     size: 10,
+    startDate: undefined,
+    endDate: undefined,
   };
 
   const [selectedPeriod, setSelectedPeriod] = useState<number | null>(null);
@@ -31,7 +36,7 @@ export default function Searchbar() {
   const [selectedApproval, setSelectedApproval] = useState<string | null>("전체");
 
   // period 선택
-  const handlePeriodSelect = (limit: number) => {
+  const handlePeriodSelect = (limit: number | null) => {
     setSelectedPeriod(limit);
     setIsCustomDateSelected(false);
     setFilter((prev) => ({
@@ -54,13 +59,13 @@ export default function Searchbar() {
       setSelectedApproval("ALL");
       setFilter((prev) => ({
         ...prev,
-        status: null,  // "ALL"을 선택하면 빈 문자열로 설정
+        status: null,
       }));
     } else {
       setSelectedApproval(status);
       setFilter((prev) => ({
         ...prev,
-        status,  // 다른 승인 상태는 그대로 처리
+        status,
       }));
     }
   };
@@ -86,7 +91,17 @@ export default function Searchbar() {
     console.log("다음 데이터를 조회합니다.", filter);
   };
 
-  
+// DatePickerWithRange에서 날짜 범위 선택 후 filter 업데이트
+const handleDateRangeChange = (range: DateRange | undefined) => {
+  setFilter((prev) => ({
+    ...prev,
+    startDate: range?.from,
+    endDate: range?.to,
+    period: null, // 날짜를 직접 선택하면 period 초기화
+  }));
+  setIsCustomDateSelected(true);
+  setSelectedPeriod(null);
+};
 
   return (
     <div>
@@ -117,7 +132,7 @@ export default function Searchbar() {
       </div>
       <div className="w-full bg-gray-0 h-1.5 mb-7 mt-4"></div>
       {/* 날짜 */}
-      <div className="flex space-x-[82px] items-center">
+      <div className="flex space-x-[32px] items-center">
         <span className="text-body-md-m text-gray-500">날짜</span>
         <div className="flex gap-4">
           <div className="flex gap-2">
@@ -137,6 +152,11 @@ export default function Searchbar() {
             ))}
           </div>
         </div>
+        <DatePickerWithRange
+          date={{ from: filter.startDate, to: filter.endDate }}
+          onSelect={handleDateRangeChange} // `handleDateRangeChange`를 전달
+        />
+
       </div>
       {/* 공급자 */}
       <div className="flex space-x-7 mt-7">

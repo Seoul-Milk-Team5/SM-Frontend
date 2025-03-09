@@ -39,7 +39,7 @@ export interface InvoiceContent {
   imageUrl: string;
   errorDetails: string[];
   isTemporary: string;
-  createAt: string;
+  createAt: number[];
 }
   
 interface Sort {
