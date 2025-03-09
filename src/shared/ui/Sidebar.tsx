@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { cn } from "../../lib/utils";
 import { useLocation } from "react-router-dom";
 import { useState } from "react";
@@ -10,12 +10,16 @@ function Sidebar() {
   const location = useLocation();
   const { userRole } = useAuth();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const isActive = (path: string | string[]) =>
     Array.isArray(path) ? path.includes(location.pathname) : location.pathname === path;
 
   const handleLogout = () => {
-    console.log("사용자가 로그아웃되었습니다."); // 실제 로그아웃 로직 추가
+    logout();
+    console.log("사용자가 로그아웃되었습니다.");
+    navigate("/"); 
     setIsLogoutModalOpen(false);
   };
 

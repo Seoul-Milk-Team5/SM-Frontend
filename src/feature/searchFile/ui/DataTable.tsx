@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,12 +22,12 @@ import EditApprovalModal from "../../../shared/ui/EditModal";
 import { searchFileGetRequest } from "../service/SearchFileRequest";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { ApiResponse, ContentItem } from "../model/SearchFIle.type";
-import PreviewModal from "./PreviewModal";
+
 import { FormatCreatedAt } from "@/shared/utils/FormatCreatedAt";
 import { getStatusLabel } from "@/shared/utils/getStatusLabel";
-import { TempSaveRequest } from "../service/TempSaveRequest";
 import { DeleteRequest } from "../service/DeleteRequest";
 import { StepProvider } from "@/app/providers/StepProvider";
+import PreviewModal from "@/shared/ui/PreviewModal";
 
 const processStatuses = ["ALL", "UNAPPROVED", "APPROVED", "REJECTED"] as const; //전체, 검증실패, 승인, 반려
 type ProcessStatus = (typeof processStatuses)[number];
@@ -64,33 +64,6 @@ export default function DataTable() {
     REJECTED: data?.result.rejected || 0,
   };
 
-  const handleTempSave = async () => {
-    const token = getUser();
-    if (selectedRows.length === 0) {
-      alert("저장할 항목을 선택하세요.");
-      return;
-    }
-    if (!token) {
-      console.error("인증 토큰이 없습니다.");
-      return;
-    }
-
-    const taxInvoiceIdList = selectedRows
-      .map(rowId => {
-        const rowData = filteredData.find(row => row.id === rowId);
-        return rowData?.id;
-      })
-      .filter(id => id !== undefined);
-    try {
-      await TempSaveRequest(taxInvoiceIdList as number[], token);
-      alert("임시 저장이 완료되었습니다.");
-      setSelectedRows([]);
-      fetchData();
-    } catch (error) {
-      console.log("임시 저장 실패", error);
-    }
-  };
-
   const handleDelete = async () => {
     const token = getUser();
     if (selectedRows.length === 0) {
@@ -120,7 +93,7 @@ export default function DataTable() {
     }
   };
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const token = getUser();
     if (!token) return; // `search`가 아닌 `poc`을 체크해야 함.
     try {
@@ -135,7 +108,7 @@ export default function DataTable() {
     } catch (error) {
       console.log("검증내역 값을 가져오는데 실패", error);
     }
-  };
+  }, [search, selectedProcessStatus, currentPage, itemsPerPage]);
 
   const openPreview = (url: string) => {
     setPreviewUrl(url);
@@ -149,16 +122,20 @@ export default function DataTable() {
     return baseName.slice(0, maxLength - ext.length) + "..." + ext;
   };
 
+  const [isFetch, setIsFetch] = useState(0); // 테스트 이후 삭제
+
   useEffect(() => {
-    fetchData();
+    if (isFetch < 9) {
+      fetchData();
+      let counter = isFetch + 1;
+      setIsFetch(counter);
+      console.log(counter, "번 째로 검증내역 데이터를 불러옵니다");
+    }
+
   }, [selectedProcessStatus, currentPage]);
 
   const filteredData = data?.result.page.content || [];
   const totalPages = data?.result.page.totalPages || 1;
-
-  // useEffect(() => {
-  //   console.log("현재 state data 값:", data);
-  // }, [data]); // `data` 값이 변경될 때마다 로그 찍기
 
   const openModal = (row: ContentItem, index: number) => {
     // console.log("조회된 모달의 아이디입니다 : ", row.id);
@@ -177,12 +154,20 @@ export default function DataTable() {
     setSelectedRows(prev => (prev.includes(id) ? prev.filter(rowId => rowId !== id) : [...prev, id]));
   };
 
+  const toggleSelectAll = () => {
+    setSelectedRows(prev => {
+      const currentPageRowIds = filteredData.map(row => row.id);
+      return prev.length === currentPageRowIds.length ? [] : currentPageRowIds;
+    });
+  };
+    
+
   return (
     <div className="p-[46px] bg-[#FFF] rounded-lg">
       <div className="flex justify-between mb-4">
         <div className="flex gap-2">
           <DropdownMenu onOpenChange={setIsDropdownOpen}>
-            <DropdownMenuTrigger className="flex justify-between w-[156px] h-[40px] px-4 py-2 border rounded-lg text-gray-300">
+            <DropdownMenuTrigger className="flex justify-between w-[156px] h-[40px] px-4 py-2 border rounded-lg text-gray-300 cursor-pointer">
               {getStatusLabel(selectedProcessStatus)} ({statusCounts[selectedProcessStatus as keyof StatusCount]})
               <img src={isDropdownOpen ? "/icon/activeDropdown.svg" : "/icon/dropdown.svg"} alt="dropdown" />
             </DropdownMenuTrigger>
@@ -211,11 +196,6 @@ export default function DataTable() {
 
         <div className="flex gap-[15px]">
           <Button
-            onClick={handleTempSave}
-            className="!text-body-md-sb text-green-500 w-[111px] h-[40px] bg-[#FFF] border border-green-500 hover:bg-white disabled:opacity-100 disabled:bg-green-200">
-            임시 저장
-          </Button>
-          <Button
             onClick={handleDelete}
             className="!text-body-md-sb text-[#FFF] w-[111px] h-[40px] bg-green-500 hover:bg-green-600 disabled:opacity-100 disabled:bg-gray-100">
             삭제하기
@@ -224,9 +204,15 @@ export default function DataTable() {
       </div>
 
       <Table>
-        <TableHeader className="h-[57px] pointer-events-none">
+        <TableHeader className="h-[57px]">
           <TableRow>
-            <TableHead></TableHead>
+            <TableHead>
+            <Checkbox
+              checked={filteredData.length > 0 && filteredData.every(row => selectedRows.includes(row.id))}
+              onCheckedChange={toggleSelectAll}
+              className="h-[24px] w-[24px] bg-gray-50 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
+            />
+            </TableHead>
             <TableHead>번호</TableHead>
             <TableHead>공급자</TableHead>
             <TableHead>공급받는자</TableHead>
@@ -240,11 +226,11 @@ export default function DataTable() {
             filteredData.map((row, index) => (
               <TableRow
                 key={row.id}
-                className={`h-[68px] ${selectedRows.includes(row.id) ? "bg-green-0 hover:bg-green-0" : ""}`}
+                className={`h-[68px] cursor-pointer ${selectedRows.includes(row.id) ? "bg-green-0 hover:bg-green-0" : ""}`}
                 onClick={() => openModal(row, index)}>
                 <TableCell className="w-[70px]">
                   <Checkbox
-                    className="h-[24px] w-[24px] bg-gray-50 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
+                    className="h-[24px] w-[24px] bg-gray-50 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500 cursor-pointer"
                     checked={selectedRows.includes(row.id)}
                     onCheckedChange={() => toggleRowSelection(row.id)}
                     onClick={e => e.stopPropagation()}
@@ -286,6 +272,7 @@ export default function DataTable() {
           )}
         </TableBody>
       </Table>
+      {/* 모달 */}
       <ApprovalModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -298,10 +285,16 @@ export default function DataTable() {
           onClose={() => setIsEditModalOpen(false)}
           index={selectedIndex}
           rowId={selectedRowId}
+          dataTableFetch={fetchData}
         />
       </StepProvider>
-      <PreviewModal isOpen={isPreviewOpen} onClose={() => setIsPreviewOpen(false)} fileUrl={previewUrl!} />
+      <PreviewModal
+        isOpen={isPreviewOpen} 
+        onClose={() => setIsPreviewOpen(false)} 
+        fileUrl={previewUrl!} 
+      />
 
+      {/* 페이지네이션 */}
       <Pagination className="mt-4">
         <PaginationContent>
           <PaginationItem>

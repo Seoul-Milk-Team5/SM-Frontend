@@ -15,9 +15,18 @@ interface AuthModalContentProps {
   ocrData?: OcrData[] | undefined;
   isEditRequest?: boolean;
   taxInvoiceId?: number | null;
+  dataTableFetch?: () => Promise<void>;
+  editModalClose?: () => void;
 }
 
-function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: AuthModalContentProps) {
+function AuthModalContent({ 
+    changeStep, 
+    ocrData, 
+    isEditRequest, 
+    taxInvoiceId, 
+    dataTableFetch,
+    editModalClose
+  }: AuthModalContentProps) {
   const { getUser } = useAuth();
   const token = getUser();
   const navigate = useNavigate();
@@ -123,6 +132,11 @@ function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: 
       if (response.success) {
         changeStep?.(3);
         if (isEditRequest) {
+          if (dataTableFetch) {
+            console.log("업데이트 성공 데이터를 다시 불러옵니다.");
+            await dataTableFetch();
+            editModalClose?.();
+          }
           changeStep?.(1);
         } else {
           setTimeout(() => {
