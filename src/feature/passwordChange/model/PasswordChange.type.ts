@@ -26,7 +26,7 @@ export interface EmailPostResponse {
 export interface EmailVerificationResponse {
   code: number | string;
   message: string;
-  result: { errorClass: string; errorMessage: string } | string;
+  result: { errorClass: string; errorMessage: string } | { success: boolean; message: string } | string;
   success: boolean;
 }
 

@@ -4,7 +4,7 @@ import InputWithButton from "../../../shared/ui/InputWithButton";
 import InputWithLabel from "../../../shared/ui/InputWithLabel";
 import { Errors, FormData, IsButtonDisabled } from "../model";
 import PasswordChangeAlert from "./PasswordChangeAlert";
-import { employeeIdCheckRequest } from "../service";
+import { emailPostRequest, emailVerificationRequest, employeeIdCheckRequest } from "../service";
 
 function PasswordChangeForm() {
   const [formData, setFormData] = useState<FormData>({
@@ -33,11 +33,13 @@ function PasswordChangeForm() {
   const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
-    setIsButtonDisabled(prev => ({
-      userId: prev.userId ? true : formData.userId.trim() === "",
+    setIsButtonDisabled({
+      userId: formData.userId.trim() === "",
+      // email: formData.email.trim() === "" || !/^[^@]+@seoulmilk\.co\.kr$/.test(formData.email),
       email: formData.email.trim() === "" || !/^[^@]+@gmail\.com$/.test(formData.email),
+
       authNumber: formData.authNumber.trim() === "" || formData.email.trim() === "",
-    }));
+    });
 
     const isValid =
       Object.values(formData).every(value => value.trim() !== "") &&
@@ -56,7 +58,8 @@ function PasswordChangeForm() {
     switch (id) {
       case "email":
         // 이메일 유효성 검사
-        const emailRegex = /^[^@]+@seoulmilk\.co\.kr$/;
+        //const emailRegex = /^[^@]+@seoulmilk\.co\.kr$/;
+        const emailRegex = /^[^@]+@gmail\.com$/;
         if (!emailRegex.test(value)) {
           setErrors(prevErrors => ({
             ...prevErrors,
@@ -106,7 +109,7 @@ function PasswordChangeForm() {
     event.preventDefault();
 
     const response = await employeeIdCheckRequest(formData.userId);
-    console.log(response);
+
     if (response.result) {
       setIsButtonDisabled(prev => ({
         ...prev,
@@ -124,34 +127,66 @@ function PasswordChangeForm() {
     }
   };
 
-  // 인증 이메일 요청
-  const handleEmailVerificationRequest = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleEmailVerificationRequest = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    // api 요청 후 리스폰스에 따라 disabled 처리 여부를 결정하는 로직 추가해야함
-    setSuccess(prevState => ({
-      ...prevState, // 기존 상태 유지
-      email: "메일로 발송된 인증번호를 확인해주세요.",
-    }));
-    setErrors(prevState => ({
-      ...prevState, // 기존 상태 유지
-      email: "존재하지 않는 메일입니다.",
-    }));
+    try {
+      const response = await emailPostRequest(formData.email);
+      console.log(response);
+
+      if (response.success) {
+        setSuccess(prevState => ({
+          ...prevState,
+          email: "메일로 발송된 인증번호를 확인해주세요.",
+        }));
+      } else {
+        setErrors(prevState => ({
+          ...prevState,
+          email: "존재하지 않는 메일입니다.",
+        }));
+      }
+    } catch (error) {
+      console.error("이메일 인증 요청 실패:", error);
+      setErrors(prevState => ({
+        ...prevState,
+        email: "이메일 인증 요청 중 오류가 발생했습니다.",
+      }));
+    }
   };
 
   // 인증 번호 확인
-  const handleAuthCodeVerification = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleAuthCodeVerification = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    // api 요청 후 리스폰스에 따라 disabled 처리 여부를 결정하는 로직 추가해야함
-    setSuccess(prevState => ({
-      ...prevState, // 기존 상태 유지
-      authNumber: "인증되었습니다.",
-    }));
-    setErrors(prevState => ({
-      ...prevState, // 기존 상태 유지
-      authNumber: "인증번호가 틀렸습니다.",
-    }));
+    const body = {
+      email: formData.email,
+      authCode: formData.authNumber,
+    };
+
+    try {
+      const response = await emailVerificationRequest(body);
+      console.log(response);
+
+      if (typeof response.result === "object" && "success" in response.result) {
+        if (response.result.success) {
+          setSuccess(prevState => ({
+            ...prevState,
+            authNumber: "인증되었습니다.",
+          }));
+        }
+      } else {
+        setErrors(prevState => ({
+          ...prevState,
+          authNumber: "인증번호가 틀렸습니다.",
+        }));
+      }
+    } catch (error) {
+      console.error("인증번호 확인 요청 실패:", error);
+      setErrors(prevState => ({
+        ...prevState,
+        authNumber: "인증번호 확인 중 오류가 발생했습니다.",
+      }));
+    }
   };
 
   // 제출 핸들러
