@@ -1,15 +1,16 @@
-import { useAuth } from "@/app/providers/AuthProvider";
+// import { useAuth } from "@/app/providers/AuthProvider";
 import { useStep } from "@/app/providers/StepProvider";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import PasswordCheckContent from "./PasswordCheckContent";
+import UserContent from "./UserContent";
 
 function myModal() {
-  const { steps, setSteps } = useStep();
-  const { getUser } = useAuth();
+  const { steps } = useStep();
+  // const { getUser } = useAuth();
 
   const maxWidthClass = {
     1: "sm:max-w-[750px] max-h-[420px]",
-    2: "sm:max-w-[1025px] max-h-[100vh]",
+    2: "sm:max-w-[625px] max-h-[100vh]",
   }[steps];
 
   return (
@@ -33,7 +34,7 @@ function myModal() {
               <PasswordCheckContent />
             </div>
             <div className="w-full flex-shrink-0 h-full overflow-y-auto">
-              <div></div>
+              <UserContent />
             </div>
           </div>
         </div>

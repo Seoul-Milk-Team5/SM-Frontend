@@ -1,12 +1,15 @@
-import { useState, ChangeEvent, MouseEvent, useRef } from "react";
+import { useState, ChangeEvent, MouseEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { validatePassword } from "@/shared/utils";
+import { useStep } from "@/app/providers/StepProvider";
 
 function PasswordCheckContent() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const [isToggle, setToggle] = useState(true);
+
+  const { setSteps } = useStep();
 
   // 현재 비밀번호 입력 핸들러
   const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -15,10 +18,9 @@ function PasswordCheckContent() {
     const validation = validatePassword(value);
     if (validation.valid) {
       setError("");
-      if (buttonRef.current) {
-        buttonRef.current.disabled = false;
-      }
+      setToggle(false);
     } else {
+      setToggle(true);
       setError("비밀번호 양식을 확인해 주세요.");
     }
   };
@@ -26,7 +28,7 @@ function PasswordCheckContent() {
   // 비밀번호 확인 버튼 클릭
   const handlePasswordCheck = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-
+    setSteps(2);
     try {
       console.log("비밀번호 확인 요청:", password);
       alert("비밀번호 확인 로직을 서버와 연동해주세요.");
@@ -57,10 +59,9 @@ function PasswordCheckContent() {
       {/* 현재 비밀번호 입력 */}
 
       <Button
-        ref={buttonRef}
         className="bg-green-500 hover:bg-green-600 disabled:bg-gray-100 text-[#fff] w-full h-[50px]"
         onClick={handlePasswordCheck}
-        disabled={true}>
+        disabled={isToggle}>
         확인
       </Button>
     </div>

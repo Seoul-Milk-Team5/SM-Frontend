@@ -8,7 +8,7 @@ export interface InputWithButtonProps {
   value: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   success?: string;
-  error: string;
+  error?: string;
   disabled: boolean;
   buttonText: string;
   onClick: (event: MouseEvent<HTMLButtonElement>) => void;
