@@ -4,7 +4,8 @@ import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import LogoutModal from "./LogoutModal";
 import { useAuth } from "@/app/providers/AuthProvider";
-
+import MyModal from "@/feature/my/ui/MyModal";
+import { StepProvider } from "@/app/providers/StepProvider";
 
 function Sidebar() {
   const location = useLocation();
@@ -52,8 +53,7 @@ function Sidebar() {
                   isActive(["/dashboard/admin/workview", "/dashboard/admin/adduser", "/dashboard/userpage"])
                     ? "text-green-500 font-normal bg-green-0 hover:bg-green-0"
                     : "text-gray-300"
-                )}
-              >
+                )}>
                 {isActive(["/dashboard/admin/workview", "/dashboard/admin/adduser", "/dashboard/userpage"]) ? (
                   <img src="/icon/activeMytask.svg" alt="active verification" />
                 ) : (
@@ -72,20 +72,22 @@ function Sidebar() {
         </nav>
       </div>
       <div className="flex flex-col gap-2 relative">
-        <div className="hover:bg-green-0 flex justify-between items-center">
-          <div>
-            <p className="text-body-md">이름</p>
-            <p className="text-label-xs">0000000</p>
-          </div>
-          <img className="w-[24px]" src="/icon/gear.svg" alt="마이페이지" />
-        </div>
-        <div className="flex gap-3 border-t pt-4 text-body-md cursor-pointer" onClick={() => setIsLogoutModalOpen(true)}>
+        <StepProvider>
+          <MyModal />
+        </StepProvider>
+        <div
+          className="flex gap-3 border-t pt-4 text-body-md cursor-pointer"
+          onClick={() => setIsLogoutModalOpen(true)}>
           <img src="/icon/logout.svg" alt="logout" />
           로그아웃
         </div>
       </div>
 
-      <LogoutModal isOpen={isLogoutModalOpen} onClose={() => setIsLogoutModalOpen(false)} onConfirmLogout={handleLogout} />
+      <LogoutModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirmLogout={handleLogout}
+      />
     </aside>
   );
 }
