@@ -22,11 +22,12 @@ import EditApprovalModal from "../../../shared/ui/EditModal";
 import { searchFileGetRequest } from "../service/SearchFileRequest";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { ApiResponse, ContentItem } from "../model/SearchFIle.type";
-import PreviewModal from "./PreviewModal";
+
 import { FormatCreatedAt } from "@/shared/utils/FormatCreatedAt";
 import { getStatusLabel } from "@/shared/utils/getStatusLabel";
 import { DeleteRequest } from "../service/DeleteRequest";
 import { StepProvider } from "@/app/providers/StepProvider";
+import PreviewModal from "@/shared/ui/PreviewModal";
 
 const processStatuses = ["ALL", "UNAPPROVED", "APPROVED", "REJECTED"] as const; //전체, 검증실패, 승인, 반려
 type ProcessStatus = (typeof processStatuses)[number];

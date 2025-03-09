@@ -11,7 +11,7 @@ export default function Searchbar() {
     period: 0,
     provider: "",
     consumer: "",
-    status: "",
+    status: null as string | null,
     page: 1,
     size: 10,
   });
@@ -21,7 +21,7 @@ export default function Searchbar() {
     period: 0,
     provider: "",
     consumer: "",
-    status: "",
+    status: null,
     page: 1,
     size: 10,
   };
@@ -54,7 +54,7 @@ export default function Searchbar() {
       setSelectedApproval("ALL");
       setFilter((prev) => ({
         ...prev,
-        status: "",  // "ALL"을 선택하면 빈 문자열로 설정
+        status: null,  // "ALL"을 선택하면 빈 문자열로 설정
       }));
     } else {
       setSelectedApproval(status);
