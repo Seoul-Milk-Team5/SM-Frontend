@@ -36,3 +36,10 @@ export interface EmployeeIdResponse {
   result: { errorClass: string; errorMessage: string } | string;
   success: boolean;
 }
+
+export interface PasswordResponse {
+  code: number | string;
+  message: string;
+  result: { errorClass: string; errorMessage: string } | string;
+  success: boolean;
+}

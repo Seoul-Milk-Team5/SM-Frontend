@@ -5,6 +5,7 @@ import InputWithLabel from "../../../shared/ui/InputWithLabel";
 import { Errors, FormData, IsButtonDisabled } from "../model";
 import PasswordChangeAlert from "./PasswordChangeAlert";
 import { emailPostRequest, emailVerificationRequest, employeeIdCheckRequest } from "../service";
+import { passwordChangeRequest } from "../service/passwordChange";
 
 function PasswordChangeForm() {
   const [formData, setFormData] = useState<FormData>({
@@ -65,8 +66,8 @@ function PasswordChangeForm() {
 
     switch (id) {
       case "email":
-        //const emailRegex = /^[^@]+@seoulmilk\.co\.kr$/;
-        const emailRegex = /^[^@]+@gmail\.com$/;
+        const emailRegex = /^[^@]+@seoulmilk\.co\.kr$/;
+        //const emailRegex = /^[^@]+@gmail\.com$/;
         if (!emailRegex.test(value)) {
           setErrors(prevErrors => ({
             ...prevErrors,
@@ -143,6 +144,7 @@ function PasswordChangeForm() {
       if (typeof response.result === "object" && "success" in response.result) {
         if (response.result.success) {
           setSuccess(prevState => ({ ...prevState, authNumber: "인증되었습니다." }));
+          setErrors(prevState => ({ ...prevState, authNumber: "" }));
           setIsAuthNumberVerified(true);
         } else {
           setErrors(prevState => ({ ...prevState, authNumber: "인증번호가 틀렸습니다." }));
@@ -154,9 +156,18 @@ function PasswordChangeForm() {
     }
   };
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    console.log("Test");
+    const passwordObject = {
+      password1: formData.password,
+      password2: formData.rePassword,
+    };
+    try {
+      const response = await passwordChangeRequest(passwordObject);
+      console.log(response);
+    } catch (error: any) {
+      console.error("비밀번호 변경 요청 실패:", error);
+    }
   };
 
   return (

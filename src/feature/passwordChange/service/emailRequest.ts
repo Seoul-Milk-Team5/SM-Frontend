@@ -24,10 +24,10 @@ export async function emailVerificationRequest(body: {
   const HEADER = getFetchHeader("", "b");
 
   try {
-    return await baseHttpClient().post<EmailVerificationResponse, { email: string; authCode: string }>(
-      "api/emails/verifications",
+    return await baseHttpClient().post<EmailVerificationResponse, string>(
+      `api/emails/verifications?email=${body.email}&authCode=${body.authCode}`,
       HEADER,
-      body
+      ""
     );
   } catch (error) {
     console.error("Fetch error:", error);
