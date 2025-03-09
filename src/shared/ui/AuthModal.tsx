@@ -1,15 +1,14 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import AuthModalContent from "./AuthModalContent";
-import { DialogContent } from "@/components/ui/dialog";
 import OcrModalContent from "@/feature/main/ui/OcrModalContent";
 import HometaxModalContent from "@/feature/main/ui/HometaxModalContent";
 import { useStep } from "@/app/providers/StepProvider";
 import { useFileContext } from "@/app/providers/FileProvider";
 import { ocrPostRequest } from "@/feature/main/service/OcrRequest";
 import { useAuth } from "@/app/providers/AuthProvider";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { OcrData } from "@/feature/main";
 
 interface AuthModalProps {
@@ -21,15 +20,16 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
   const { steps, setSteps } = useStep();
   const { files } = useFileContext();
   const { getUser, logout } = useAuth();
+  const navigate = useNavigate();
 
   const [loadingText, setLoadingComent] = useState("");
   const [ocrData, setOcrData] = useState<OcrData[]>();
-  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
 
   const maxWidthClass = {
-    1: "sm:max-w-[450px] max-h-[40vh]",
+    1: "sm:max-w-[450px] max-h-[320px]",
     2: "sm:max-w-[1025px] max-h-[100vh]",
-    3: "sm:max-w-[450px] max-h-[40vh]",
+    3: "sm:max-w-[450px] max-h-[320px]",
   }[steps];
 
   const handleChangeModalStep = (number: number) => {
@@ -37,35 +37,51 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
   };
 
   const handleOcrRequest = async () => {
-    const token = getUser();
+    setIsOpen(true);
     setLoadingComent("파일에서 텍스트 추출 중입니다.");
 
     try {
+      const token = getUser();
       const response = await ocrPostRequest(token, files as any);
-      const fileCount = (files?.clientFiles?.length ?? 0) + (files?.result?.length ?? 0);
-      console.log(response.result);
-
-      const limitedResults = response.result.slice(0, fileCount);
-      setOcrData(limitedResults);
 
       if (response.success) {
+        console.log(response);
+        const fileCount = (files?.clientFiles?.length ?? 0) + (files?.result?.length ?? 0);
+
+        // const filteredResults = response.result.filter(
+        //   item => item.extractedData && Object.values(item.extractedData).some(value => value !== "")
+        // );
+
+        // fileCount 만큼 제한하여 저장
+        const limitedResults = response.result.slice(0, fileCount);
+        console.log(limitedResults);
+        setOcrData(limitedResults);
+
         setLoadingComent("텍스트 추출이 완료되었습니다.");
         setTimeout(() => {
           setSteps(2);
         }, 1500);
       } else {
-        // 요청은 성공했지만 결과가 실패일 경우
         setLoadingComent("텍스트 추출에 실패했습니다. 다시 시도해주세요.");
+        setTimeout(() => {
+          setIsOpen(false);
+        }, 1500);
       }
     } catch (error: any) {
-      if (error.message.includes("401")) {
-        setLoadingComent("로그인이 만료되었습니다.");
-        logout();
-        navigate("/");
-      } else if (error.message.includes("500")) {
+      setTimeout(() => {
+        setIsOpen(false);
+      }, 1500);
+
+      if (error.message.includes("500")) {
         setLoadingComent("서버 오류가 발생했습니다.");
       } else if (error.message.includes("403")) {
-        setLoadingComent("서버 오류가 발생했습니다.");
+        setLoadingComent("로그인이 만료되었습니다.");
+
+        setTimeout(() => {
+          alert("로그인 페이지로 이동합니다");
+          logout();
+          navigate("/");
+        }, 2000);
       } else {
         setLoadingComent(error.message || "OCR 요청 중 오류가 발생했습니다.");
       }
@@ -73,7 +89,8 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      {/* ✅ 모달 열림 상태 관리 */}
       <DialogTrigger asChild>
         <Button
           className="bg-green-500 hover:bg-green-600 cursor-pointer disabled:bg-green-200 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white mb:hidden"

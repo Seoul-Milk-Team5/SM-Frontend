@@ -118,19 +118,22 @@ function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: 
 
   // 진위 여부 확인
   const handleAuthClearAndHomeTaxRequest = async () => {
-    changeStep?.(3);
-    const response = await reAuthRequest(token, key);
-    if (response.success) {
-      if (isEditRequest) {
-        setTimeout(() => {
-          window.location.reload(); // 페이지 새로고침(임시)
+    try {
+      const response = await reAuthRequest(token, key);
+      if (response.success) {
+        changeStep?.(3);
+        if (isEditRequest) {
           changeStep?.(1);
-        });
-      } else {
-        setTimeout(() => {
-          navigate("/dashboard/searchfile");
-          changeStep?.(1);
-        }, 1500);
+        } else {
+          setTimeout(() => {
+            navigate("/dashboard/searchfile");
+            changeStep?.(1);
+          }, 1500);
+        }
+      }
+    } catch (error: any) {
+      if (error.message.includes("500")) {
+        alert("휴대폰으로 인증 후 버튼을 눌러주세요.!");
       }
     }
   };

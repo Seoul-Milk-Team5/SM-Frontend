@@ -4,6 +4,8 @@ import InputWithButton from "../../../shared/ui/InputWithButton";
 import InputWithLabel from "../../../shared/ui/InputWithLabel";
 import { Errors, FormData, IsButtonDisabled } from "../model";
 import PasswordChangeAlert from "./PasswordChangeAlert";
+import { emailPostRequest, emailVerificationRequest, employeeIdCheckRequest } from "../service";
+import { passwordChangeRequest } from "../service/passwordChange";
 
 function PasswordChangeForm() {
   const [formData, setFormData] = useState<FormData>({
@@ -13,15 +15,18 @@ function PasswordChangeForm() {
     password: "",
     rePassword: "",
   });
+
   const [isButtonDisabled, setIsButtonDisabled] = useState<IsButtonDisabled>({
     userId: true,
     email: true,
     authNumber: true,
   });
+
   const [success, setSuccess] = useState({
     email: "",
     authNumber: "",
   });
+
   const [errors, setErrors] = useState<Errors>({
     userId: "",
     email: "",
@@ -29,21 +34,28 @@ function PasswordChangeForm() {
     password: "",
     rePassword: "",
   });
+
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [isAuthNumberVerified, setIsAuthNumberVerified] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
     setIsButtonDisabled({
       userId: formData.userId.trim() === "",
       email: formData.email.trim() === "" || !/^[^@]+@seoulmilk\.co\.kr$/.test(formData.email),
+      //email: formData.email.trim() === "" || !/^[^@]+@gmail\.com$/.test(formData.email),
       authNumber: formData.authNumber.trim() === "" || formData.email.trim() === "",
     });
 
-    const isValid =
-      Object.values(formData).every(value => value.trim() !== "") &&
-      formData.password === formData.rePassword &&
-      Object.values(errors).every(error => error === "");
-    setIsFormValid(isValid);
-  }, [formData, errors]);
+    // 모든 조건이 충족되었을 때만 isFormValid를 true로 설정
+    setIsFormValid(
+      isEmailVerified &&
+        isAuthNumberVerified &&
+        Object.values(formData).every(value => value.trim() !== "") &&
+        formData.password === formData.rePassword &&
+        Object.values(errors).every(error => error === "")
+    );
+  }, [formData, errors, isEmailVerified, isAuthNumberVerified]);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.target;
@@ -54,8 +66,8 @@ function PasswordChangeForm() {
 
     switch (id) {
       case "email":
-        // 이메일 유효성 검사
         const emailRegex = /^[^@]+@seoulmilk\.co\.kr$/;
+        //const emailRegex = /^[^@]+@gmail\.com$/;
         if (!emailRegex.test(value)) {
           setErrors(prevErrors => ({
             ...prevErrors,
@@ -69,83 +81,93 @@ function PasswordChangeForm() {
         }
         break;
       case "password":
-        // 비밀번호 유효성 검사
         const validation = validatePassword(value);
-        if (!validation.valid) {
-          setErrors(prevErrors => ({
-            ...prevErrors,
-            password: "비밀번호 양식을 확인해 주세요.",
-          }));
-        } else {
-          setErrors(prevErrors => ({
-            ...prevErrors,
-            password: "",
-          }));
-        }
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          password: validation.valid ? "" : "비밀번호 양식을 확인해 주세요.",
+        }));
         break;
       case "rePassword":
-        // 비밀번호 재입력 확인
-        if (formData.password !== value) {
-          setErrors(prevErrors => ({
-            ...prevErrors,
-            rePassword: "비밀번호가 일치하지 않습니다.",
-          }));
-        } else {
-          setErrors(prevErrors => ({
-            ...prevErrors,
-            rePassword: "",
-          }));
-        }
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          rePassword: formData.password !== value ? "비밀번호가 일치하지 않습니다." : "",
+        }));
         break;
     }
   };
 
-  //사번 확인 요청
-  const handleUserIdVerificationRequest = (event: MouseEvent<HTMLButtonElement>) => {
+  // 사번 확인
+  const handleUserIdVerificationRequest = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    // api 요청 후 리스폰스에 따라 disabled 처리 여부를 결정하는 로직 추가해야함
-    setErrors(prevState => ({
-      ...prevState, // 기존 상태 유지
-      userId: "존재하지 않는 사번입니다.",
-    }));
+    try {
+      const response = await employeeIdCheckRequest(formData.userId);
+      if (response.result) {
+        setIsButtonDisabled(prev => ({ ...prev, userId: true }));
+        setErrors(prevState => ({ ...prevState, userId: "" }));
+      } else {
+        setErrors(prevState => ({ ...prevState, userId: "존재하지 않는 사번입니다." }));
+      }
+    } catch (error) {
+      console.error("사번 확인 요청 실패:", error);
+      setErrors(prevState => ({ ...prevState, userId: "사번 확인 요청 중 오류가 발생했습니다." }));
+    }
+  };
+  // 인증 메일 발송
+  const handleEmailVerificationRequest = async (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    try {
+      const response = await emailPostRequest(formData.email);
+      if (response.success) {
+        setSuccess(prevState => ({ ...prevState, email: "메일로 발송된 인증번호를 확인해주세요." }));
+        setIsEmailVerified(true);
+      } else {
+        setErrors(prevState => ({ ...prevState, email: "존재하지 않는 메일입니다." }));
+      }
+    } catch (error) {
+      console.error("이메일 인증 요청 실패:", error);
+      setErrors(prevState => ({ ...prevState, email: "이메일 인증 요청 중 오류가 발생했습니다." }));
+    }
   };
 
-  // 인증 이메일 요청
-  const handleEmailVerificationRequest = (event: MouseEvent<HTMLButtonElement>) => {
+  // 인증 메일 인증코드 확인
+  const handleAuthCodeVerification = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    // api 요청 후 리스폰스에 따라 disabled 처리 여부를 결정하는 로직 추가해야함
-    setSuccess(prevState => ({
-      ...prevState, // 기존 상태 유지
-      email: "메일로 발송된 인증번호를 확인해주세요.",
-    }));
-    setErrors(prevState => ({
-      ...prevState, // 기존 상태 유지
-      email: "존재하지 않는 메일입니다.",
-    }));
+    try {
+      const response = await emailVerificationRequest({
+        email: formData.email,
+        authCode: formData.authNumber,
+      });
+
+      if (typeof response.result === "object" && "success" in response.result) {
+        if (response.result.success) {
+          setSuccess(prevState => ({ ...prevState, authNumber: "인증되었습니다." }));
+          setErrors(prevState => ({ ...prevState, authNumber: "" }));
+          setIsAuthNumberVerified(true);
+        } else {
+          setErrors(prevState => ({ ...prevState, authNumber: "인증번호가 틀렸습니다." }));
+        }
+      }
+    } catch (error) {
+      console.error("인증번호 확인 요청 실패:", error);
+      setErrors(prevState => ({ ...prevState, authNumber: "인증번호 확인 중 오류가 발생했습니다." }));
+    }
   };
 
-  // 인증 번호 확인
-  const handleAuthCodeVerification = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-
-    // api 요청 후 리스폰스에 따라 disabled 처리 여부를 결정하는 로직 추가해야함
-    setSuccess(prevState => ({
-      ...prevState, // 기존 상태 유지
-      authNumber: "인증되었습니다.",
-    }));
-    setErrors(prevState => ({
-      ...prevState, // 기존 상태 유지
-      authNumber: "인증번호가 틀렸습니다.",
-    }));
-  };
-
-  // 제출 핸들러
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    // Form submission logic here
-    console.log("Test");
+    const passwordObject = {
+      password1: formData.password,
+      password2: formData.rePassword,
+    };
+    try {
+      const response = await passwordChangeRequest(passwordObject);
+      console.log(response);
+    } catch (error: any) {
+      console.error("비밀번호 변경 요청 실패:", error);
+    }
   };
 
   return (

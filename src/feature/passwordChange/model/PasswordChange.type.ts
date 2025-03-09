@@ -15,3 +15,31 @@ export interface IsButtonDisabled {
   email: boolean;
   authNumber: boolean;
 }
+
+export interface EmailPostResponse {
+  code: number | string;
+  message: string;
+  result: { errorClass: string; errorMessage: string } | string;
+  success: boolean;
+}
+
+export interface EmailVerificationResponse {
+  code: number | string;
+  message: string;
+  result: { errorClass: string; errorMessage: string } | { success: boolean; message: string } | string;
+  success: boolean;
+}
+
+export interface EmployeeIdResponse {
+  code: number | string;
+  message: string;
+  result: { errorClass: string; errorMessage: string } | string;
+  success: boolean;
+}
+
+export interface PasswordResponse {
+  code: number | string;
+  message: string;
+  result: { errorClass: string; errorMessage: string } | string;
+  success: boolean;
+}
