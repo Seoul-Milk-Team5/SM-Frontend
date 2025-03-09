@@ -7,7 +7,7 @@ const cookies = new Cookies();
 export const baseHttpClient = () => {
   async function get<R>(url: string, headers: HeadersInit, params?: Record<string, any>): Promise<R> {
     const urlParams = new URLSearchParams(params).toString();
-    console.log(urlParams);
+
     try {
       const response = await fetch(`${BASE_URL}/${url}?${urlParams}`, {
         method: "GET",
@@ -41,6 +41,10 @@ export const baseHttpClient = () => {
         const errorBody = await response.json();
         console.log("Response status:", response.status);
         console.log("Response body:", errorBody);
+
+        if (response.status === 500) {
+          throw new Error(`서버 에러가 발생했습니다. | ${response.status}`);
+        }
         throw new Error("Network response was not ok");
       }
 
@@ -68,9 +72,6 @@ export const baseHttpClient = () => {
       });
 
       if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error(`OCR 요청 중 오류가 발생했습니다. | ${response.status}`);
-        }
         if (response.status === 403) {
           cookies.remove("access_token", { path: "/" });
           throw new Error(`로그인이 만료되었습니다. | ${response.status}`);
@@ -78,7 +79,7 @@ export const baseHttpClient = () => {
         const errorBody = await response.json();
         console.log("Response status:", response.status);
         console.log("Response body:", errorBody);
-        throw new Error("OCR 요청 중 오류가 발생했습니다.");
+        throw new Error("API 요청 중 오류가 발생했습니다.");
       }
 
       // 성공적인 응답 처리

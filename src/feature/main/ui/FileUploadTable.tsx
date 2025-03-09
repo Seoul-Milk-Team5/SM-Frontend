@@ -23,6 +23,7 @@ import { useFileContext } from "@/app/providers/FileProvider";
 import { ImageModal } from "../../../shared/ui";
 import { saveFileGetRequest, saveFilePatchRequest } from "../service";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { formatDate } from "@/shared/utils/FormatDate";
 
 export type Payment = {
   id: number;
@@ -45,7 +46,7 @@ export function FileUploadTable() {
         clientFiles: [],
       }))
     );
-  }, [selectedIds]);
+  }, []);
 
   const toggleRowSelection = (id: number) => {
     setSelectedIds(prev => {
@@ -106,7 +107,7 @@ export function FileUploadTable() {
       {
         accessorKey: "date",
         header: "날짜",
-        cell: ({ row }) => <div className="lowercase flex justify-end pr-9">{row.getValue("date")}</div>,
+        cell: ({ row }) => <div className="lowercase flex justify-end pr-9">{formatDate(row.getValue("date"))}</div>,
       },
     ],
     getCoreRowModel: getCoreRowModel(),
@@ -128,7 +129,12 @@ export function FileUploadTable() {
     console.log(response);
 
     if (response.success) {
-      setSelectedIds([]);
+      const updatedData = await saveFileGetRequest(token);
+      setFiles(prev => ({
+        ...prev,
+        result: updatedData.result.content,
+        clientFiles: [],
+      }));
     }
   };
 

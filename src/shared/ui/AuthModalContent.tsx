@@ -127,21 +127,27 @@ function AuthModalContent({
 
   // 진위 여부 확인
   const handleAuthClearAndHomeTaxRequest = async () => {
-    changeStep?.(3);
-    const response = await reAuthRequest(token, key);
-    if (response.success) {
-      if (isEditRequest) {
-        if (dataTableFetch) {
-          console.log("업데이트 성공 데이터를 다시 불러옵니다.");
-          await dataTableFetch();
-          editModalClose?.();
-        }
-        changeStep?.(1);
-      } else {
-        setTimeout(() => {
-          navigate("/dashboard/searchfile");
+    try {
+      const response = await reAuthRequest(token, key);
+      if (response.success) {
+        changeStep?.(3);
+        if (isEditRequest) {
+          if (dataTableFetch) {
+            console.log("업데이트 성공 데이터를 다시 불러옵니다.");
+            await dataTableFetch();
+            editModalClose?.();
+          }
           changeStep?.(1);
-        }, 1500);
+        } else {
+          setTimeout(() => {
+            navigate("/dashboard/searchfile");
+            changeStep?.(1);
+          }, 1500);
+        }
+      }
+    } catch (error: any) {
+      if (error.message.includes("500")) {
+        alert("휴대폰으로 인증 후 버튼을 눌러주세요.!");
       }
     }
   };

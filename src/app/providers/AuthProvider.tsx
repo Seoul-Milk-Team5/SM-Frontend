@@ -37,6 +37,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     deleteCookie("access_token");
+    setIsAuthenticated(false);
     setUserRole(null);
   };
 
