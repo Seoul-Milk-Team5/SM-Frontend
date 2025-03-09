@@ -29,3 +29,10 @@ export interface EmailVerificationResponse {
   result: { errorClass: string; errorMessage: string } | string;
   success: boolean;
 }
+
+export interface EmployeeIdResponse {
+  code: number | string;
+  message: string;
+  result: { errorClass: string; errorMessage: string } | string;
+  success: boolean;
+}

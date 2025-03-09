@@ -4,6 +4,7 @@ import InputWithButton from "../../../shared/ui/InputWithButton";
 import InputWithLabel from "../../../shared/ui/InputWithLabel";
 import { Errors, FormData, IsButtonDisabled } from "../model";
 import PasswordChangeAlert from "./PasswordChangeAlert";
+import { employeeIdCheckRequest } from "../service";
 
 function PasswordChangeForm() {
   const [formData, setFormData] = useState<FormData>({
@@ -32,11 +33,11 @@ function PasswordChangeForm() {
   const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
-    setIsButtonDisabled({
-      userId: formData.userId.trim() === "",
-      email: formData.email.trim() === "" || !/^[^@]+@seoulmilk\.co\.kr$/.test(formData.email),
+    setIsButtonDisabled(prev => ({
+      userId: prev.userId ? true : formData.userId.trim() === "",
+      email: formData.email.trim() === "" || !/^[^@]+@gmail\.com$/.test(formData.email),
       authNumber: formData.authNumber.trim() === "" || formData.email.trim() === "",
-    });
+    }));
 
     const isValid =
       Object.values(formData).every(value => value.trim() !== "") &&
@@ -101,14 +102,26 @@ function PasswordChangeForm() {
   };
 
   //사번 확인 요청
-  const handleUserIdVerificationRequest = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleUserIdVerificationRequest = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    // api 요청 후 리스폰스에 따라 disabled 처리 여부를 결정하는 로직 추가해야함
-    setErrors(prevState => ({
-      ...prevState, // 기존 상태 유지
-      userId: "존재하지 않는 사번입니다.",
-    }));
+    const response = await employeeIdCheckRequest(formData.userId);
+    console.log(response);
+    if (response.result) {
+      setIsButtonDisabled(prev => ({
+        ...prev,
+        userId: true,
+      }));
+      setErrors(prevState => ({
+        ...prevState, // 기존 상태 유지
+        userId: "",
+      }));
+    } else {
+      setErrors(prevState => ({
+        ...prevState, // 기존 상태 유지
+        userId: "존재하지 않는 사번입니다.",
+      }));
+    }
   };
 
   // 인증 이메일 요청

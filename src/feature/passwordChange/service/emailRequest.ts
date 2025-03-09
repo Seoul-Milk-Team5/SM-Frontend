@@ -4,7 +4,6 @@ import { baseHttpClient } from "@/shared/api";
 
 export async function emailPostRequest(token: string, body: string): Promise<EmailPostResponse> {
   const HEADER = getFetchHeader(token, "a");
-  console.log(body);
 
   try {
     return await baseHttpClient().post<EmailPostResponse, string>("api/emails/verifiation-requests", HEADER, body);
@@ -16,7 +15,6 @@ export async function emailPostRequest(token: string, body: string): Promise<Ema
 
 export async function emailVerificationRequest(token: string, body: string): Promise<EmailPostResponse> {
   const HEADER = getFetchHeader(token, "a");
-  console.log(body);
 
   try {
     return await baseHttpClient().post<EmailPostResponse, string>("api/emails/verifiations", HEADER, body);
