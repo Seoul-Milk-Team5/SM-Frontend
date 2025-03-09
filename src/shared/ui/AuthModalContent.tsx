@@ -15,10 +15,18 @@ interface AuthModalContentProps {
   ocrData?: OcrData[] | undefined;
   isEditRequest?: boolean;
   taxInvoiceId?: number | null;
-  // dataTableFetch?: () => Promise<void>;
+  dataTableFetch?: () => Promise<void>;
+  editModalClose?: () => void;
 }
 
-function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: AuthModalContentProps) {
+function AuthModalContent({ 
+    changeStep, 
+    ocrData, 
+    isEditRequest, 
+    taxInvoiceId, 
+    dataTableFetch,
+    editModalClose
+  }: AuthModalContentProps) {
   const { getUser } = useAuth();
   const token = getUser();
   const navigate = useNavigate();
@@ -124,11 +132,12 @@ function AuthModalContent({ changeStep, ocrData, isEditRequest, taxInvoiceId }: 
     if (response.success) {
       if (isEditRequest) {
         setTimeout(async () => {
-          window.location.reload(); // fetchData로 대체 예정.
-          // if (dataTableFetch) {
-          //   console.log("데이터 재요청중!!!");
-          //   await dataTableFetch();
-          // }
+          // window.location.reload(); // fetchData로 대체 예정.
+          if (dataTableFetch) {
+            console.log("업데이트 성공 데이터를 다시 불러옵니다.");
+            await dataTableFetch();
+            editModalClose?.();
+          }
           changeStep?.(1);
         });
       } else {

@@ -149,8 +149,16 @@ export default function DataTable() {
     return baseName.slice(0, maxLength - ext.length) + "..." + ext;
   };
 
+  const [isFetch, setIsFetch] = useState(0); // 테스트 이후 삭제
+
   useEffect(() => {
-    fetchData();
+    if (isFetch < 9) {
+      fetchData();
+      let counter = isFetch + 1;
+      setIsFetch(counter);
+      console.log(counter, "번 째로 검증내역 데이터를 불러옵니다");
+    }
+
   }, [selectedProcessStatus, currentPage]);
 
   const filteredData = data?.result.page.content || [];
@@ -313,6 +321,7 @@ export default function DataTable() {
           onClose={() => setIsEditModalOpen(false)}
           index={selectedIndex}
           rowId={selectedRowId}
+          dataTableFetch={fetchData}
         />
       </StepProvider>
       <PreviewModal

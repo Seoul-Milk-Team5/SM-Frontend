@@ -13,7 +13,7 @@ import HometaxModalContent from "@/feature/main/ui/HometaxModalContent";
 import AuthModalContent from "./AuthModalContent";
 
 
-export default function EditApprovalModal({ isOpen, onClose, index, rowId }: EditModalProps) {
+export default function EditApprovalModal({ isOpen, onClose, index, rowId, dataTableFetch }: EditModalProps) {
   const [formData, setFormData] = useState<ModalData>({
     code: 0,
     message: "",
@@ -226,6 +226,8 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId }: Edi
                 ocrData={userInput} 
                 isEditRequest={true} 
                 taxInvoiceId={rowId}
+                dataTableFetch={dataTableFetch}
+                editModalClose={onClose}
               />
             </div>
             <div className="w-full flex-shrink-0 h-full overflow-y-auto">
