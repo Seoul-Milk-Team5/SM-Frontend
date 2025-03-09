@@ -48,13 +48,19 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
         console.log(response);
         const fileCount = (files?.clientFiles?.length ?? 0) + (files?.result?.length ?? 0);
 
-        // const filteredResults = response.result.filter(
-        //   item => item.extractedData && Object.values(item.extractedData).some(value => value !== "")
-        // );
+        const filteredResults = response.result.filter(
+          item => item.extractedData && Object.values(item.extractedData).some(value => value !== "")
+        );
+
+        if (!filteredResults) {
+          setLoadingComent("텍스트 추출에 실패했습니다. 다시 시도해주세요.");
+          setTimeout(() => {
+            setIsOpen(false);
+          }, 1500);
+        }
 
         // fileCount 만큼 제한하여 저장
-        const limitedResults = response.result.slice(0, fileCount);
-        console.log(limitedResults);
+        const limitedResults = filteredResults.slice(0, fileCount);
         setOcrData(limitedResults);
 
         setLoadingComent("텍스트 추출이 완료되었습니다.");
@@ -90,7 +96,7 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      {/* ✅ 모달 열림 상태 관리 */}
+      {/*모달 열림 상태 관리 */}
       <DialogTrigger asChild>
         <Button
           className="bg-green-500 hover:bg-green-600 cursor-pointer disabled:bg-green-200 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white mb:hidden"
