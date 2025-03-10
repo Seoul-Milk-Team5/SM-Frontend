@@ -9,7 +9,6 @@ import WorkViewPage from "@/pages/admin/WorkViewPage";
 import SearchFilePage from "@/pages/SearchFilePage";
 import FileLayout from "../layouts/FileLayout";
 import LoginPage from "@/pages/LoginPage";
-import MobileMainPage from "@/pages/MobileMainPage";
 import AdminProtectedRoute from "../providers/AdminProtectedRoute";
 
 const router = createBrowserRouter([
@@ -31,7 +30,6 @@ const router = createBrowserRouter([
         children: [
           { path: "file", element: <MainPage /> },
           { path: "searchfile", element: <SearchFilePage /> },
-          { path: "mobile", element: <MobileMainPage /> },
         ],
       },
 
