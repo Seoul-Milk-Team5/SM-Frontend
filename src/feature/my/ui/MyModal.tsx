@@ -2,9 +2,11 @@ import { useStep } from "@/app/providers/StepProvider";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import PasswordCheckContent from "./PasswordCheckContent";
 import UserContent from "./UserContent";
+import { useState } from "react";
 
 function myModal() {
   const { steps } = useStep();
+  const [isModalState, setIsModalState] = useState(false);
 
   const maxWidthClass = {
     1: "sm:max-w-[750px] max-h-[420px]",
@@ -12,7 +14,7 @@ function myModal() {
   }[steps];
 
   return (
-    <Dialog>
+    <Dialog open={isModalState} onOpenChange={setIsModalState}>
       <DialogTrigger asChild>
         <div className="hover:bg-green-0 flex justify-between items-center cursor-pointer">
           <div>
@@ -32,7 +34,7 @@ function myModal() {
               <PasswordCheckContent />
             </div>
             <div className="w-full flex-shrink-0 h-full overflow-y-auto">
-              <UserContent />
+              <UserContent setIsModalState={setIsModalState} />
             </div>
           </div>
         </div>

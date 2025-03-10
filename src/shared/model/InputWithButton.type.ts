@@ -6,6 +6,7 @@ export interface InputWithButtonProps {
   id: string;
   placeholder: string;
   value: string;
+  name?: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   success?: string;
   error?: string;
