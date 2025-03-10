@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import AuthModalContent from "./AuthModalContent";
 import OcrModalContent from "@/feature/main/ui/OcrModalContent";
 import HometaxModalContent from "@/feature/main/ui/HometaxModalContent";
@@ -10,6 +9,7 @@ import { useFileContext } from "@/app/providers/FileProvider";
 import { ocrPostRequest } from "@/feature/main/service/OcrRequest";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { OcrData } from "@/feature/main";
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 interface AuthModalProps {
   btnName: string;
@@ -95,17 +95,18 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       {/*모달 열림 상태 관리 */}
-      <DialogTrigger asChild>
+      <AlertDialogTrigger asChild>
         <Button
           className="bg-green-500 hover:bg-green-600 cursor-pointer disabled:bg-green-200 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white mb:hidden"
           disabled={disable}
           onClick={handleOcrRequest}>
           {btnName}
         </Button>
-      </DialogTrigger>
-      <DialogContent className={`${maxWidthClass} p-0 overflow-hidden flex flex-col`}>
+      </AlertDialogTrigger>
+      <AlertDialogTitle></AlertDialogTitle>
+      <AlertDialogContent className={`${maxWidthClass} p-0 overflow-hidden flex flex-col`}>
         <div className="overflow-hidden h-full">
           <div
             className={`flex transition-transform duration-500 ease-in-out`}
@@ -121,7 +122,7 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
             </div>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
