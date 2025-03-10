@@ -1,16 +1,12 @@
 import { useFileContext } from "@/app/providers/FileProvider";
-import useBrowserSize from "@/shared/hooks/useBrowserSize";
 import { formatTimeFromFiles } from "@/shared/utils/FormatTime";
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export function FileDndBox() {
   const { mergeFiles, updateClientFiles } = useFileContext();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isDragOver, setIsDragOver] = useState(false); // 드래그 상태 추적
-  const windowSize = useBrowserSize();
-  const navigate = useNavigate();
 
   const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -40,11 +36,7 @@ export function FileDndBox() {
   };
 
   const handleButtonClick = () => {
-    if (windowSize.windowWidth < 850) {
-      navigate("/dashboard/mobile");
-    } else {
-      fileInputRef.current?.click();
-    }
+    fileInputRef.current?.click();
   };
 
   // 조건부 클래스 적용
@@ -76,7 +68,7 @@ export function FileDndBox() {
       </div>
       <div className="w-full text-body-sm flex justify-between mb-10">
         <p className="text-gray-800">
-          <span className="text-gray-800">{mergeFiles.length}/50(개)</span>{" "}
+          <span className="text-gray-800">{mergeFiles.length}/50(개)</span>
           {`| 예상 검증 시간: ${formatTimeFromFiles(mergeFiles.length)}`}
         </p>
         {mergeFiles.length >= 50 && <p className="text-red-500">파일 최대 업로드 가능 개수를 초과했습니다</p>}

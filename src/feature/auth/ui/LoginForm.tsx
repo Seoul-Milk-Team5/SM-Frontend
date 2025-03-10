@@ -9,7 +9,7 @@ import { FormState, loginRequest } from "..";
 import { useAuth } from "@/app/providers/AuthProvider";
 
 function LoginForm() {
-  const { login } = useAuth();
+  const { login, setUserData } = useAuth();
   const [formState, setFormState] = useState<FormState>({
     employeeId: "",
     password: "",
@@ -73,6 +73,7 @@ function LoginForm() {
 
       if (typeof response?.role === "string") {
         login(response.role);
+        setUserData(prev => ({ ...prev, userId: formState.employeeId, userName: response.name }));
         navigate("/dashboard/file");
       } else {
         setFormState(prev => ({

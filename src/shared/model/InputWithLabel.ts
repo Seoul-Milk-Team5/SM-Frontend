@@ -8,5 +8,6 @@ export interface InputWithLabelProps {
   value: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   success?: string;
-  error: string;
+  error?: string;
+  name?: string;
 }

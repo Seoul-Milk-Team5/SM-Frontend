@@ -15,6 +15,7 @@ function InputWithButton({
   disabled,
   buttonText,
   onClick,
+  name,
 }: InputWithButtonProps) {
   return (
     <div className="flex gap-3">
@@ -30,6 +31,7 @@ function InputWithButton({
           onChange={onChange}
           placeholder={placeholder}
           valid={!error}
+          name={name}
         />
         {success && <p className="text-green-400 text-label-xs mt-1">{success}</p>}
         {error && <p className="text-red-400 text-label-xs mt-1">{error}</p>}
