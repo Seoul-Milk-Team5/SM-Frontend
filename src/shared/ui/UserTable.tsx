@@ -23,7 +23,6 @@ export default function UserTable() {
   const [selectedRows, setSelectedRows] = useState<number[]>([]); // 선택된 cell 값들 저장
   const [data, setData] = useState<InvoiceContent[]>([]);
   const [totalPages, setTotalPages] = useState<number>(0); // 총 페이지 수
-  // const [totalElements, setTotalElements] = useState<number>(0); // 총 데이터 개수
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -54,6 +53,7 @@ export default function UserTable() {
     if (limitRequest < 9 ){
       console.log(`${limitRequest}번째로 데이터를 가져옵니다.`);
       const params = getSearchParams();
+      params.page = currentPage;
       console.log("현재 검색 파라미터:", params); // 값이 변하는지 확인
       setLimitRequest(prev => prev+1);      
       fetchData();
