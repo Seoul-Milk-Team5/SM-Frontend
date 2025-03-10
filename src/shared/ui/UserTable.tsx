@@ -14,6 +14,7 @@ import ApprovalModal from "@/shared/ui/ApprovalModal";
 import { StepProvider } from "@/app/providers/StepProvider";
 import EditApprovalModal from "@/shared/ui/EditModal";
 import PreviewModal from "@/shared/ui/PreviewModal";
+import { DeleteRequest } from "@/feature/searchFile/service/DeleteRequest";
 
 
 export default function UserTable() {
@@ -105,16 +106,55 @@ export default function UserTable() {
     return `${formattedYear}.${formattedMonth}.${formattedDay}`;
   };
 
+  const handleDelete = async () => {
+    const token = getUser();
+    if (selectedRows.length === 0) {
+      alert("삭제할 항목을 선택하세요.");
+      return;
+    }
+    if (!token) {
+      console.error("인증 토큰이 없습니다.");
+      return;
+    }
+
+    const taxInvoiceIdList = selectedRows
+      .map(rowId => {
+        const rowData = data.find(row => row.id === rowId);
+        return rowData?.id;
+      })
+      .filter(id => id !== undefined);
+
+    try {
+      await DeleteRequest(taxInvoiceIdList as number[], token);
+      alert("삭제가 완료되었습니다.");
+      setSelectedRows([]);
+      fetchData();
+    } catch (error) {
+      console.log("삭제 실패", error);
+      alert("삭제하는데 실패했습니다.");
+    }
+  };
+
   return (
     <div className="p-[20px] bg-[#FFF] rounded-lg">
       <div className="flex justify-between mb-7">
         <span className="text-title-sm text-gray-800">검증 내역</span>
-        <Button
-          className="w-[120px] h-[40px] bg-green-500 hover:bg-green-600 !text-body-md-sb text-[#FFF] disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={selectedRows.length === 0}
-        >
-        내보내기
-        </Button>
+        <div className="flex space-x-[15px]">
+          <Button
+            className="w-[120px] h-[40px] bg-[#FFF] text-green-500 border border-green-500 hover:bg-white !text-body-md-sb disabled:opacity-100 disabled:border-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed"
+            disabled={selectedRows.length === 0}
+          >
+          내보내기
+          </Button>
+          <Button
+            className="w-[120px] h-[40px] bg-green-500 hover:bg-green-600 !text-body-md-sb text-[#FFF] disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={selectedRows.length === 0}
+            onClick={handleDelete}
+          >
+          삭제하기
+          </Button>          
+        </div>
+
       </div>
       <Table>
         <TableHeader className="h-[57px] pointer-events-none">
