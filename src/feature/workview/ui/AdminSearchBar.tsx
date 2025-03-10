@@ -2,17 +2,17 @@ import { useSearch } from "@/app/providers/UserSearchProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import DatePickerWithRange from "@/shared/ui/DatePickerWithRange";
-
 import { getStatusLabel } from "@/shared/utils/getStatusLabel";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
 
-export default function Searchbar() {
+export default function AdminSearchbar() {
   const { setFilters } = useSearch();
   const [filter, setFilter] = useState({
     period: null as number | null,
     provider: "",
     consumer: "",
+    name: "",
     status: null as string | null,
     page: 1,
     size: 10,
@@ -24,6 +24,7 @@ export default function Searchbar() {
     period: null,
     provider: "",
     consumer: "",
+    name: "",
     status: null,
     page: 1,
     size: 10,
@@ -84,7 +85,8 @@ export default function Searchbar() {
     !isCustomDateSelected &&
     selectedApproval === "전체" &&
     filter.provider.trim() === "" &&
-    filter.consumer.trim() === "";
+    filter.consumer.trim() === "" &&
+    filter.name.trim() === "";
 
   const handleSearchFilter = () => {
     setFilters(filter);
@@ -105,9 +107,6 @@ const handleDateRangeChange = (range: DateRange | undefined) => {
 
   return (
     <div>
-      <div className="pb-2 border-b-3 hover:underline text-title-md-b border-gray-800 text-gray-800 w-[78px] h-[42px]">
-        업무 조회
-      </div>
       <div className="flex mt-6 justify-between">
         <div className="flex w-[200px] gap-2 items-center">
           <img src="/icon/search.svg" className="w-[24px]" />
@@ -167,7 +166,7 @@ const handleDateRangeChange = (range: DateRange | undefined) => {
             placeholder="상호 (법인명)"
             value={filter.provider} // filter에서 가져온 값을 사용
             onChange={handleInputChange}
-            className="w-[313px] h-[40px]"
+            className="w-[232px] h-[40px]"
           />
         </div>
         <div className="flex space-x-[30px] items-center">
@@ -177,7 +176,17 @@ const handleDateRangeChange = (range: DateRange | undefined) => {
             placeholder="상호 (법인명)"
             value={filter.consumer} // filter에서 가져온 값을 사용
             onChange={handleInputChange}
-            className="w-[313px] h-[40px]"
+            className="w-[232px] h-[40px]"
+          />
+        </div>
+        <div className="flex space-x-[30px] items-center">
+          <span className="text-body-md-m text-gray-500">담당자</span>
+          <Input
+            name="name" // 필드명을 filter에 맞춰 설정
+            placeholder="담당 직원 이름"
+            value={filter.name} // filter에서 가져온 값을 사용
+            onChange={handleInputChange}
+            className="w-[122px] h-[40px]"
           />
         </div>
       </div>

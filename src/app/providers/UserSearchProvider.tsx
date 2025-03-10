@@ -3,7 +3,7 @@ import { createContext, useContext, useState, ReactNode } from "react";
 interface SearchFilters {
   provider?: string;
   consumer?: string;
-  employeeId?: string;
+  name?: string;
   startDate?: Date | undefined;
   endDate?: Date | undefined;
   period?: number | null;
@@ -24,7 +24,7 @@ export const UserSearchProvider = ({ children }: { children: ReactNode }) => {
   const [filters, setFiltersState] = useState<SearchFilters>({
     provider: "",
     consumer: "",
-    employeeId: "",
+    name: "",
     startDate: undefined,
     endDate: undefined,
     period: null,
@@ -39,12 +39,12 @@ export const UserSearchProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getSearchParams = () => {
-    const { provider, consumer, employeeId, period, status, page, size, startDate, endDate } = filters;
+    const { provider, consumer, name, period, status, page, size, startDate, endDate } = filters;
 
     const searchParams: { [key: string]: any } = {
       provider,
       consumer,
-      employeeId,
+      name,
       period,
       status,
       page,

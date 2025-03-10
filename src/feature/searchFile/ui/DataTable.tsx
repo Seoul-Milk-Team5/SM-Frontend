@@ -22,7 +22,6 @@ import EditApprovalModal from "../../../shared/ui/EditModal";
 import { searchFileGetRequest } from "../service/SearchFileRequest";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { ApiResponse, ContentItem } from "../model/SearchFIle.type";
-
 import { FormatCreatedAt } from "@/shared/utils/FormatCreatedAt";
 import { getStatusLabel } from "@/shared/utils/getStatusLabel";
 import { DeleteRequest } from "../service/DeleteRequest";
@@ -44,7 +43,6 @@ export default function DataTable() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<number[]>([]); // 선택된 cell 값들 저장
-  // const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
