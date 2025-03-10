@@ -4,10 +4,12 @@ import { deleteCookie, getCookie } from "@/shared/utils";
 interface AuthContextType {
   isAuthenticated: boolean;
   setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
+  setUserData: Dispatch<SetStateAction<{ userName: string; userId: string }>>;
   userRole: string | null;
   login: (role: string) => void;
   logout: () => void;
   getUser: () => string;
+  getUserData: () => { userName: string; userId: string };
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -15,6 +17,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [userData, setUserData] = useState({
+    userName: "",
+    userId: "",
+  });
 
   useEffect(() => {
     const token = getCookie("access_token");
@@ -22,11 +28,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (token) {
       setIsAuthenticated(true);
     }
-  });
+  }, []);
 
   const getUser = () => {
     const token = getCookie("access_token");
     return token;
+  };
+
+  const getUserData = () => {
+    return userData;
   };
 
   const login = (role: string) => {
@@ -42,7 +52,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, userRole, getUser, login, logout }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, setIsAuthenticated, setUserData, userRole, getUser, login, logout, getUserData }}>
       {children}
     </AuthContext.Provider>
   );

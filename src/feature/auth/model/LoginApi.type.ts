@@ -9,4 +9,5 @@ export interface LoginRespnse {
   message: string;
   result: {};
   success: boolean;
+  name: string;
 }
