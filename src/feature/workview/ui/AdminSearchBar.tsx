@@ -12,7 +12,7 @@ export default function AdminSearchbar() {
     period: null as number | null,
     provider: "",
     consumer: "",
-    employeeId: "",
+    name: "",
     status: null as string | null,
     page: 1,
     size: 10,
@@ -24,7 +24,7 @@ export default function AdminSearchbar() {
     period: null,
     provider: "",
     consumer: "",
-    employeeId: "",
+    name: "",
     status: null,
     page: 1,
     size: 10,
@@ -86,7 +86,7 @@ export default function AdminSearchbar() {
     selectedApproval === "전체" &&
     filter.provider.trim() === "" &&
     filter.consumer.trim() === "" &&
-    filter.employeeId.trim() === "";
+    filter.name.trim() === "";
 
   const handleSearchFilter = () => {
     setFilters(filter);
@@ -182,9 +182,9 @@ const handleDateRangeChange = (range: DateRange | undefined) => {
         <div className="flex space-x-[30px] items-center">
           <span className="text-body-md-m text-gray-500">담당자</span>
           <Input
-            name="employeeId" // 필드명을 filter에 맞춰 설정
-            placeholder="담당 직원 사번"
-            value={filter.employeeId} // filter에서 가져온 값을 사용
+            name="name" // 필드명을 filter에 맞춰 설정
+            placeholder="담당 직원 이름"
+            value={filter.name} // filter에서 가져온 값을 사용
             onChange={handleInputChange}
             className="w-[122px] h-[40px]"
           />
