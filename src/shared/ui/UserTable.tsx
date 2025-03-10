@@ -147,7 +147,7 @@ export default function UserTable() {
           내보내기
           </Button>
           <Button
-            className="w-[120px] h-[40px] bg-green-500 hover:bg-green-600 !text-body-md-sb text-[#FFF] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-[120px] h-[40px] bg-green-500 hover:bg-green-600 !text-body-md-sb text-[#FFF] disabled:opacity-100 disabled:cursor-not-allowed disabled:bg-gray-100"
             disabled={selectedRows.length === 0}
             onClick={handleDelete}
           >

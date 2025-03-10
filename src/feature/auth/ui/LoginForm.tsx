@@ -72,8 +72,7 @@ function LoginForm() {
       const response = await loginRequest(loginBody);
 
       if (typeof response?.role === "string") {
-        // login(response.role);
-        login("ROLE_ADMIN");
+        login(response.role);
         navigate("/dashboard/file");
       } else {
         setFormState(prev => ({

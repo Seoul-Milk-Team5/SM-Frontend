@@ -113,7 +113,7 @@ const handleDateRangeChange = (range: DateRange | undefined) => {
           <img src="/icon/search.svg" className="w-[24px]" />
           <span className="text-title-sm text-gray-800">필터 검색</span>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-[15px]">
           <Button
             className="!text-body-md-sb text-green-500 bg-[#FFF] border border-green-500 h-[40px] w-[120px] hover:bg-white disabled:opacity-100 disabled:border-gray-300 disabled:text-gray-300"
             onClick={handleReset}
