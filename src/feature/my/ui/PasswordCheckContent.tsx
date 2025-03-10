@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { validatePassword } from "@/shared/utils";
 import { useStep } from "@/app/providers/StepProvider";
+import { passwordCheckRequest } from "../service/Password";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 function PasswordCheckContent() {
   const [password, setPassword] = useState("");
@@ -10,6 +12,7 @@ function PasswordCheckContent() {
   const [isToggle, setToggle] = useState(true);
 
   const { setSteps } = useStep();
+  const { getUser } = useAuth();
 
   // 현재 비밀번호 입력 핸들러
   const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -28,13 +31,21 @@ function PasswordCheckContent() {
   // 비밀번호 확인 버튼 클릭
   const handlePasswordCheck = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setSteps(2);
+
     try {
-      console.log("비밀번호 확인 요청:", password);
-      alert("비밀번호 확인 로직을 서버와 연동해주세요.");
-    } catch (err) {
+      const token = getUser();
+      const response = await passwordCheckRequest(token, password);
+
+      if (response.success) {
+        setSteps(2);
+      }
+    } catch (err: any) {
       console.error(err);
-      setError("비밀번호 확인 중 오류가 발생했습니다.");
+      if (err.message.includes("401")) {
+        setError("비밀번호가 틀렸습니다.");
+      } else {
+        setError("비밀번호 확인 중 오류가 발생했습니다.");
+      }
     }
   };
 

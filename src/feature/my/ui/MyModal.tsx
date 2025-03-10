@@ -1,4 +1,3 @@
-// import { useAuth } from "@/app/providers/AuthProvider";
 import { useStep } from "@/app/providers/StepProvider";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import PasswordCheckContent from "./PasswordCheckContent";
@@ -6,7 +5,6 @@ import UserContent from "./UserContent";
 
 function myModal() {
   const { steps } = useStep();
-  // const { getUser } = useAuth();
 
   const maxWidthClass = {
     1: "sm:max-w-[750px] max-h-[420px]",

@@ -44,6 +44,8 @@ export const baseHttpClient = () => {
 
         if (response.status === 500) {
           throw new Error(`서버 에러가 발생했습니다. | ${response.status}`);
+        } else if (response.status === 401) {
+          throw new Error(`서버 에러가 발생했습니다. | ${response.status}`);
         }
         throw new Error("Network response was not ok");
       }
