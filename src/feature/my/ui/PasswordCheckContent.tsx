@@ -3,8 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { validatePassword } from "@/shared/utils";
 import { useStep } from "@/app/providers/StepProvider";
-import { passwordCheckRequest } from "../service/Password";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { passwordCheckRequest } from "../service";
 
 function PasswordCheckContent() {
   const [password, setPassword] = useState("");

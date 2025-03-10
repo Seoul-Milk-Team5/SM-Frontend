@@ -1,6 +1,6 @@
 import { baseHttpClient } from "@/shared/api";
 import { getFetchHeader } from "@/shared/utils";
-import { PasswordCheckResponse } from "../model/Password.type";
+import { PasswordCheckResponse } from "../model";
 
 export async function passwordCheckRequest(token: string, password: string): Promise<PasswordCheckResponse> {
   const HEADER = getFetchHeader(token, "a");
