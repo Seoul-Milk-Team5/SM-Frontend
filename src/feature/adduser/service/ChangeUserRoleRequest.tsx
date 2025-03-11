@@ -2,7 +2,7 @@ import { baseHttpClient } from "@/shared/api";
 import { getFetchHeader } from "@/shared/utils";
 
 interface UserInfo {
-  memberId: string;
+  employeeId: string;
   role: string;
 }
 interface ChangeRoleResponse {
@@ -18,7 +18,7 @@ export async function ChangeUserRoleRequest(
 ): Promise<ChangeRoleResponse> {
   const HEADER = getFetchHeader(token, "a");
   try{
-    const url = `api/admin/members/${userInfo.memberId}/role`
+    const url = `api/admin/members/${userInfo.employeeId}/role`
     const response = await baseHttpClient().patch<ChangeRoleResponse, UserInfo>(url, HEADER, userInfo);
     return response;
   } catch (error) {

@@ -9,7 +9,7 @@ import { ChangeUserRoleRequest } from "../service/ChangeUserRoleRequest";
 
 function ChangeUserRole() {
   const [employeeInfo, setEmployeeInfo] = useState({
-    memberId: "",
+    employeeId: "",
     role: ""
   });
   const [isExist, setIsExist] = useState<boolean | null>(null);
@@ -34,7 +34,7 @@ function ChangeUserRole() {
   const checkEmployeeIdExists = async () => {
     const token = getUser();
     try{
-      const response = await EmployeeIdExists(token, employeeInfo.memberId);
+      const response = await EmployeeIdExists(token, employeeInfo.employeeId);
       console.log("중복확인 요청 결과 : ", response);
       if(response.result) {
         setIsExist(true);
@@ -62,7 +62,7 @@ function ChangeUserRole() {
   };
 
   const isFormValid = Object.values(employeeInfo).every((value) => value.trim() !== "");
-  const isEmployeeValid = employeeInfo.memberId.trim() !== "";
+  const isEmployeeValid = employeeInfo.employeeId.trim() !== "";
   const buttonStyle = "w-[72px] h-[39px] bg-[#FFF] hover:bg-white text-gray-800 text-body-sm border border-gray-100";
 
 
@@ -83,9 +83,9 @@ function ChangeUserRole() {
         <label className="text-body-md-m text-gray-500">사번</label>
         <div className="flex gap-[10px] items-center">
           <Input 
-            name="memberId"
+            name="employeeId"
             placeholder="ex)000000"
-            value={employeeInfo.memberId}
+            value={employeeInfo.employeeId}
             onChange={handleInputChange}
             className={clsx(
               "w-[227px] h-[40px] placeholder:text-gray-100 border-gray-100",
