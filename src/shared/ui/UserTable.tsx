@@ -31,7 +31,6 @@ export default function UserTable() {
   const [selectedIndex, setSelectedIndex] = useState<string | null>(null);
   const [selectedRowId, setSeletedRowId] = useState<number | null>(null);
   const [previewUrl, setPreviewUrl] = useState("");
-  const [limitRequest, setLimitRequest] = useState(0);
 
 
   const itemsPerPage = 10; // 페이지별 아이템 개수
@@ -53,16 +52,11 @@ export default function UserTable() {
   };
 
   useEffect(() => {
-    if (limitRequest < 9 ){
-      console.log(`${limitRequest}번째로 데이터를 가져옵니다.`);
-      const params = getSearchParams();
-      params.page = currentPage;
-      console.log("현재 검색 파라미터:", params); // 값이 변하는지 확인
-      setLimitRequest(prev => prev+1);      
-      fetchData();
-    } else{
-      console.log("횟수 초과")
-    }
+    const params = getSearchParams();
+    params.page = currentPage;
+    console.log("현재 검색 파라미터:", params); // 값이 변하는지 확인    
+    fetchData();
+
   }, [currentPage, filters]); // 페이지가 바뀌거나 params를 바꾼뒤 조회를 누르면 fetch
   
 
