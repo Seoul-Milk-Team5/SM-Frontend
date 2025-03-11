@@ -45,26 +45,26 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
       const response = await ocrPostRequest(token, files as any);
 
       if (response.success) {
-        console.log(response);
         const fileCount = (files?.clientFiles?.length ?? 0) + (files?.result?.length ?? 0);
 
         const filteredResults = response.result.filter(item => item.processStatus === "PENDING");
+        console.log(filteredResults);
 
-        if (!filteredResults) {
+        if (!filteredResults || filteredResults.length === 0) {
           setLoadingComent("텍스트 추출에 실패했습니다. 다시 시도해주세요.");
           setTimeout(() => {
             setIsOpen(false);
           }, 1500);
+        } else {
+          // fileCount 만큼 제한하여 저장
+          const limitedResults = filteredResults.slice(0, fileCount);
+          setOcrData(limitedResults);
+
+          setLoadingComent("텍스트 추출이 완료되었습니다.");
+          setTimeout(() => {
+            setSteps(2);
+          }, 1500);
         }
-
-        // fileCount 만큼 제한하여 저장
-        const limitedResults = filteredResults.slice(0, fileCount);
-        setOcrData(limitedResults);
-
-        setLoadingComent("텍스트 추출이 완료되었습니다.");
-        setTimeout(() => {
-          setSteps(2);
-        }, 1500);
       } else {
         setLoadingComent("텍스트 추출에 실패했습니다. 다시 시도해주세요.");
         setTimeout(() => {
