@@ -72,8 +72,7 @@ function LoginForm() {
       const response = await loginRequest(loginBody);
 
       if (typeof response?.role === "string") {
-        login("ROLE_ADMIN");
-        // login(response.role);
+        login(response.role);
         setUserData(prev => ({ ...prev, userId: formState.employeeId, userName: response.name }));
         navigate("/dashboard/file");
       } else {
