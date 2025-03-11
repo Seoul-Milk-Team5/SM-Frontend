@@ -1,4 +1,6 @@
+import AddUserSection from "@/feature/adduser/ui/AddUserSection";
 import Navbar from "../../shared/ui/Navbar";
+import ChangeUserRole from "@/feature/adduser/ui/ChangeUserRole";
 
 function AddUserPage() {
   const navItems = [
@@ -8,7 +10,8 @@ function AddUserPage() {
   return (
     <div>
       <Navbar items={navItems} />
-      adduser page
+      <AddUserSection />
+      <ChangeUserRole />
     </div>
   );
 }

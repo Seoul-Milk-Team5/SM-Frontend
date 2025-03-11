@@ -235,8 +235,8 @@ export default function DataTable() {
                   />
                 </TableCell>
                 <TableCell>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</TableCell>
-                <TableCell>{row.suName}</TableCell>
-                <TableCell>{row.ipName}</TableCell>
+                <TableCell>{row.suBusinessName}</TableCell>
+                <TableCell>{row.ipBusinessName}</TableCell>
                 <TableCell>{FormatCreatedAt(row.createdAt)}</TableCell>
                 <TableCell
                   className="text-gray-300 underline cursor-pointer"

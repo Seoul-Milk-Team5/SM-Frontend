@@ -15,6 +15,7 @@ import { StepProvider } from "@/app/providers/StepProvider";
 import EditApprovalModal from "@/shared/ui/EditModal";
 import PreviewModal from "@/shared/ui/PreviewModal";
 import { DeleteRequest } from "@/feature/searchFile/service/DeleteRequest";
+import { DownloadExcel } from "../api/DownloadExcel";
 
 
 export default function UserTable() {
@@ -38,6 +39,7 @@ export default function UserTable() {
 
   const fetchData = async () => {
     const searchParams = getSearchParams();
+    searchParams.page = currentPage;
     const token = getUser();
     try{
       const response = await OcrSearchRequest(token, searchParams);
@@ -135,6 +137,19 @@ export default function UserTable() {
     }
   };
 
+  const downloadExcelFile = async () => {
+    const token = getUser();
+    if(selectedRows.length === 0) {
+      alert("내보낼 항목을 선택하세요");
+      return;
+    }
+    try{
+      await DownloadExcel(token, selectedRows);
+    } catch (error){
+      console.log("내보내기 실패", error);
+    }
+  };
+
   return (
     <div className="p-[20px] bg-[#FFF] rounded-lg">
       <div className="flex justify-between mb-7">
@@ -143,6 +158,7 @@ export default function UserTable() {
           <Button
             className="w-[120px] h-[40px] bg-[#FFF] text-green-500 border border-green-500 hover:bg-white !text-body-md-sb disabled:opacity-100 disabled:border-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed"
             disabled={selectedRows.length === 0}
+            onClick={downloadExcelFile}
           >
           내보내기
           </Button>
@@ -191,8 +207,8 @@ export default function UserTable() {
                     />
                   </TableCell>
                   <TableCell>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</TableCell>
-                  <TableCell>{row.ipName}</TableCell>
-                  <TableCell>{row.suName}</TableCell>
+                  <TableCell>{row.ipBusinessName}</TableCell>
+                  <TableCell>{row.suBusinessName}</TableCell>
                   <TableCell>{formatDate(row.createAt)}</TableCell>
                   <TableCell 
                     className="text-gray-300 underline cursor-pointer"
