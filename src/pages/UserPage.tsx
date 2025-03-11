@@ -1,6 +1,7 @@
 import { UserSearchProvider } from "@/app/providers/UserSearchProvider";
 import Searchbar from "@/feature/user/ui/Searchbar";
-import UserTable from "@/feature/user/ui/UserTable";
+import UserTable from "@/shared/ui/UserTable";
+
 
 function UserPage() {
   return (

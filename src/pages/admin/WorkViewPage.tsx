@@ -1,4 +1,8 @@
+import AdminSearchbar from "@/feature/workview/ui/AdminSearchBar";
 import Navbar from "../../shared/ui/Navbar";
+import { UserSearchProvider } from "@/app/providers/UserSearchProvider";
+import UserTable from "@/shared/ui/UserTable";
+
 
 function WorkViewPage() {
   const navItems = [
@@ -6,10 +10,13 @@ function WorkViewPage() {
     { path: "/dashboard/admin/adduser", label: "사용자 등록" },
   ];
   return (
-    <div>
-      <Navbar items={navItems} />
-      WorkViewPage
-    </div>
+    <UserSearchProvider>
+      <div>
+        <Navbar items={navItems} />
+        <AdminSearchbar />
+        <UserTable />
+      </div>
+    </UserSearchProvider>
   );
 }
 
