@@ -8,10 +8,13 @@ import useBrowserSize from "@/shared/hooks/useBrowserSize";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { saveFileGetRequest, saveFilePostRequest } from "../service";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { useToast } from "@/app/providers/ToastProvider";
 
 export function PageHeader() {
   const { files, setFiles } = useFileContext();
   const { getUser } = useAuth();
+  const { addToast } = useToast();
+
   const [disable, setDisable] = useState(true);
   const windowSize = useBrowserSize();
 
@@ -45,6 +48,9 @@ export function PageHeader() {
         result: updatedData.result.content, // ✅ 서버 응답으로 result 업데이트
         clientFiles: [], // ✅ 클라이언트 파일 목록 초기화
       }));
+      addToast("임시 저장되었습니다.", "success");
+    } else {
+      addToast("임시 저장에 실패하였습니다.", "error");
     }
   };
   return (
