@@ -38,6 +38,7 @@ export default function UserTable() {
 
   const fetchData = async () => {
     const searchParams = getSearchParams();
+    searchParams.page = currentPage;
     const token = getUser();
     try{
       const response = await OcrSearchRequest(token, searchParams);
@@ -191,8 +192,8 @@ export default function UserTable() {
                     />
                   </TableCell>
                   <TableCell>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</TableCell>
-                  <TableCell>{row.ipName}</TableCell>
-                  <TableCell>{row.suName}</TableCell>
+                  <TableCell>{row.ipBusinessName}</TableCell>
+                  <TableCell>{row.suBusinessName}</TableCell>
                   <TableCell>{formatDate(row.createAt)}</TableCell>
                   <TableCell 
                     className="text-gray-300 underline cursor-pointer"
