@@ -16,8 +16,8 @@ export default function MilkCartonAnimation() {
   }, []);
 
   return (
-    <div className="flex justify-center w-[150px]">
-      <Lottie animationData={animationData} loop={true} autoplay={play} className="w-64 h-64" />
+    <div className="flex justify-center w-[120px]">
+      <Lottie animationData={animationData} loop={true} autoplay={play} className="w-64 h-40" />
     </div>
   );
 }

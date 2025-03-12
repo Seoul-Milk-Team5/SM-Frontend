@@ -2,11 +2,14 @@ import { baseHttpClient } from "@/shared/api";
 import { getFetchHeader } from "@/shared/utils";
 import { PasswordResponse } from "../model";
 
-export async function passwordChangeRequest(body: { password1: string; password2: string }): Promise<PasswordResponse> {
+export async function passwordChangeRequest(body: {
+  employeeId: string;
+  password1: string;
+  password2: string;
+}): Promise<PasswordResponse> {
   const HEADER = getFetchHeader("", "b");
-
   try {
-    return await baseHttpClient().post<PasswordResponse, { password1: string; password2: string }>(
+    return await baseHttpClient().patch<PasswordResponse, { employeeId: string; password1: string; password2: string }>(
       "api/members/users/password/reset",
       HEADER,
       body

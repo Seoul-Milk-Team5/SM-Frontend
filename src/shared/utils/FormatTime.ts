@@ -1,6 +1,6 @@
 export function formatTimeFromFiles(fileCount: number): string {
   // 총 초 계산 (파일 개수 * 2초)
-  const totalSeconds = fileCount * 2;
+  const totalSeconds = fileCount * 3;
 
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;

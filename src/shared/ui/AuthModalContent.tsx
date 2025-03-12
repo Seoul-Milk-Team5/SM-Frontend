@@ -19,14 +19,14 @@ interface AuthModalContentProps {
   editModalClose?: () => void;
 }
 
-function AuthModalContent({ 
-    changeStep, 
-    ocrData, 
-    isEditRequest, 
-    taxInvoiceId, 
-    dataTableFetch,
-    editModalClose
-  }: AuthModalContentProps) {
+function AuthModalContent({
+  changeStep,
+  ocrData,
+  isEditRequest,
+  taxInvoiceId,
+  dataTableFetch,
+  editModalClose,
+}: AuthModalContentProps) {
   const { getUser } = useAuth();
   const token = getUser();
   const navigate = useNavigate();
@@ -48,6 +48,7 @@ function AuthModalContent({
   const [isFormValid, setIsFormValid] = useState(false); // 버튼 활성화 상태
   const [key, setKey] = useState("");
   const [ocrBody, setOcrBody] = useState<OcrData[]>();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     //ocr 추출된 결과 리스트 불러오는 API 함수 연결
@@ -73,8 +74,7 @@ function AuthModalContent({
 
   // 간편인증
   const handleAuthRequest = async () => {
-    setFormData(prev => ({ ...prev, isRequestConfirmed: true }));
-
+    setLoading(true);
     if (!ocrBody) {
       console.log("ocr 데이터가 없어요!");
     }
@@ -87,7 +87,6 @@ function AuthModalContent({
         reportingDate: data.extractedData.erDat || "",
         supplyValue: data.extractedData.chargeTotal || "",
       })) ?? [];
-
 
     const requestData = {
       loginTypeLevel: formData.loginTypeLevel,
@@ -114,12 +113,18 @@ function AuthModalContent({
       console.log("수정 결과", response);
     }
 
-    console.log(requestData);
-
     // 간편인증 요청 API 연결
-    const response = await authRequest(token, requestData);
-    if (typeof response.result === "object" && "key" in response.result) {
-      setKey(response.result.key);
+    try {
+      const response = await authRequest(token, requestData);
+      if (response.success) {
+        setLoading(false);
+        setFormData(prev => ({ ...prev, isRequestConfirmed: true }));
+      }
+      if (typeof response.result === "object" && "key" in response.result) {
+        setKey(response.result.key);
+      }
+    } catch (error) {
+      console.error("Auth request failed:", error);
     }
   };
 
@@ -127,11 +132,10 @@ function AuthModalContent({
   const handleAuthClearAndHomeTaxRequest = async () => {
     try {
       const response = await reAuthRequest(token, key);
+      changeStep?.(3);
       if (response.success) {
-        changeStep?.(3);
         if (isEditRequest) {
           if (dataTableFetch) {
-            console.log("업데이트 성공 데이터를 다시 불러옵니다.");
             await dataTableFetch();
             editModalClose?.();
           }
@@ -162,7 +166,10 @@ function AuthModalContent({
     );
   }, [formData]);
 
-  const certificateIcons = ["kakao", "payco", "samsung", "kbbank", "pass", "naver", "shbank", "toss", "banks"];
+  const certificateIcons = {
+    url: ["kakao", "payco", "samsung", "kbbank", "pass", "naver", "shbank", "toss", "banks"],
+    name: ["카카오톡", "페이코", "삼성패스", "KB모바일", "통신사PASS", "네이버", "신한인증서", "toss", "뱅크샐러드"],
+  };
 
   return (
     <div className="flex">
@@ -172,16 +179,19 @@ function AuthModalContent({
         <p className="text-body-lg text-gray-300 mb-[35px]">원하는 인증서를 선택하세요.</p>
         <div>
           <div className="grid grid-cols-3 gap-x-[25px] gap-y-[50px]">
-            {certificateIcons.map((icon, index) => (
-              <img
-                key={index}
-                className={`w-[80px] cursor-pointer transition-opacity ${
-                  formData.loginTypeLevel === index + 1 ? "opacity-100" : "opacity-60 hover:opacity-100"
-                }`}
-                src={`/icon/${icon}.svg`}
-                alt={icon}
-                onClick={() => setFormData(prev => ({ ...prev, loginTypeLevel: index + 1 }))}
-              />
+            {certificateIcons.url.map((icon, index) => (
+              <div className="flex flex-col items-center gap-1">
+                <img
+                  key={index}
+                  className={`w-[80px] cursor-pointer transition-opacity ${
+                    formData.loginTypeLevel === index + 1 ? "opacity-100" : "opacity-60 hover:opacity-100"
+                  }`}
+                  src={`/icon/${icon}.svg`}
+                  alt={icon}
+                  onClick={() => setFormData(prev => ({ ...prev, loginTypeLevel: index + 1 }))}
+                />
+                <p className="text-[13px] text-gray-600">{certificateIcons.name[index]}</p>
+              </div>
             ))}
           </div>
         </div>
@@ -296,7 +306,13 @@ function AuthModalContent({
                 : "border-gray-100 text-gray-300 cursor-not-allowed"
             }`}
             onClick={handleAuthRequest}>
-            인증요청
+            {loading ? (
+              <div className="flex justify-center items-center">
+                <div className="w-8 h-8 border-4 border-gray-100 border-t-green-300 rounded-full animate-spin"></div>
+              </div>
+            ) : (
+              "인증 요청"
+            )}
           </Button>
           <Button
             className={`w-[50%] py-3.5 px-6 text-title-md text-white p-[26px] ${

@@ -27,9 +27,9 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const maxWidthClass = {
-    1: "sm:max-w-[450px] max-h-[320px]",
+    1: "sm:max-w-[450px] max-h-[250px]",
     2: "sm:max-w-[1025px] max-h-[100vh]",
-    3: "sm:max-w-[450px] max-h-[320px]",
+    3: "sm:max-w-[450px] max-h-[250px]",
   }[steps];
 
   const handleChangeModalStep = (number: number) => {
@@ -96,7 +96,7 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
       {/*모달 열림 상태 관리 */}
       <AlertDialogTrigger asChild>
         <Button
-          className="bg-green-500 hover:bg-green-600 cursor-pointer disabled:bg-green-200 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white mb:hidden"
+          className="bg-green-500 hover:bg-green-600 cursor-pointer disabled:bg-gray-100 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white mb:hidden"
           disabled={disable}
           onClick={handleOcrRequest}>
           {btnName}

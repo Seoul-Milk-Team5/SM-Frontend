@@ -10,7 +10,7 @@ function HometaxModalContent() {
   return (
     <div className="flex flex-col gap-4 items-center">
       <MilkCartonAnimation />
-      <p className="text-body">홈택스에서 세금계산서 진위여부를 검증하고 있어요.</p>
+      <p className="text-[21px] font-bold">홈택스에서 세금계산서 진위여부를 검증하고 있어요.</p>
     </div>
   );
 }

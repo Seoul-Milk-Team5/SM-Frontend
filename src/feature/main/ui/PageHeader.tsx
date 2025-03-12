@@ -40,12 +40,13 @@ export function PageHeader() {
   const handleFileSaveRequest = async () => {
     const token = getUser();
     const response = await saveFilePostRequest(token, files?.clientFiles ?? []);
+
     if (response.success) {
       const updatedData = await saveFileGetRequest(token);
       setFiles(prev => ({
         ...prev,
-        result: updatedData.result.content, // ✅ 서버 응답으로 result 업데이트
-        clientFiles: [], // ✅ 클라이언트 파일 목록 초기화
+        result: updatedData.result.content,
+        clientFiles: [],
       }));
       addToast("임시 저장되었습니다.", "success");
     } else {
