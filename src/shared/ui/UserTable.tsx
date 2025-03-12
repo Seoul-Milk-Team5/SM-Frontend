@@ -17,6 +17,7 @@ import PreviewModal from "@/shared/ui/PreviewModal";
 import { DeleteRequest } from "@/feature/searchFile/service/DeleteRequest";
 import { DownloadExcel } from "../api/DownloadExcel";
 import { useToast } from "@/app/providers/ToastProvider";
+import Errorconform from "./Alert/Errorconform";
 
 
 export default function UserTable() {
@@ -123,7 +124,7 @@ export default function UserTable() {
 
     try {
       await DeleteRequest(taxInvoiceIdList as number[], token);
-      addToast("삭제되었습니다.", "success");
+
       setSelectedRows([]);
       fetchData();
     } catch (error) {
@@ -157,15 +158,13 @@ export default function UserTable() {
           >
           내보내기
           </Button>
-          <Button
-            className="py-3.5 px-6 bg-green-500 hover:bg-green-600 text-[#FFF] disabled:opacity-100 disabled:cursor-not-allowed disabled:bg-gray-100"
-            disabled={selectedRows.length === 0}
+          <Errorconform 
+            btnName="삭제하기"
             onClick={handleDelete}
-          >
-          삭제하기
-          </Button>          
+            disabled={selectedRows.length === 0}
+            className="py-3.5 px-6 bg-green-500 hover:bg-green-600 text-[#FFF] disabled:opacity-100 disabled:cursor-not-allowed disabled:bg-gray-100"
+          />
         </div>
-
       </div>
       <Table>
         <TableHeader className="h-[57px] pointer-events-none">
