@@ -87,7 +87,14 @@ export default function Searchbar() {
     filter.consumer.trim() === "";
 
   const handleSearchFilter = () => {
-    setFilters(filter);
+    setFilter((prev) => ({
+      ...prev,
+      page: 1,
+    }));
+    setFilters({
+      ...filter,
+      page:1, // 최신 상태를 반영한 새로운 객체를 전달한다.
+    })
   };
 
 // DatePickerWithRange에서 날짜 범위 선택 후 filter 업데이트

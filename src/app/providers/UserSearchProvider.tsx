@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useMemo } from "react";
 
 interface SearchFilters {
   provider?: string;
@@ -16,12 +16,14 @@ interface SearchContextType {
   filters: SearchFilters;
   setFilters: (filters: Partial<SearchFilters>) => void;
   getSearchParams: () => { [key: string]: any };
+  isInitialState: () => boolean; // ✅ 함수 타입 유지
 }
 
 const SearchContext = createContext<SearchContextType | null>(null);
 
 export const UserSearchProvider = ({ children }: { children: ReactNode }) => {
-  const [filters, setFiltersState] = useState<SearchFilters>({
+  
+  const initialFilterState: SearchFilters = {
     provider: "",
     consumer: "",
     name: "",
@@ -31,8 +33,9 @@ export const UserSearchProvider = ({ children }: { children: ReactNode }) => {
     status: null,
     page: 1,
     size: 10,
+  };
 
-  });
+  const [filters, setFiltersState] = useState<SearchFilters>(initialFilterState);
 
   const setFilters = (newFilters: Partial<SearchFilters>) => {
     setFiltersState((prev) => ({ ...prev, ...newFilters }));
@@ -56,8 +59,15 @@ export const UserSearchProvider = ({ children }: { children: ReactNode }) => {
     return Object.fromEntries(Object.entries(searchParams).filter(([_, v]) => v != null));
   };
 
+  // ✅ 초기 상태인지 확인하는 함수로 변경
+  const isInitialState = useMemo(() => {
+    return () => {
+      return JSON.stringify(filters) === JSON.stringify(initialFilterState);
+    };
+  }, [filters]);
+
   return (
-    <SearchContext.Provider value={{ filters, setFilters, getSearchParams }}>
+    <SearchContext.Provider value={{ filters, setFilters, getSearchParams, isInitialState }}>
       {children}
     </SearchContext.Provider>
   );
