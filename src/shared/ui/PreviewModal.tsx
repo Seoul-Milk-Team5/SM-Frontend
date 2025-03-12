@@ -1,4 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
+import { useState } from "react";
 
 interface PreviewModalProps {
   isOpen: boolean;
@@ -7,7 +8,12 @@ interface PreviewModalProps {
 }
 
 export default function PreviewModal({ isOpen, onClose, fileUrl }: PreviewModalProps) {
+  const [rotate, setRotate] = useState(0);
   const isPdf = fileUrl ? fileUrl.endsWith(".pdf") : false;
+
+  const handleRotate = () => {
+    setRotate((prev) => prev + 90); // 클릭시 90도 회전
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -16,15 +22,24 @@ export default function PreviewModal({ isOpen, onClose, fileUrl }: PreviewModalP
           <DialogTitle>미리보기</DialogTitle>
           <DialogClose onClick={onClose} />
         </DialogHeader>
-        {fileUrl ? (
-          isPdf ? (
-            <iframe src={fileUrl} className="flex-grow w-full h-full" />
+        <div className="flex-grow flex justify-center items-center overflow-hidden">
+          {fileUrl ? (
+            isPdf ? (
+              <iframe src={fileUrl} className="flex-grow w-full h-full" />
+            ) : (
+              <img 
+                src={fileUrl} 
+                alt="미리보기 이미지" 
+                className="max-w-full max-h-full object-contain"
+                style={{ transform: `rotate(${rotate}deg)`, transition: "transform 0.3s ease" }}
+                onClick={handleRotate}
+              />
+            )
           ) : (
-            <img src={fileUrl} alt="미리보기 이미지" className="w-full h-auto object-contain" />
-          )
-        ) : (
-          <p className="text-center text-gray-500">미리볼 파일이 없습니다.</p>
-        )}
+            <p className="text-center text-gray-500">미리볼 파일이 없습니다.</p>
+          )}    
+        </div>
+
       </DialogContent>
     </Dialog>
   );
