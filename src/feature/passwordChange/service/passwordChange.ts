@@ -8,7 +8,6 @@ export async function passwordChangeRequest(body: {
   password2: string;
 }): Promise<PasswordResponse> {
   const HEADER = getFetchHeader("", "b");
-  console.log(body);
   try {
     return await baseHttpClient().patch<PasswordResponse, { employeeId: string; password1: string; password2: string }>(
       "api/members/users/password/reset",
