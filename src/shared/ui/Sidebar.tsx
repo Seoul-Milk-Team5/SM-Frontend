@@ -19,7 +19,6 @@ function Sidebar() {
 
   const handleLogout = () => {
     logout();
-    console.log("사용자가 로그아웃되었습니다.");
     navigate("/"); 
     setIsLogoutModalOpen(false);
   };

@@ -40,7 +40,6 @@ export function PageHeader() {
   const handleFileSaveRequest = async () => {
     const token = getUser();
     const response = await saveFilePostRequest(token, files?.clientFiles ?? []);
-    console.log(response);
     if (response.success) {
       const updatedData = await saveFileGetRequest(token);
       setFiles(prev => ({

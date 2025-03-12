@@ -57,7 +57,7 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId, dataT
         console.error("응답 데이터가 없습니다.");
         return;
       }
-      console.log("서버에서 받은 데이터", response);
+
       setFormData(prevState => ({
         ...prevState,
         result: {

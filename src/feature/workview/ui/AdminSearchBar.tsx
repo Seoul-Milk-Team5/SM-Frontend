@@ -90,7 +90,6 @@ export default function AdminSearchbar() {
 
   const handleSearchFilter = () => {
     setFilters(filter);
-    console.log("다음 데이터를 조회합니다.", filter);
   };
 
 // DatePickerWithRange에서 날짜 범위 선택 후 filter 업데이트

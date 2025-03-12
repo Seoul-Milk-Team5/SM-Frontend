@@ -88,8 +88,6 @@ function AuthModalContent({
         supplyValue: data.extractedData.chargeTotal || "",
       })) ?? [];
 
-    console.log(ocrReDataArray);
-    console.log(formData.firstPhoneNo + formData.phoneNo);
 
     const requestData = {
       loginTypeLevel: formData.loginTypeLevel,

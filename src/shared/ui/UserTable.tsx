@@ -56,7 +56,6 @@ export default function UserTable() {
   useEffect(() => {
     const params = getSearchParams();
     params.page = currentPage;
-    console.log("현재 검색 파라미터:", params); // 값이 변하는지 확인    
     fetchData();
 
   }, [currentPage, filters]); // 페이지가 바뀌거나 params를 바꾼뒤 조회를 누르면 fetch
@@ -192,7 +191,7 @@ export default function UserTable() {
               data.map((row, index) => (
                 <TableRow 
                   key={row.id} 
-                  className={`h-[68px] cursor-pointer ${selectedRows.includes(row.id) ? "bg-green-0 hover:bg-green-0" : ""}`}
+                  className={`h-[68px] text-body-sm cursor-pointer ${selectedRows.includes(row.id) ? "bg-green-0 hover:bg-green-0" : ""}`}
                   onClick={() => openModal(row, index)}
                 >
                   <TableCell className="w-[70px]">

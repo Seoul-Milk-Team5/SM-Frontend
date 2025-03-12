@@ -126,7 +126,6 @@ export function FileUploadTable() {
   const handleFileDelete = async () => {
     const token = getUser();
     const response = await saveFilePatchRequest(token, selectedIds);
-    console.log(response);
 
     if (response.success) {
       const updatedData = await saveFileGetRequest(token);

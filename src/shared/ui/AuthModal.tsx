@@ -48,7 +48,6 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
         const fileCount = (files?.clientFiles?.length ?? 0) + (files?.result?.length ?? 0);
 
         const filteredResults = response.result.filter(item => item.processStatus === "PENDING");
-        console.log(filteredResults);
 
         if (!filteredResults || filteredResults.length === 0) {
           setLoadingComent("텍스트 추출에 실패했습니다. 다시 시도해주세요.");

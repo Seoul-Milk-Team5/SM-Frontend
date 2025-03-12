@@ -7,7 +7,6 @@ import { InvoiceViewRequest } from "../api/InvoiceViewRequest";
 import { ModalData, ModalProps } from "../model";
 
 export default function ApprovalModal({ isOpen, onClose, index, rowId }: ModalProps) {
-  // console.log(rowId);
   const [invoiceInfo, setInvoiceInfo] = useState<ModalData | null>(null);
 
   const { getUser } = useAuth();

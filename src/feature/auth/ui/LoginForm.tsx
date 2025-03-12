@@ -70,7 +70,6 @@ function LoginForm() {
     };
     try {
       const response = await loginRequest(loginBody);
-      console.log(response);
 
       if (typeof response?.role === "string") {
         login(response.role);
