@@ -138,7 +138,7 @@ const handleDateRangeChange = (range: DateRange | undefined) => {
       </div>
       <div className="w-full bg-gray-0 h-1.5 mb-7 mt-4"></div>
       {/* 날짜 */}
-      <div className="flex space-x-[32px] items-center">
+      <div className="flex space-x-[85px] items-center">
         <span className="text-body-md-m text-gray-500">날짜</span>
         <div className="flex gap-4">
           <div className="flex gap-2">
