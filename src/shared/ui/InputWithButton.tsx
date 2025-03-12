@@ -19,13 +19,13 @@ function InputWithButton({
 }: InputWithButtonProps) {
   return (
     <div className="flex gap-3">
-      <Label htmlFor={id} className="w-[120px] text-left pt-3">
+      <Label htmlFor={id} className="w-[120px] text-left pt-3 font-medium text-[19px] mr-10">
         {label}
       </Label>
       <div className="flex-1 flex flex-col max-w-[300px] ml-8">
         <Input
           type={type}
-          className="placeholder-gray-300 p-5"
+          className="placeholder-gray-300 px-5 py-5.5"
           id={id}
           value={value}
           onChange={onChange}
@@ -33,11 +33,11 @@ function InputWithButton({
           valid={!error}
           name={name}
         />
-        {success && <p className="text-green-400 text-label-xs mt-1">{success}</p>}
-        {error && <p className="text-red-400 text-label-xs mt-1">{error}</p>}
+        {success && <p className="text-green-400 text-label-xs mt-1 pl-5">{success}</p>}
+        {error && <p className="text-red-400 text-label-xs mt-1 pl-5">{error}</p>}
       </div>
       <Button
-        className="bg-green-500 disabled:bg-gray-100 disabled:opacity-100 text-white hover:bg-green-600 py-[21px]"
+        className="bg-green-500 disabled:bg-gray-100 disabled:opacity-100 text-white hover:bg-green-600 py-[23px]"
         type="button"
         onClick={onClick}
         disabled={disabled}>

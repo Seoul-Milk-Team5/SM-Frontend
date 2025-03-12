@@ -23,6 +23,7 @@ function PasswordChangeForm() {
   });
 
   const [success, setSuccess] = useState({
+    userId: "",
     email: "",
     authNumber: "",
   });
@@ -42,8 +43,8 @@ function PasswordChangeForm() {
   useEffect(() => {
     setIsButtonDisabled({
       userId: formData.userId.trim() === "",
-      email: formData.email.trim() === "" || !/^[^@]+@seoulmilk\.co\.kr$/.test(formData.email),
-      //email: formData.email.trim() === "" || !/^[^@]+@gmail\.com$/.test(formData.email),
+      //email: formData.email.trim() === "" || !/^[^@]+@seoulmilk\.co\.kr$/.test(formData.email),
+      email: formData.email.trim() === "" || !/^[^@]+@gmail\.com$/.test(formData.email),
       authNumber: formData.authNumber.trim() === "" || formData.email.trim() === "",
     });
 
@@ -66,8 +67,8 @@ function PasswordChangeForm() {
 
     switch (id) {
       case "email":
-        const emailRegex = /^[^@]+@seoulmilk\.co\.kr$/;
-        //const emailRegex = /^[^@]+@gmail\.com$/;
+        //const emailRegex = /^[^@]+@seoulmilk\.co\.kr$/;
+        const emailRegex = /^[^@]+@gmail\.com$/;
         if (!emailRegex.test(value)) {
           setErrors(prevErrors => ({
             ...prevErrors,
@@ -105,6 +106,7 @@ function PasswordChangeForm() {
       if (response.result) {
         setIsButtonDisabled(prev => ({ ...prev, userId: true }));
         setErrors(prevState => ({ ...prevState, userId: "" }));
+        setSuccess(prevState => ({ ...prevState, userId: "확인되었습니다." }));
       } else {
         setErrors(prevState => ({ ...prevState, userId: "존재하지 않는 사번입니다." }));
       }
@@ -177,9 +179,10 @@ function PasswordChangeForm() {
         label="사번"
         type="text"
         id="userId"
-        placeholder="사번을 입력해주세요."
+        placeholder="사번을 입력해 주세요."
         value={formData.userId}
         onChange={handleChange}
+        success={success.userId}
         error={errors.userId}
         disabled={isButtonDisabled.userId}
         buttonText="확인"
@@ -220,7 +223,7 @@ function PasswordChangeForm() {
         label="새 비밀번호"
         type="password"
         id="password"
-        placeholder="비밀번호를 입력해 주세요."
+        placeholder="새 비밀번호를 입력해 주세요."
         value={formData.password}
         onChange={handleChange}
         error={errors.password}

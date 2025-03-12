@@ -109,7 +109,7 @@ module.exports = {
       },
       fontSize: {
         // Title
-        "title-lg": ["25px", { lineHeight: "150%", fontWeight: "700" }], // Large (Bold)
+        "title-lg": ["25px", { lineHeight: "150%", fontWeight: "900" }], // Large (Bold)
         "title-md-b": ["21px", { lineHeight: "150%", fontWeight: "700" }], // Medium-B (Bold)
         "title-md": ["21px", { lineHeight: "150%", fontWeight: "600" }], // Medium (Semi Bold)
         "title-sm": ["19px", { lineHeight: "150%", fontWeight: "600" }], // Small (Semi Bold)
