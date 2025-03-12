@@ -9,6 +9,8 @@ import { useAuth } from "@/app/providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { OcrData } from "@/feature/main";
 import { editInvoiceRequest } from "../api/editInvoiceRequest";
+import { useToast } from "@/app/providers/ToastProvider";
+import { useStep } from "@/app/providers/StepProvider";
 
 interface AuthModalContentProps {
   changeStep?: (step: number) => void;
@@ -20,7 +22,6 @@ interface AuthModalContentProps {
 }
 
 function AuthModalContent({
-  changeStep,
   ocrData,
   isEditRequest,
   taxInvoiceId,
@@ -28,6 +29,7 @@ function AuthModalContent({
   editModalClose,
 }: AuthModalContentProps) {
   const { getUser } = useAuth();
+  const { setSteps } = useStep();
   const token = getUser();
   const navigate = useNavigate();
 
@@ -49,6 +51,8 @@ function AuthModalContent({
   const [key, setKey] = useState("");
   const [ocrBody, setOcrBody] = useState<OcrData[]>();
   const [loading, setLoading] = useState(false);
+
+  const { addToast } = useToast();
 
   useEffect(() => {
     //ocr 추출된 결과 리스트 불러오는 API 함수 연결
@@ -132,24 +136,24 @@ function AuthModalContent({
   const handleAuthClearAndHomeTaxRequest = async () => {
     try {
       const response = await reAuthRequest(token, key);
-      changeStep?.(3);
+      setSteps(3);
       if (response.success) {
         if (isEditRequest) {
           if (dataTableFetch) {
             await dataTableFetch();
             editModalClose?.();
           }
-          changeStep?.(1);
+          setSteps(1);
         } else {
           setTimeout(() => {
             navigate("/dashboard/searchfile");
-            changeStep?.(1);
+            setSteps(1);
           }, 1500);
         }
       }
     } catch (error: any) {
-      if (error.message.includes("500")) {
-        alert("휴대폰으로 인증 후 버튼을 눌러주세요.!");
+      if (error.message.includes("401")) {
+        addToast("휴대폰으로 인증 후 버튼을 눌러주세요.!", "error");
       }
     }
   };
