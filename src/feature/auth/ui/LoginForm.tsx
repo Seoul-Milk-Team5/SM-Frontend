@@ -70,6 +70,7 @@ function LoginForm() {
     };
     try {
       const response = await loginRequest(loginBody);
+      console.log(response);
 
       if (typeof response?.role === "string") {
         login(response.role);
@@ -84,8 +85,21 @@ function LoginForm() {
           isPasswordValid: !response.message?.includes("비밀번호"),
         }));
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("로그인 실패", error);
+      if (error.message.includes("401")) {
+        setFormState(prev => ({
+          ...prev,
+          passwordError: "비밀번호가 틀렸습니다.",
+          isPasswordValid: false,
+        }));
+      } else if (error.message.includes("404")) {
+        setFormState(prev => ({
+          ...prev,
+          employeeIdError: "존재하지 않는 사번입니다.",
+          isIdValid: false,
+        }));
+      }
     }
   };
 
