@@ -170,7 +170,7 @@ export function FileUploadTable() {
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map(row => (
                 <TableRow
-                  className="hover:bg-gray-50 h-[68px] text-body-md"
+                  className="hover:bg-gray-50 h-[60px] text-body-md"
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map(cell => (
@@ -204,7 +204,8 @@ export function FileUploadTable() {
               <PaginationItem key={index}>
                 <PaginationLink
                   isActive={table.getState().pagination.pageIndex === index}
-                  onClick={() => table.setPageIndex(index)}>
+                  onClick={() => table.setPageIndex(index)}
+                  className="">
                   {index + 1}
                 </PaginationLink>
               </PaginationItem>
