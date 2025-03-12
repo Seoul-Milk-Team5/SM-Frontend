@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { useState } from "react";
 import { EmployeeIdExists } from "../service/EmployeeIdExists";
 import { ChangeUserRoleRequest } from "../service/ChangeUserRoleRequest";
+import { useToast } from "@/app/providers/ToastProvider";
 
 
 function ChangeUserRole() {
@@ -15,6 +16,11 @@ function ChangeUserRole() {
   const [isExist, setIsExist] = useState<boolean | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const{ getUser } = useAuth();
+  const { addToast } = useToast();
+  const initialState = {
+    employeeId: "",
+    role: ""
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -54,10 +60,13 @@ function ChangeUserRole() {
     const token = getUser();
     try{
       await ChangeUserRoleRequest(token, employeeInfo);
-      alert("권한 전환에 성공했습니다.");
+      addToast("권한 전환에 성공했습니다.", "success");
+      setEmployeeInfo(initialState);
+      setErrorMessage("");
+      setIsExist(null);
     } catch (error) {
       console.log("권한전환 실패", error);
-      alert("권한 전환에 실패했습니다.");
+      addToast("권한 전환에 실패했습니다.", "error");
     }
   };
 
@@ -99,15 +108,6 @@ function ChangeUserRole() {
           >
             사번확인
           </Button>
-        </div>
-        <div className="flex items-center gap-[35px]">
-          <label className="text-body-md-m text-gray-500">사원명</label>
-          <Input 
-            name="name"
-            placeholder="성함"
-            onChange={handleInputChange}
-            className="w-[149px] h-[40px] border-gray-100 placeholder:text-gray-100"
-          />
         </div>
       </div>
       {errorMessage && (

@@ -31,14 +31,14 @@ function Sidebar() {
       <div>
         <img src="/logo/Logomark.svg" alt="brand logo" className="w-[158px]" />
         <nav className="mt-6">
-          <ul className="space-y-3">
+          <ul>
             <li>
               <Link
                 to="/dashboard/file"
                 className={cn(
                   "flex gap-2 -mx-6 px-6 h-[60px] items-center hover:bg-gray-0",
                   isActive(["/dashboard/file", "/dashboard/searchfile"])
-                    ? "text-green-500 font-normal bg-green-0 hover:bg-green-0"
+                    ? "text-green-500 font-normal bg-green-0 hover:bg-green-0 !text-body-md"
                     : "text-gray-300"
                 )}>
                 {isActive(["/dashboard/file", "/dashboard/searchfile"]) ? (
@@ -55,7 +55,7 @@ function Sidebar() {
                 className={cn(
                   "flex gap-2 -mx-6 px-6 h-[60px] items-center rounded hover:bg-gray-0",
                   isActive(["/dashboard/admin/workview", "/dashboard/admin/adduser", "/dashboard/userpage"])
-                    ? "text-green-500 font-normal bg-green-0 hover:bg-green-0"
+                    ? "text-green-500 font-normal bg-green-0 hover:bg-green-0 !text-body-md"
                     : "text-gray-300"
                 )}>
                 {isActive(["/dashboard/admin/workview", "/dashboard/admin/adduser", "/dashboard/userpage"]) ? (

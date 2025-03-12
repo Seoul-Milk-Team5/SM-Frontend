@@ -16,11 +16,13 @@ import EditApprovalModal from "@/shared/ui/EditModal";
 import PreviewModal from "@/shared/ui/PreviewModal";
 import { DeleteRequest } from "@/feature/searchFile/service/DeleteRequest";
 import { DownloadExcel } from "../api/DownloadExcel";
+import { useToast } from "@/app/providers/ToastProvider";
 
 
 export default function UserTable() {
-  const { getUser } = useAuth();
+  const { getUser, userRole } = useAuth();
   const { filters, getSearchParams } = useSearch();
+  const { addToast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<number[]>([]); // 선택된 cell 값들 저장
   const [data, setData] = useState<InvoiceContent[]>([]);
@@ -31,7 +33,6 @@ export default function UserTable() {
   const [selectedIndex, setSelectedIndex] = useState<string | null>(null);
   const [selectedRowId, setSeletedRowId] = useState<number | null>(null);
   const [previewUrl, setPreviewUrl] = useState("");
-  const [limitRequest, setLimitRequest] = useState(0);
 
 
   const itemsPerPage = 10; // 페이지별 아이템 개수
@@ -53,16 +54,11 @@ export default function UserTable() {
   };
 
   useEffect(() => {
-    if (limitRequest < 9 ){
-      console.log(`${limitRequest}번째로 데이터를 가져옵니다.`);
-      const params = getSearchParams();
-      params.page = currentPage;
-      console.log("현재 검색 파라미터:", params); // 값이 변하는지 확인
-      setLimitRequest(prev => prev+1);      
-      fetchData();
-    } else{
-      console.log("횟수 초과")
-    }
+    const params = getSearchParams();
+    params.page = currentPage;
+    console.log("현재 검색 파라미터:", params); // 값이 변하는지 확인    
+    fetchData();
+
   }, [currentPage, filters]); // 페이지가 바뀌거나 params를 바꾼뒤 조회를 누르면 fetch
   
 
@@ -111,7 +107,7 @@ export default function UserTable() {
   const handleDelete = async () => {
     const token = getUser();
     if (selectedRows.length === 0) {
-      alert("삭제할 항목을 선택하세요.");
+      addToast("삭제할 항목을 선택하세요", "error");
       return;
     }
     if (!token) {
@@ -128,19 +124,19 @@ export default function UserTable() {
 
     try {
       await DeleteRequest(taxInvoiceIdList as number[], token);
-      alert("삭제가 완료되었습니다.");
+      addToast("삭제되었습니다.", "success");
       setSelectedRows([]);
       fetchData();
     } catch (error) {
       console.log("삭제 실패", error);
-      alert("삭제하는데 실패했습니다.");
+      addToast("삭제하는데 실패했습니다..", "error");
     }
   };
 
   const downloadExcelFile = async () => {
     const token = getUser();
     if(selectedRows.length === 0) {
-      alert("내보낼 항목을 선택하세요");
+      addToast("내보낼 항목을 선택하세요", "error");
       return;
     }
     try{
@@ -156,14 +152,14 @@ export default function UserTable() {
         <span className="text-title-sm text-gray-800">검증 내역</span>
         <div className="flex space-x-[15px]">
           <Button
-            className="w-[120px] h-[40px] bg-[#FFF] text-green-500 border border-green-500 hover:bg-white !text-body-md-sb disabled:opacity-100 disabled:border-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed"
+            className="py-3.5 px-6 bg-[#FFF] text-green-500 border border-green-500 hover:bg-white disabled:opacity-100 disabled:border-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed"
             disabled={selectedRows.length === 0}
             onClick={downloadExcelFile}
           >
           내보내기
           </Button>
           <Button
-            className="w-[120px] h-[40px] bg-green-500 hover:bg-green-600 !text-body-md-sb text-[#FFF] disabled:opacity-100 disabled:cursor-not-allowed disabled:bg-gray-100"
+            className="py-3.5 px-6 bg-green-500 hover:bg-green-600 text-[#FFF] disabled:opacity-100 disabled:cursor-not-allowed disabled:bg-gray-100"
             disabled={selectedRows.length === 0}
             onClick={handleDelete}
           >
@@ -185,9 +181,10 @@ export default function UserTable() {
             <TableHead>번호</TableHead>
             <TableHead>공급자</TableHead>
             <TableHead>공급받는자</TableHead>
+            {userRole === "ROLE_ADMIN" && <TableHead>담당자</TableHead>}
             <TableHead>날짜</TableHead>
             <TableHead>미리보기</TableHead>
-            <TableHead>승인여부</TableHead>
+            <TableHead className="text-center">승인여부</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -209,6 +206,7 @@ export default function UserTable() {
                   <TableCell>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</TableCell>
                   <TableCell>{row.ipBusinessName}</TableCell>
                   <TableCell>{row.suBusinessName}</TableCell>
+                  {userRole === "ROLE_ADMIN" && <TableCell>{row.writer}</TableCell>}
                   <TableCell>{formatDate(row.createAt)}</TableCell>
                   <TableCell 
                     className="text-gray-300 underline cursor-pointer"
@@ -219,7 +217,7 @@ export default function UserTable() {
                   >
                     {TruncateFileName(row.imageUrl)}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="flex justify-center">
                     <Badge custom={
                       ["APPROVED", "REJECTED", "UNAPPROVED"].includes(row.status)
                         ? (row.status as "APPROVED" | "REJECTED" | "UNAPPROVED")

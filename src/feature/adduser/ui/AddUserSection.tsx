@@ -5,6 +5,7 @@ import { useState } from "react";
 import { EmployeeIdExists } from "../service/EmployeeIdExists";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { AdduserRequest } from "../service/AddUserRequest";
+import { useToast } from "@/app/providers/ToastProvider";
 
 
 function AddUserSection() {
@@ -16,6 +17,12 @@ function AddUserSection() {
   const [isExist, setIsExist] = useState<boolean | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const { getUser } = useAuth();
+  const { addToast } = useToast();
+  const initialState = {
+    name: "",
+    employeeId: "",
+    role: ""
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -55,10 +62,13 @@ function AddUserSection() {
     const token = getUser();
     try{
       await AdduserRequest(token, employeeInfo);
-      alert("사용자가 등록되었습니다.");
+      addToast("사용자가 등록되었습니다.", "success");
+      setEmployeeInfo(initialState);
+      setIsExist(null);
+      setErrorMessage("");
     } catch (error) {
       console.log("사용자 등록에 실패했습니다.", error);
-      alert("사용자 등록에 실패했습니다.");
+      addToast("사용자 등록에 실패했습니다.", "error");
     }
   }
 
