@@ -168,7 +168,7 @@ export default function DataTable() {
                 <DropdownMenuItem
                   key={processStatus}
                   onClick={() => setselectedProcessStatus(processStatus)}
-                  className="text-body-md">
+                  className="text-body-md flex items-center gap-x-1">
                   <span>{getStatusLabel(processStatus)}</span>
                   <span className="text-gray-400">({statusCounts[processStatus as keyof StatusCount]})</span>
                 </DropdownMenuItem>
@@ -182,14 +182,20 @@ export default function DataTable() {
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
-            <img src="/icon/search.svg" onClick={fetchData} className="cursor-pointer" />
+            <img
+              src={search ? "/icon/activeSearch.svg" : "/icon/search.svg"}
+              className="cursor-pointer"
+              onClick={search ? fetchData : undefined}
+            />
           </div>
         </div>
 
         <div className="flex gap-[15px]">
           <Button
             onClick={handleDelete}
-            className="!text-body-md-sb text-[#FFF] w-[111px] h-[40px] bg-green-500 hover:bg-green-600 disabled:opacity-100 disabled:bg-gray-100">
+            className=" text-[#FFF] py-3.5 px-6 bg-green-500 hover:bg-green-600 disabled:opacity-100 disabled:bg-gray-100"
+            disabled={selectedRows.length === 0} // 선택된 셀이 없으면 비활성화
+          >
             삭제하기
           </Button>
         </div>

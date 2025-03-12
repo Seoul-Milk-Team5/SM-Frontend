@@ -14,12 +14,12 @@ export default function PreviewModal({ isOpen, onClose, fileUrl }: PreviewModalP
   const handleRotate = () => {
     setRotate((prev) => prev + 90); // 클릭시 90도 회전
   }
-
+  
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[800px] h-[600px] flex flex-col">
+      <DialogContent className="sm:max-w-[905px] h-[700px] flex flex-col">
         <DialogHeader>
-          <DialogTitle>미리보기</DialogTitle>
+          <DialogTitle className="border-b border-gray-100 h-8 text-gray-800 text-body-sm">미리보기</DialogTitle>
           <DialogClose onClick={onClose} />
         </DialogHeader>
         <div className="flex-grow flex justify-center items-center overflow-hidden">

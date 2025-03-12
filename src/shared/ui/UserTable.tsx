@@ -152,14 +152,14 @@ export default function UserTable() {
         <span className="text-title-sm text-gray-800">검증 내역</span>
         <div className="flex space-x-[15px]">
           <Button
-            className="w-[120px] h-[40px] bg-[#FFF] text-green-500 border border-green-500 hover:bg-white !text-body-md-sb disabled:opacity-100 disabled:border-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed"
+            className="py-3.5 px-6 bg-[#FFF] text-green-500 border border-green-500 hover:bg-white disabled:opacity-100 disabled:border-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed"
             disabled={selectedRows.length === 0}
             onClick={downloadExcelFile}
           >
           내보내기
           </Button>
           <Button
-            className="w-[120px] h-[40px] bg-green-500 hover:bg-green-600 !text-body-md-sb text-[#FFF] disabled:opacity-100 disabled:cursor-not-allowed disabled:bg-gray-100"
+            className="py-3.5 px-6 bg-green-500 hover:bg-green-600 text-[#FFF] disabled:opacity-100 disabled:cursor-not-allowed disabled:bg-gray-100"
             disabled={selectedRows.length === 0}
             onClick={handleDelete}
           >
@@ -206,7 +206,7 @@ export default function UserTable() {
                   <TableCell>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</TableCell>
                   <TableCell>{row.ipBusinessName}</TableCell>
                   <TableCell>{row.suBusinessName}</TableCell>
-                  {userRole === "ROLE_ADMIN" && <TableCell>{row.name}</TableCell>}
+                  {userRole === "ROLE_ADMIN" && <TableCell>{row.writer}</TableCell>}
                   <TableCell>{formatDate(row.createAt)}</TableCell>
                   <TableCell 
                     className="text-gray-300 underline cursor-pointer"
