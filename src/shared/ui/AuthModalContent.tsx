@@ -131,9 +131,10 @@ function AuthModalContent({
 
   // 진위 여부 확인
   const handleAuthClearAndHomeTaxRequest = async () => {
-    // 화면 바로 넘어가게 구현
-    setSteps(3);
     try {
+      // 요청 시작 전에 단계 변경 (setSteps(3) 실행)
+      setSteps(3);
+
       const response = await reAuthRequest(token, key);
       if (response.success) {
         if (isEditRequest) {
@@ -152,10 +153,10 @@ function AuthModalContent({
     } catch (error: any) {
       if (error.message.includes("401")) {
         alert("서명이 완료되지 않았습니다. 서명을 완료한 이후에 다시 시도해주세요.");
+        setSteps(2);
       }
     }
   };
-
   // 입력 값이 변경될 때마다 유효성 검사 실행
   useEffect(() => {
     setIsFormValid(
