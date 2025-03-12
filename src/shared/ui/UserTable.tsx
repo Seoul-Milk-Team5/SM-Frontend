@@ -22,7 +22,7 @@ import Errorconform from "./Alert/Errorconform";
 
 export default function UserTable() {
   const { getUser, userRole } = useAuth();
-  const { filters, getSearchParams } = useSearch();
+  const { filters, getSearchParams, isInitialState } = useSearch();
   const { addToast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<number[]>([]); // 선택된 cell 값들 저장
@@ -37,17 +37,16 @@ export default function UserTable() {
 
 
   const itemsPerPage = 10; // 페이지별 아이템 개수
-
+  
 
   const fetchData = async () => {
     const searchParams = getSearchParams();
-    searchParams.page = currentPage;
+    searchParams.page = isInitialState() ? currentPage : 1;
     const token = getUser();
     try{
       const response = await OcrSearchRequest(token, searchParams);
       const data = response.result.content;
       setData(data);
-      // setTotalElements(response.result.totalElements);
       setTotalPages(response.result.totalPages);
     } catch (error) {
       console.log("업무 데이터를 불러오는데 실패했습니다.", error);
@@ -56,7 +55,7 @@ export default function UserTable() {
 
   useEffect(() => {
     const params = getSearchParams();
-    params.page = currentPage;
+    console.log(params);
     fetchData();
 
   }, [currentPage, filters]); // 페이지가 바뀌거나 params를 바꾼뒤 조회를 누르면 fetch
