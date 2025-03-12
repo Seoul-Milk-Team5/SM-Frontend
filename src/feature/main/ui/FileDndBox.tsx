@@ -1,12 +1,19 @@
 import { useFileContext } from "@/app/providers/FileProvider";
 import { formatTimeFromFiles } from "@/shared/utils/FormatTime";
-import { ChangeEvent, DragEvent, useRef, useState } from "react";
+import { ChangeEvent, DragEvent, useEffect, useRef, useState } from "react";
 
 export function FileDndBox() {
   const { mergeFiles, updateClientFiles } = useFileContext();
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isDragOver, setIsDragOver] = useState(false); // 드래그 상태 추적
+  const [fileError, setFileError] = useState(false);
+
+  useEffect(() => {
+    if (mergeFiles.length !== 50) {
+      setFileError(false);
+    }
+  }, [mergeFiles]);
 
   const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -26,13 +33,27 @@ export function FileDndBox() {
     setIsDragOver(false);
 
     const droppedFiles = Array.from(event.dataTransfer.files);
-    updateClientFiles(droppedFiles);
+    const sumFile = droppedFiles.length + mergeFiles.length > 50 ? false : true;
+
+    if (sumFile) {
+      updateClientFiles(droppedFiles);
+      setFileError(false);
+    } else {
+      setFileError(true);
+    }
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
     const selectedFiles = Array.from(event.target.files);
-    updateClientFiles(selectedFiles);
+
+    const sumFile = selectedFiles.length + mergeFiles.length > 50 ? false : true;
+    if (sumFile) {
+      updateClientFiles(selectedFiles);
+      setFileError(false);
+    } else {
+      setFileError(true);
+    }
   };
 
   const handleButtonClick = () => {
@@ -71,7 +92,7 @@ export function FileDndBox() {
           <span className="text-gray-800">{mergeFiles.length}/50(개)</span>
           {`| 예상 검증 시간: ${formatTimeFromFiles(mergeFiles.length)}`}
         </p>
-        {mergeFiles.length >= 50 && <p className="text-red-500">파일 최대 업로드 가능 개수를 초과했습니다</p>}
+        {fileError && <p className="text-red-500">파일 최대 업로드 갯수는 50개입니다.</p>}
       </div>
     </>
   );
