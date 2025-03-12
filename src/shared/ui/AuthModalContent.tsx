@@ -131,6 +131,7 @@ function AuthModalContent({
 
   // 진위 여부 확인
   const handleAuthClearAndHomeTaxRequest = async () => {
+    // 화면 바로 넘어가게 구현
     setSteps(3);
     try {
       const response = await reAuthRequest(token, key);
