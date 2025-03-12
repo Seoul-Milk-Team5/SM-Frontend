@@ -102,7 +102,7 @@ function ChangeUserRole() {
             )}
           />
           <Button
-            className="w-[120px] h-[40px] bg-[#FFF] border border-gray-100 text-gray-300 hover:bg-white !text-body-md-sb"
+            className="w-[120px] h-[40px] bg-[#FFF] border border-green-500 text-green-500 hover:bg-white !text-body-md-sb disabled:border-gray-100 disabled:text-gray-300"
             disabled={!isEmployeeValid}
             onClick={checkEmployeeIdExists}
           >
