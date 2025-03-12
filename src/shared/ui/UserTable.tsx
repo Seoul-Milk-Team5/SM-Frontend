@@ -16,11 +16,13 @@ import EditApprovalModal from "@/shared/ui/EditModal";
 import PreviewModal from "@/shared/ui/PreviewModal";
 import { DeleteRequest } from "@/feature/searchFile/service/DeleteRequest";
 import { DownloadExcel } from "../api/DownloadExcel";
+import { useToast } from "@/app/providers/ToastProvider";
 
 
 export default function UserTable() {
   const { getUser } = useAuth();
   const { filters, getSearchParams } = useSearch();
+  const { addToast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<number[]>([]); // 선택된 cell 값들 저장
   const [data, setData] = useState<InvoiceContent[]>([]);
@@ -105,7 +107,7 @@ export default function UserTable() {
   const handleDelete = async () => {
     const token = getUser();
     if (selectedRows.length === 0) {
-      alert("삭제할 항목을 선택하세요.");
+      addToast("삭제할 항목을 선택하세요", "error");
       return;
     }
     if (!token) {
@@ -122,19 +124,19 @@ export default function UserTable() {
 
     try {
       await DeleteRequest(taxInvoiceIdList as number[], token);
-      alert("삭제가 완료되었습니다.");
+      addToast("삭제되었습니다.", "success");
       setSelectedRows([]);
       fetchData();
     } catch (error) {
       console.log("삭제 실패", error);
-      alert("삭제하는데 실패했습니다.");
+      addToast("삭제하는데 실패했습니다..", "error");
     }
   };
 
   const downloadExcelFile = async () => {
     const token = getUser();
     if(selectedRows.length === 0) {
-      alert("내보낼 항목을 선택하세요");
+      addToast("내보낼 항목을 선택하세요", "error");
       return;
     }
     try{

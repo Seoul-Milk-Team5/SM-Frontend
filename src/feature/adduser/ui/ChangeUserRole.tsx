@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { useState } from "react";
 import { EmployeeIdExists } from "../service/EmployeeIdExists";
 import { ChangeUserRoleRequest } from "../service/ChangeUserRoleRequest";
+import { useToast } from "@/app/providers/ToastProvider";
 
 
 function ChangeUserRole() {
@@ -15,6 +16,7 @@ function ChangeUserRole() {
   const [isExist, setIsExist] = useState<boolean | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const{ getUser } = useAuth();
+  const { addToast } = useToast();
   const initialState = {
     employeeId: "",
     role: ""
@@ -58,13 +60,13 @@ function ChangeUserRole() {
     const token = getUser();
     try{
       await ChangeUserRoleRequest(token, employeeInfo);
-      alert("권한 전환에 성공했습니다.");
+      addToast("권한 전환에 성공했습니다.", "success");
       setEmployeeInfo(initialState);
       setErrorMessage("");
       setIsExist(null);
     } catch (error) {
       console.log("권한전환 실패", error);
-      alert("권한 전환에 실패했습니다.");
+      addToast("권한 전환에 실패했습니다.", "error");
     }
   };
 

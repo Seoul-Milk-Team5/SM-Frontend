@@ -27,6 +27,7 @@ import { getStatusLabel } from "@/shared/utils/getStatusLabel";
 import { DeleteRequest } from "../service/DeleteRequest";
 import { StepProvider } from "@/app/providers/StepProvider";
 import PreviewModal from "@/shared/ui/PreviewModal";
+import { useToast } from "@/app/providers/ToastProvider";
 
 const processStatuses = ["ALL", "UNAPPROVED", "APPROVED", "REJECTED"] as const; //전체, 검증실패, 승인, 반려
 type ProcessStatus = (typeof processStatuses)[number];
@@ -53,6 +54,7 @@ export default function DataTable() {
   const [selectedRowId, setSeletedRowId] = useState<number | null>(null);
 
   const { getUser } = useAuth();
+  const { addToast } = useToast();
   const itemsPerPage = 10; // 페이지별 아이템 개수
 
   const statusCounts: StatusCount = {
@@ -65,7 +67,7 @@ export default function DataTable() {
   const handleDelete = async () => {
     const token = getUser();
     if (selectedRows.length === 0) {
-      alert("삭제할 항목을 선택하세요.");
+      addToast("삭제할 항목을 선택하세요.", "error");
       return;
     }
     if (!token) {
@@ -82,12 +84,12 @@ export default function DataTable() {
 
     try {
       await DeleteRequest(taxInvoiceIdList as number[], token);
-      alert("삭제가 완료되었습니다.");
+      addToast("삭제가 완료되었습니다.", "success");
       setSelectedRows([]);
       fetchData();
     } catch (error) {
       console.log("삭제 실패", error);
-      alert("삭제하는데 실패했습니다.");
+      addToast("삭제하는데 실패했습니다.", "error");
     }
   };
 
@@ -129,7 +131,6 @@ export default function DataTable() {
   const totalPages = data?.result.page.totalPages || 1;
 
   const openModal = (row: ContentItem, index: number) => {
-    // console.log("조회된 모달의 아이디입니다 : ", row.id);
     setSelectedIndex(String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0"));
     setSeletedRowId(row.id);
 
@@ -228,8 +229,8 @@ export default function DataTable() {
                   />
                 </TableCell>
                 <TableCell>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</TableCell>
-                <TableCell>{row.ipBusinessName}</TableCell>
                 <TableCell>{row.suBusinessName}</TableCell>
+                <TableCell>{row.ipBusinessName}</TableCell>
                 <TableCell>{FormatCreatedAt(row.createdAt)}</TableCell>
                 <TableCell
                   className="text-gray-300 underline cursor-pointer"
