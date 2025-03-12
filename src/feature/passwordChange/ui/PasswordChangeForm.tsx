@@ -39,6 +39,7 @@ function PasswordChangeForm() {
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [isAuthNumberVerified, setIsAuthNumberVerified] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [apiError, setApiError] = useState(false);
 
   useEffect(() => {
     setIsButtonDisabled({
@@ -160,7 +161,9 @@ function PasswordChangeForm() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    setApiError(false);
     const passwordObject = {
+      employeeId: formData.userId,
       password1: formData.password,
       password2: formData.rePassword,
     };
@@ -169,6 +172,7 @@ function PasswordChangeForm() {
       console.log(response);
     } catch (error: any) {
       console.error("비밀번호 변경 요청 실패:", error);
+      setApiError(true);
     }
   };
 
@@ -241,7 +245,7 @@ function PasswordChangeForm() {
       />
 
       <div className="flex justify-center">
-        <PasswordChangeAlert disabled={!isFormValid} />
+        <PasswordChangeAlert disabled={!isFormValid} apiError={apiError} />
       </div>
     </form>
   );
