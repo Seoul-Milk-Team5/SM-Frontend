@@ -15,8 +15,8 @@ interface Pageable {
   
 export interface ContentItem {
   id: number;
-  suName: string;
-  ipName: string;
+  suBusinessName: string;
+  ipBusinessName: string;
   createdAt: number[]; // ISO8601 날짜 형식
   url: string;
   processStatus: "UNAPPROVED" | "APPROVED" | "REJECTED"; // 상태값을 Enum으로 정의 가능

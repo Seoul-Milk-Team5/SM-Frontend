@@ -88,7 +88,6 @@ export default function Searchbar() {
 
   const handleSearchFilter = () => {
     setFilters(filter);
-    console.log("다음 데이터를 조회합니다.", filter);
   };
 
 // DatePickerWithRange에서 날짜 범위 선택 후 filter 업데이트
@@ -115,14 +114,14 @@ const handleDateRangeChange = (range: DateRange | undefined) => {
         </div>
         <div className="flex gap-[15px]">
           <Button
-            className="!text-body-md-sb text-green-500 bg-[#FFF] border border-green-500 h-[40px] w-[120px] hover:bg-white disabled:opacity-100 disabled:border-gray-300 disabled:text-gray-300"
+            className=" text-green-500 bg-[#FFF] border border-green-500 py-3.5 px-5 hover:bg-white disabled:opacity-100 disabled:border-gray-100 disabled:text-gray-300"
             onClick={handleReset}
             disabled={isDisabled}
           >
             옵션 초기화
           </Button>
           <Button
-            className="!text-[#FFF] bg-green-500 h-[40px] w-[120px] hover:bg-green-600 !text-body-md-sb disabled:opacity-100 disabled:bg-gray-100 disabled:text-[#FFF]"
+            className="!text-[#FFF] bg-green-500 py-3.5 px-6 hover:bg-green-600 disabled:opacity-100 disabled:bg-gray-100 disabled:text-[#FFF]"
             disabled={isDisabled}
             onClick={handleSearchFilter}
           >
@@ -167,7 +166,7 @@ const handleDateRangeChange = (range: DateRange | undefined) => {
             placeholder="상호 (법인명)"
             value={filter.provider} // filter에서 가져온 값을 사용
             onChange={handleInputChange}
-            className="w-[313px] h-[40px]"
+            className="w-[313px] h-[40px] focus:border-green-500"
           />
         </div>
         <div className="flex space-x-[30px] items-center">
@@ -177,7 +176,7 @@ const handleDateRangeChange = (range: DateRange | undefined) => {
             placeholder="상호 (법인명)"
             value={filter.consumer} // filter에서 가져온 값을 사용
             onChange={handleInputChange}
-            className="w-[313px] h-[40px]"
+            className="w-[313px] h-[40px] focus:border-green-500"
           />
         </div>
       </div>

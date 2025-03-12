@@ -27,6 +27,7 @@ import { getStatusLabel } from "@/shared/utils/getStatusLabel";
 import { DeleteRequest } from "../service/DeleteRequest";
 import { StepProvider } from "@/app/providers/StepProvider";
 import PreviewModal from "@/shared/ui/PreviewModal";
+import { useToast } from "@/app/providers/ToastProvider";
 
 const processStatuses = ["ALL", "UNAPPROVED", "APPROVED", "REJECTED"] as const; //전체, 검증실패, 승인, 반려
 type ProcessStatus = (typeof processStatuses)[number];
@@ -53,6 +54,7 @@ export default function DataTable() {
   const [selectedRowId, setSeletedRowId] = useState<number | null>(null);
 
   const { getUser } = useAuth();
+  const { addToast } = useToast();
   const itemsPerPage = 10; // 페이지별 아이템 개수
 
   const statusCounts: StatusCount = {
@@ -65,7 +67,7 @@ export default function DataTable() {
   const handleDelete = async () => {
     const token = getUser();
     if (selectedRows.length === 0) {
-      alert("삭제할 항목을 선택하세요.");
+      addToast("삭제할 항목을 선택하세요.", "error");
       return;
     }
     if (!token) {
@@ -82,12 +84,12 @@ export default function DataTable() {
 
     try {
       await DeleteRequest(taxInvoiceIdList as number[], token);
-      alert("삭제가 완료되었습니다.");
+      addToast("삭제가 완료되었습니다.", "success");
       setSelectedRows([]);
       fetchData();
     } catch (error) {
       console.log("삭제 실패", error);
-      alert("삭제하는데 실패했습니다.");
+      addToast("삭제하는데 실패했습니다.", "error");
     }
   };
 
@@ -120,15 +122,8 @@ export default function DataTable() {
     return baseName.slice(0, maxLength - ext.length) + "..." + ext;
   };
 
-  const [isFetch, setIsFetch] = useState(0); // 테스트 이후 삭제
-
   useEffect(() => {
-    if (isFetch < 9) {
       fetchData();
-      let counter = isFetch + 1;
-      setIsFetch(counter);
-      console.log(counter, "번 째로 검증내역 데이터를 불러옵니다");
-    }
 
   }, [selectedProcessStatus, currentPage]);
 
@@ -136,7 +131,6 @@ export default function DataTable() {
   const totalPages = data?.result.page.totalPages || 1;
 
   const openModal = (row: ContentItem, index: number) => {
-    // console.log("조회된 모달의 아이디입니다 : ", row.id);
     setSelectedIndex(String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0"));
     setSeletedRowId(row.id);
 
@@ -161,7 +155,7 @@ export default function DataTable() {
     
 
   return (
-    <div className="p-[46px] bg-[#FFF] rounded-lg">
+    <div className=" bg-[#FFF] rounded-lg">
       <div className="flex justify-between mb-4">
         <div className="flex gap-2">
           <DropdownMenu onOpenChange={setIsDropdownOpen}>
@@ -174,7 +168,7 @@ export default function DataTable() {
                 <DropdownMenuItem
                   key={processStatus}
                   onClick={() => setselectedProcessStatus(processStatus)}
-                  className="text-body-md">
+                  className="text-body-md flex items-center gap-x-1">
                   <span>{getStatusLabel(processStatus)}</span>
                   <span className="text-gray-400">({statusCounts[processStatus as keyof StatusCount]})</span>
                 </DropdownMenuItem>
@@ -188,14 +182,20 @@ export default function DataTable() {
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
-            <img src="/icon/search.svg" onClick={fetchData} className="cursor-pointer" />
+            <img
+              src={search ? "/icon/activeSearch.svg" : "/icon/search.svg"}
+              className="cursor-pointer"
+              onClick={search ? fetchData : undefined}
+            />
           </div>
         </div>
 
         <div className="flex gap-[15px]">
           <Button
             onClick={handleDelete}
-            className="!text-body-md-sb text-[#FFF] w-[111px] h-[40px] bg-green-500 hover:bg-green-600 disabled:opacity-100 disabled:bg-gray-100">
+            className=" text-[#FFF] py-3.5 px-6 bg-green-500 hover:bg-green-600 disabled:opacity-100 disabled:bg-gray-100"
+            disabled={selectedRows.length === 0} // 선택된 셀이 없으면 비활성화
+          >
             삭제하기
           </Button>
         </div>
@@ -216,7 +216,7 @@ export default function DataTable() {
             <TableHead>공급받는자</TableHead>
             <TableHead>날짜</TableHead>
             <TableHead>미리보기</TableHead>
-            <TableHead>승인여부</TableHead>
+            <TableHead className="text-center">승인여부</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -235,8 +235,8 @@ export default function DataTable() {
                   />
                 </TableCell>
                 <TableCell>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</TableCell>
-                <TableCell>{row.suName}</TableCell>
-                <TableCell>{row.ipName}</TableCell>
+                <TableCell>{row.suBusinessName}</TableCell>
+                <TableCell>{row.ipBusinessName}</TableCell>
                 <TableCell>{FormatCreatedAt(row.createdAt)}</TableCell>
                 <TableCell
                   className="text-gray-300 underline cursor-pointer"
@@ -246,7 +246,7 @@ export default function DataTable() {
                   }}>
                   {truncateFileName(row.url)}
                 </TableCell>
-                <TableCell>
+                <TableCell className="flex justify-center">
                   <Badge
                     custom={
                       ["APPROVED", "REJECTED", "UNAPPROVED"].includes(row.processStatus)

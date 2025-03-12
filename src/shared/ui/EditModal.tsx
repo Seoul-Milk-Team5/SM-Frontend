@@ -34,6 +34,7 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId, dataT
   });
 
   const [userInput, setUserInput] = useState<OcrData[]>([]); // OcrData 배열로 초기화
+  const [rotate, setRotate] = useState(0);
   const { steps, setSteps } = useStep();
 
   const { getUser } = useAuth();
@@ -56,7 +57,7 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId, dataT
         console.error("응답 데이터가 없습니다.");
         return;
       }
-      console.log("서버에서 받은 데이터", response);
+
       setFormData(prevState => ({
         ...prevState,
         result: {
@@ -130,6 +131,10 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId, dataT
     handleChangeModalStep(2);
   }
 
+  const handleRotate = () => {
+    setRotate((prev) => prev + 90); // 클릭시 90도 회전
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogHeader className="hidden">
@@ -160,10 +165,16 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId, dataT
                     (isPDF ? (
                       <iframe src={formData.result.url} className="w-[550px] h-[400px] mt-4" title="세금계산서 PDF"></iframe>
                     ) : (
-                      <img src={formData.result.url} alt="세금계산서" className="w-[600px] h-auto mt-4" />
+                      <img 
+                        src={formData.result.url} 
+                        alt="세금계산서" 
+                        className="w-[400px] h-[400px] mt-4"
+                        style={{ transform: `rotate(${rotate}deg)`, transition: "transform 0.3s ease" }}
+                        onClick={handleRotate}
+                      />
                     ))}
                 </div>
-                <div className="flex flex-col justify-center h-[730px] items-center space-y-4 bg-gray-50">
+                <div className="flex flex-col justify-center h-[730px] items-center space-y-4 bg-gray-0">
                   <Button
                     variant="outline"
                     className="h-[50px] w-[400px] mt-2 !text-title-sm bg-[#FFF] text-green-500 border border-green-500 hover:text-green-500"

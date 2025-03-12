@@ -13,4 +13,5 @@ export interface OcrData {
     erDat: string;
     chargeTotal: string;
   };
+  processStatus?: "PENDING" | "UNAPPROVED";
 }

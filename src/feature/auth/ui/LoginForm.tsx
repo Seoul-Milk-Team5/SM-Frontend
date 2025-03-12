@@ -70,7 +70,6 @@ function LoginForm() {
     };
     try {
       const response = await loginRequest(loginBody);
-      console.log(response);
 
       if (typeof response?.role === "string") {
         login(response.role);
@@ -105,7 +104,7 @@ function LoginForm() {
 
   return (
     <div className="w-full max-w-md">
-      <div className="flex flex-col items-center mb-8">
+      <div className="flex flex-col items-center mb-4">
         {/* 브랜드 로고 추가 */}
         <img src="/logo/Logomark.svg" alt="Company Logo" className="w-64 h-20 sm:w-80 sm:h-20 object-contain" />
         <p className="text-center text-gray-800 text-body-sm font-pretendard font-light">
@@ -123,6 +122,7 @@ function LoginForm() {
                   text-gray-800
                   placeholder:text-gray-300
                   placeholder:font-extralight
+                  px-5
                 "
                 id="employeeId"
                 type="text"
@@ -142,6 +142,7 @@ function LoginForm() {
                   text-gray-800
                   placeholder:text-gray-300
                   placeholder:font-extralight
+                  px-5
                 "
                 id="password"
                 type="password"
@@ -154,7 +155,7 @@ function LoginForm() {
             </div>
             <Button
               type="submit"
-              className="h-12 w-full bg-green-500 hover:bg-green-600 mt-4 disabled:bg-green-200 disabled:opacity-100"
+              className="h-12 w-full bg-green-500 hover:bg-green-600 mt-4 disabled:bg-gray-100 disabled:opacity-100 !text-title-sm"
               disabled={!formState.isPasswordValid || !formState.employeeId || !formState.password}>
               로그인
             </Button>
