@@ -174,7 +174,7 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId, dataT
                       />
                     ))}
                 </div>
-                <div className="flex flex-col justify-center h-[730px] items-center space-y-4 bg-gray-50">
+                <div className="flex flex-col justify-center h-[730px] items-center space-y-4 bg-gray-0">
                   <Button
                     variant="outline"
                     className="h-[50px] w-[400px] mt-2 !text-title-sm bg-[#FFF] text-green-500 border border-green-500 hover:text-green-500"

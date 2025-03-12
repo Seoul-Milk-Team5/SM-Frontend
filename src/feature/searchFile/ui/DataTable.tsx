@@ -155,7 +155,7 @@ export default function DataTable() {
     
 
   return (
-    <div className="p-[46px] bg-[#FFF] rounded-lg">
+    <div className=" bg-[#FFF] rounded-lg">
       <div className="flex justify-between mb-4">
         <div className="flex gap-2">
           <DropdownMenu onOpenChange={setIsDropdownOpen}>
@@ -210,7 +210,7 @@ export default function DataTable() {
             <TableHead>공급받는자</TableHead>
             <TableHead>날짜</TableHead>
             <TableHead>미리보기</TableHead>
-            <TableHead>승인여부</TableHead>
+            <TableHead className="text-center">승인여부</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -240,7 +240,7 @@ export default function DataTable() {
                   }}>
                   {truncateFileName(row.url)}
                 </TableCell>
-                <TableCell>
+                <TableCell className="flex justify-center">
                   <Badge
                     custom={
                       ["APPROVED", "REJECTED", "UNAPPROVED"].includes(row.processStatus)

@@ -20,7 +20,7 @@ import { useToast } from "@/app/providers/ToastProvider";
 
 
 export default function UserTable() {
-  const { getUser } = useAuth();
+  const { getUser, userRole } = useAuth();
   const { filters, getSearchParams } = useSearch();
   const { addToast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
@@ -181,9 +181,10 @@ export default function UserTable() {
             <TableHead>번호</TableHead>
             <TableHead>공급자</TableHead>
             <TableHead>공급받는자</TableHead>
+            {userRole === "ROLE_ADMIN" && <TableHead>담당자</TableHead>}
             <TableHead>날짜</TableHead>
             <TableHead>미리보기</TableHead>
-            <TableHead>승인여부</TableHead>
+            <TableHead className="text-center">승인여부</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -205,6 +206,7 @@ export default function UserTable() {
                   <TableCell>{String((currentPage - 1) * itemsPerPage + index + 1).padStart(3, "0")}</TableCell>
                   <TableCell>{row.ipBusinessName}</TableCell>
                   <TableCell>{row.suBusinessName}</TableCell>
+                  {userRole === "ROLE_ADMIN" && <TableCell>{row.name}</TableCell>}
                   <TableCell>{formatDate(row.createAt)}</TableCell>
                   <TableCell 
                     className="text-gray-300 underline cursor-pointer"
@@ -215,7 +217,7 @@ export default function UserTable() {
                   >
                     {TruncateFileName(row.imageUrl)}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="flex justify-center">
                     <Badge custom={
                       ["APPROVED", "REJECTED", "UNAPPROVED"].includes(row.status)
                         ? (row.status as "APPROVED" | "REJECTED" | "UNAPPROVED")

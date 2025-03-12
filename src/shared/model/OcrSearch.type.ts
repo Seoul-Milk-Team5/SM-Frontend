@@ -40,6 +40,7 @@ export interface InvoiceContent {
   errorDetails: string[];
   isTemporary: string;
   createAt: number[];
+  name: string;
 }
   
 interface Sort {
