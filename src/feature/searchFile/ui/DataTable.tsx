@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
@@ -28,6 +27,7 @@ import { DeleteRequest } from "../service/DeleteRequest";
 import { StepProvider } from "@/app/providers/StepProvider";
 import PreviewModal from "@/shared/ui/PreviewModal";
 import { useToast } from "@/app/providers/ToastProvider";
+import Errorconform from "@/shared/ui/Alert/Errorconform";
 
 const processStatuses = ["ALL", "UNAPPROVED", "APPROVED", "REJECTED"] as const; //전체, 검증실패, 승인, 반려
 type ProcessStatus = (typeof processStatuses)[number];
@@ -84,12 +84,10 @@ export default function DataTable() {
 
     try {
       await DeleteRequest(taxInvoiceIdList as number[], token);
-      addToast("삭제가 완료되었습니다.", "success");
       setSelectedRows([]);
       fetchData();
     } catch (error) {
       console.log("삭제 실패", error);
-      addToast("삭제하는데 실패했습니다.", "error");
     }
   };
 
@@ -191,13 +189,12 @@ export default function DataTable() {
         </div>
 
         <div className="flex gap-[15px]">
-          <Button
+          <Errorconform 
+            btnName="삭제하기"
             onClick={handleDelete}
-            className=" text-[#FFF] py-3.5 px-6 bg-green-500 hover:bg-green-600 disabled:opacity-100 disabled:bg-gray-100"
-            disabled={selectedRows.length === 0} // 선택된 셀이 없으면 비활성화
-          >
-            삭제하기
-          </Button>
+            disabled={selectedRows.length === 0}
+            className="py-3.5 px-6 bg-green-500 hover:bg-green-600 text-[#FFF] disabled:opacity-100 disabled:cursor-not-allowed disabled:bg-gray-100"
+          />
         </div>
       </div>
 
