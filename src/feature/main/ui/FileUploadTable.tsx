@@ -153,7 +153,7 @@ export function FileUploadTable() {
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map(headerGroup => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="hover:bg-[#fff]">
                 {headerGroup.headers.map((header, index) => {
                   return (
                     <TableHead
@@ -179,9 +179,9 @@ export function FileUploadTable() {
                 </TableRow>
               ))
             ) : (
-              <TableRow>
+              <TableRow className="hover:bg-[#fff]">
                 <TableCell colSpan={4} className="h-24 text-center">
-                  <div className="flex flex-col items-center pt-[100px] pb-[130px] gap-7">
+                  <div className="flex flex-col items-center pt-[40px] pb-[40px] gap-7">
                     <img className="w-[80px]" src="/icon/noResult.svg" alt="검색결과 없음" />
                     <p className="text-body-sm text-gray-300">업로드된 세금계산서 파일이 없습니다.</p>
                   </div>
@@ -192,38 +192,40 @@ export function FileUploadTable() {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <Pagination>
-          <PaginationContent>
-            {/* 이전 버튼 */}
-            <PaginationItem>
-              <PaginationPrevious onClick={() => table.previousPage()} />
-            </PaginationItem>
-
-            {/* 동적으로 페이지 번호 생성 */}
-            {Array.from({ length: table.getPageCount() }, (_, index) => (
-              <PaginationItem key={index}>
-                <PaginationLink
-                  isActive={table.getState().pagination.pageIndex === index}
-                  onClick={() => table.setPageIndex(index)}
-                  className="">
-                  {index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-
-            {/* 페이지가 많으면 ... 표시 */}
-            {table.getPageCount() > 5 && (
+        {table.getPageCount() > 1 && (
+          <Pagination>
+            <PaginationContent>
+              {/* 이전 버튼 */}
               <PaginationItem>
-                <PaginationEllipsis />
+                <PaginationPrevious onClick={() => table.previousPage()} />
               </PaginationItem>
-            )}
 
-            {/* 다음 버튼 */}
-            <PaginationItem>
-              <PaginationNext onClick={() => table.nextPage()} />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+              {/* 동적으로 페이지 번호 생성 */}
+              {Array.from({ length: table.getPageCount() }, (_, index) => (
+                <PaginationItem key={index}>
+                  <PaginationLink
+                    isActive={table.getState().pagination.pageIndex === index}
+                    onClick={() => table.setPageIndex(index)}
+                    className="">
+                    {index + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+
+              {/* 페이지가 많으면 ... 표시 */}
+              {table.getPageCount() > 5 && (
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+              )}
+
+              {/* 다음 버튼 */}
+              <PaginationItem>
+                <PaginationNext onClick={() => table.nextPage()} />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
       </div>
     </div>
   );

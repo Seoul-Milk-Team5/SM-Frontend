@@ -7,7 +7,7 @@ function OcrModalContent({ loadingText }: { loadingText: string }) {
   return (
     <div className="flex flex-col items-center">
       <MilkCartonAnimation />
-      {steps === 1 && <p className="text-title-lg text-gray-800">{loadingText}</p>}
+      {steps === 1 && <p className="text-[21px] font-bold text-gray-800">{loadingText}</p>}
     </div>
   );
 }

@@ -27,7 +27,7 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const maxWidthClass = {
-    1: "sm:max-w-[450px] max-h-[320px]",
+    1: "sm:max-w-[450px] max-h-[250px]",
     2: "sm:max-w-[1025px] max-h-[100vh]",
     3: "sm:max-w-[450px] max-h-[320px]",
   }[steps];
