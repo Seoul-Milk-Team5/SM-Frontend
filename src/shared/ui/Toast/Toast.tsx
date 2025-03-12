@@ -34,13 +34,13 @@ const Toast = ({ message, type, onClose }: ToastProps) => {
 
   return (
     <div
-      className={`transform transition-all duration-500 ease-in-out ${show ? (isExiting ? "-translate-y-10 scale-95 opacity-0" : "translate-y-0 scale-100 opacity-100") : "translate-y-5 scale-95 opacity-0"} bg-gray-500 mb-2 flex justify-center items-center gap-2 rounded-xl border border-solid p-5`}>
+      className={`transform transition-all duration-500 ease-in-out ${show ? (isExiting ? "-translate-y-10 scale-95 opacity-0" : "translate-y-0 scale-100 opacity-100") : "translate-y-5 scale-95 opacity-0"} bg-gray-500 mb-2 flex justify-center items-center gap-2 rounded-xl border border-solid py-3.5 px-8`}>
       {type === "success" ? (
         <img src="/icon/check.svg" alt="성공" width={30} />
       ) : (
         <img src="/icon/error.svg" alt="실패" width={30} />
       )}
-      <p className="text-title-md-b text-[#fff]">{message}</p>
+      <p className="text-[19px] font-medium text-[#fff]">{message}</p>
     </div>
   );
 };
