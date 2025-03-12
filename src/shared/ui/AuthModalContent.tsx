@@ -131,9 +131,9 @@ function AuthModalContent({
 
   // 진위 여부 확인
   const handleAuthClearAndHomeTaxRequest = async () => {
+    setSteps(3);
     try {
       const response = await reAuthRequest(token, key);
-      setSteps(3);
       if (response.success) {
         if (isEditRequest) {
           if (dataTableFetch) {
