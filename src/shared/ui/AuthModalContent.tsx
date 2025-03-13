@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,9 @@ import { useNavigate } from "react-router-dom";
 import { OcrData } from "@/feature/main";
 import { editInvoiceRequest } from "../api/editInvoiceRequest";
 import { useStep } from "@/app/providers/StepProvider";
+import { Errors } from "@/feature/passwordChange";
+import PrivacyDialog from "./plicyDialog/PrivacyDialog";
+import ThirdPartyAgreementDialog from "./plicyDialog/ThirdPartyAgreementDialog";
 
 interface AuthModalContentProps {
   changeStep?: (step: number) => void;
@@ -46,6 +49,12 @@ function AuthModalContent({
     agreeThirdParty: false,
   });
 
+  const [errors, setErrors] = useState<Errors>({
+    userName: "",
+    phoneNo: "",
+    identity: "",
+  });
+
   const [isFormValid, setIsFormValid] = useState(false); // 버튼 활성화 상태
   const [key, setKey] = useState("");
   const [ocrBody, setOcrBody] = useState<OcrData[]>();
@@ -57,8 +66,69 @@ function AuthModalContent({
   }, [ocrData]);
 
   // 입력값 변경 핸들러 (input, select 공통 사용)
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { id, value, name } = event.target;
+
+    setFormData(prev => ({ ...prev, [name]: value }));
+
+    // 입력값 초기화
+    let updatedValue = value;
+
+    switch (id) {
+      case "userName":
+        // 한글만 입력 가능하도록 검사 (허용되지 않는 문자는 제거)
+        const koreanRegex = /^[가-힣]+$/;
+        if (!koreanRegex.test(value)) {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            userName: "이름을 다시 입력해주세요.",
+          }));
+          updatedValue = value.replace(/[^가-힣]/g, ""); // 허용되지 않는 문자 제거
+        } else {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            userName: "",
+          }));
+        }
+        break;
+
+      case "phoneNo":
+        // 숫자만 입력 가능 & 최대 8자리 제한
+        updatedValue = value.replace(/\D/g, "").slice(0, 8);
+
+        // 유효성 검사: 8자리 이하이면 에러 메시지 설정
+        if (updatedValue.length < 8) {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            phoneNo: "전화번호 뒷자리를 숫자 8자리로 입력해주세요.",
+          }));
+        } else {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            phoneNo: "",
+          }));
+        }
+        break;
+
+      case "identity":
+        // 생년월일 (YYYYMMDD 형식) 검사
+        updatedValue = value.replace(/\D/g, "").slice(0, 8); // 숫자만 입력 가능, 최대 8자리
+
+        // 유효성 검사: 8자리 형식이 아니면 에러 메시지 설정
+        const birthDateRegex = /^(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/;
+        if (!birthDateRegex.test(updatedValue)) {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            identity: "생년월일은 숫자 8자리로 입력해주세요.",
+          }));
+        } else {
+          setErrors(prevErrors => ({
+            ...prevErrors,
+            identity: "",
+          }));
+        }
+        break;
+    }
   };
 
   const handleSelectChange = (name: string, value: string) => {
@@ -207,24 +277,38 @@ function AuthModalContent({
         <div className="flex flex-col gap-[35px]">
           {/* 입력 필드 */}
           <div className="flex items-center">
-            <Label className="text-body-lg text-gray-600 min-w-[90px]">성함</Label>
-            <Input
-              name="userName"
-              className="max-w-[380px] h-[45px]"
-              placeholder="홍길동"
-              value={formData.userName}
-              onChange={handleChange}
-            />
+            <Label htmlFor="userName" className="text-body-lg text-gray-600 min-w-[90px]">
+              성함
+            </Label>
+            <div className="flex-1 flex flex-col max-w-[380px]">
+              <Input
+                id="userName"
+                name="userName"
+                className="max-w-[380px] h-[45px]"
+                placeholder="홍길동"
+                value={formData.userName}
+                onChange={handleChange}
+                valid={!errors.userName}
+              />
+              {errors.userName && <p className="text-red-400 text-label-xs mt-1 pl-5">{errors.userName}</p>}
+            </div>
           </div>
           <div className="flex items-center">
-            <Label className="text-body-lg text-gray-600 min-w-[90px]">생년월일</Label>
-            <Input
-              name="identity"
-              className="max-w-[380px] h-[45px]"
-              placeholder="19990101"
-              value={formData.identity}
-              onChange={handleChange}
-            />
+            <Label htmlFor="identity" className="text-body-lg text-gray-600 min-w-[90px]">
+              생년월일
+            </Label>
+            <div className="flex-1 flex flex-col max-w-[380px]">
+              <Input
+                id="identity"
+                name="identity"
+                className="max-w-[380px] h-[45px]"
+                placeholder="19990101"
+                value={formData.identity}
+                onChange={handleChange}
+                valid={!errors.identity}
+              />
+              {errors.identity && <p className="text-red-400 text-label-xs mt-1 pl-5">{errors.identity}</p>}
+            </div>
           </div>
           <div className="flex items-center">
             <Label className="text-body-lg text-gray-600 min-w-[90px]">휴대폰 번호</Label>
@@ -257,14 +341,20 @@ function AuthModalContent({
                 </SelectGroup>
               </SelectContent>
             </Select>
-
-            <Input
-              name="phoneNo"
-              className="max-w-[380px] h-[45px] ml-3"
-              placeholder="나머지"
-              value={formData.phoneNo}
-              onChange={handleChange}
-            />
+            <div className="w-[380px] flex flex-col">
+              <Input
+                id="phoneNo"
+                name="phoneNo"
+                className="max-w-[380px] h-[45px] ml-3 relative"
+                placeholder="12345678"
+                value={formData.phoneNo}
+                onChange={handleChange}
+                valid={!errors.phoneNo}
+              />
+              {errors.phoneNo && (
+                <p className="text-red-400 text-label-xs absolute w-full top-85 pl-5">{errors.phoneNo}</p>
+              )}
+            </div>
           </div>
         </div>
 
@@ -293,7 +383,7 @@ function AuthModalContent({
                   {name === "agreePrivacy" ? "개인정보 이용 동의 (필수)" : "제3자정보제공동의 (필수)"}
                 </Label>
               </div>
-              <p className="underline text-body-lg text-gray-800 cursor-pointer">보기</p>
+              {name === "agreePrivacy" ? <PrivacyDialog /> : <ThirdPartyAgreementDialog />}
             </div>
           ))}
         </div>
