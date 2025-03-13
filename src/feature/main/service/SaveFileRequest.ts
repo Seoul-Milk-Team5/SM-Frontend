@@ -37,7 +37,9 @@ export async function saveFilePatchRequest(token: string, imageIds: number[]): P
   const HEADER = getFetchHeader(token, "a");
 
   // imageIds를 쿼리 스트링으로 변환
-  const queryString = imageIds.map(id => `imageIds=${id}`).join("&");
+  // const queryString = imageIds.map(id => `imageIds=${id}`).join("&");
+  // const url = `api/image/tmp/unmark?${queryString}`;
+  const queryString = `imageIds=${imageIds.join(",")}`;
   const url = `api/image/tmp/unmark?${queryString}`;
 
   try {
