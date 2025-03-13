@@ -1,10 +1,36 @@
 import { cn } from "../../lib/utils";
 import { Sidebar, SidebarContent, SidebarHeader } from "@/components/ui/sidebar";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/app/providers/AuthProvider";
+import { userInformationRequest } from "@/feature/my";
 
 function SidebarSheet() {
   const location = useLocation();
+
+  const { getUser, getUserData, logout } = useAuth();
+  const [userState, setUserState] = useState({
+    userName: "",
+    userId: "",
+  });
+
+  const userData = getUserData();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (userData.userId === "" || userData.userName === "") {
+      const token = getUser();
+      userInformationRequest(token).then(result =>
+        setUserState(prev => ({ ...prev, userName: result.result.name, userId: result.result.employeeId }))
+      );
+    }
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   const isActive = (path: string | string[]) =>
     Array.isArray(path) ? path.includes(location.pathname) : location.pathname === path;
@@ -35,7 +61,7 @@ function SidebarSheet() {
                 세금계산서 검증
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 to="/dashboard/userpage"
                 className={cn(
@@ -57,19 +83,18 @@ function SidebarSheet() {
                 <img src="/icon/notice.svg" alt="notice" />
                 공지사항
               </Link>
-            </li>
+            </li> */}
           </ul>
         </SidebarContent>
       </div>
       <div className="flex flex-col gap-2 relative mb:absolute mb:bottom-0 mb:w-full mb:p-7">
         <div className="hover:bg-green-0 px-[13px] flex justify-between items-center">
           <div>
-            <p className="text-body-md">이름</p>
-            <p className="text-label-xs">0000000</p>
+            <p className="text-body-md">{userData.userName || userState.userName}</p>
+            <p className="text-label-xs">{userData.userId || userState.userId}</p>
           </div>
-          <img className="w-[24px]" src="/icon/gear.svg" alt="마이페이지" />
         </div>
-        <div className="flex gap-3 border-t pt-4 text-body-md cursor-pointer">
+        <div className="flex gap-3 border-t pt-4 text-body-md cursor-pointer" onClick={handleLogout}>
           <img src="/icon/logout.svg" alt="logout" />
           로그아웃
         </div>

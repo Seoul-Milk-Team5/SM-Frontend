@@ -33,7 +33,7 @@ export type Payment = {
 
 export function FileUploadTable() {
   const [rowSelection, setRowSelection] = useState({});
-  const [selectedIds, setSelectedIds] = useState<number[]>([]); // ✅ 선택된 ID 저장
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const { mergeFiles, setFiles } = useFileContext();
   const { getUser } = useAuth();
 
