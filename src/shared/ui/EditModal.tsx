@@ -172,7 +172,13 @@ export default function EditApprovalModal({ isOpen, onClose, index, rowId, dataT
                         style={{ transform: `rotate(${rotate}deg)`, transition: "transform 0.3s ease" }}
                         onClick={handleRotate}
                       />
-                    ))}
+                  ))}
+                  <button 
+                    className="border border-gray-100 rounded-[10px] ml-100 cursor-pointer hover:bg-gray-50"
+                    onClick={handleRotate}
+                  >
+                    <img src="/icon/Rotate.svg"/>
+                  </button>
                 </div>
                 <div className="flex flex-col justify-center h-[730px] items-center space-y-4 bg-gray-0">
                   <Button

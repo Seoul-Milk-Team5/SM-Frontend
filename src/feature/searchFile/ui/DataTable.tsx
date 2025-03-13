@@ -28,6 +28,7 @@ import { StepProvider } from "@/app/providers/StepProvider";
 import PreviewModal from "@/shared/ui/PreviewModal";
 import { useToast } from "@/app/providers/ToastProvider";
 import Errorconform from "@/shared/ui/Alert/Errorconform";
+import StatusTooltip from "@/shared/ui/Tooltip/StatusTooltip";
 
 const processStatuses = ["ALL", "UNAPPROVED", "APPROVED", "REJECTED"] as const; //전체, 검증실패, 승인, 반려
 type ProcessStatus = (typeof processStatuses)[number];
@@ -186,6 +187,7 @@ export default function DataTable() {
               onClick={search ? fetchData : undefined}
             />
           </div>
+          <StatusTooltip />
         </div>
 
         <div className="flex gap-[15px]">
