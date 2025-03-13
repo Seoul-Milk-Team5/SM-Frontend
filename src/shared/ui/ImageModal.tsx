@@ -22,15 +22,17 @@ export function ImageModal({ btnName, imageUrl }: ImageModalProps) {
             <p className="text-body-lg text-gray-500 ellipsis2">{imageUrl}</p>
           </div>
         </DialogHeader>
-        {imageUrl ? (
-          isPdf ? (
-            <iframe src={imageUrl + "#toolbar=0&navpanes=0&scrollbar=0"} className="flex-grow w-full h-[50vh]" />
+        <div className="flex-grow flex justify-center items-center overflow-hidden">
+          {imageUrl ? (
+            isPdf ? (
+              <iframe src={imageUrl + "#toolbar=0&navpanes=0&scrollbar=0"} className="flex-grow w-full h-[50vh]" />
+            ) : (
+              <img src={imageUrl} alt="미리보기 이미지" className="w-full h-full object-contain" />
+            )
           ) : (
-            <img src={imageUrl} alt="미리보기 이미지" className="w-full h-auto object-contain" />
-          )
-        ) : (
-          <p className="text-center text-gray-500">미리볼 파일이 없습니다.</p>
-        )}
+            <p className="text-center text-gray-500">미리볼 파일이 없습니다.</p>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
