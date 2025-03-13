@@ -85,7 +85,7 @@ export default function UserTable() {
   }
 
   const toggleSelectAll = () => {
-    setSelectedRows((prev) => {
+    setSelectedRows(prev => {
       const currentPageRowIds = data.map(row => row.id);
       return prev.length === currentPageRowIds.length ? [] : currentPageRowIds;
     });
@@ -171,14 +171,14 @@ export default function UserTable() {
         </div>
       </div>
       <Table>
-        <TableHeader className="h-[57px] pointer-events-none">
+        <TableHeader className="h-[57px]">
           <TableRow>
             <TableHead>
-              <Checkbox 
-                className="h-[24px] w-[24px] bg-gray-50 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
-                checked={data.length > 0 && data.every(row => selectedRows.includes(row.id))}
-                onCheckedChange={toggleSelectAll}
-              />
+            <Checkbox
+              checked={data.length > 0 && data.every(row => selectedRows.includes(row.id))}
+              onCheckedChange={toggleSelectAll}
+              className="h-[24px] w-[24px] bg-gray-50 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
+            />
             </TableHead>
             <TableHead>번호</TableHead>
             <TableHead>공급자</TableHead>
