@@ -18,6 +18,7 @@ import { DeleteRequest } from "@/feature/searchFile/service/DeleteRequest";
 import { DownloadExcel } from "../api/DownloadExcel";
 import { useToast } from "@/app/providers/ToastProvider";
 import Errorconform from "./Alert/Errorconform";
+import StatusTooltip from "./Tooltip/StatusTooltip";
 
 
 export default function UserTable() {
@@ -148,7 +149,11 @@ export default function UserTable() {
   return (
     <div className="p-[20px] bg-[#FFF] rounded-lg">
       <div className="flex justify-between mb-7">
-        <span className="text-title-sm text-gray-800">검증 내역</span>
+        <div className="flex gap-3 items-center">
+          <span className="text-title-sm text-gray-800">검증 내역</span>
+          <StatusTooltip />          
+        </div>
+
         <div className="flex space-x-[15px]">
           <Button
             className="py-3.5 px-6 bg-[#FFF] text-green-500 border border-green-500 hover:bg-white disabled:opacity-100 disabled:border-gray-100 disabled:text-gray-300 disabled:cursor-not-allowed"
