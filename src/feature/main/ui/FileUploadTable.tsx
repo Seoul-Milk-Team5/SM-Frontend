@@ -33,8 +33,8 @@ export type Payment = {
 
 export function FileUploadTable() {
   const [rowSelection, setRowSelection] = useState({});
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  const { mergeFiles, setFiles } = useFileContext();
+  const [selectedIds, setSelectedIds] = useState<{ fileId: number | string; fileName: string }[]>([]);
+  const { files, mergeFiles, setFiles, setMergeFiles } = useFileContext();
   const { getUser } = useAuth();
 
   useEffect(() => {
@@ -48,12 +48,14 @@ export function FileUploadTable() {
     );
   }, []);
 
-  const toggleRowSelection = (id: number) => {
+  // ✅ 체크박스 선택 시 fileId와 fileName 함께 저장
+  const toggleRowSelection = (fileId: number | string, fileName: string) => {
     setSelectedIds(prev => {
-      if (prev.includes(id)) {
-        return prev.filter(fileId => fileId !== id); // 이미 있으면 제거
+      const isSelected = prev.some(item => item.fileId === fileId);
+      if (isSelected) {
+        return prev.filter(item => item.fileId !== fileId);
       } else {
-        return [...prev, id]; // 없으면 추가
+        return [...prev, { fileId, fileName }];
       }
     });
   };
@@ -69,7 +71,7 @@ export function FileUploadTable() {
             onCheckedChange={value => {
               table.toggleAllPageRowsSelected(!!value);
               if (value) {
-                setSelectedIds(mergeFiles.map(file => file.fileId as number));
+                setSelectedIds(mergeFiles.map(file => ({ fileId: file.fileId, fileName: file.name })));
               } else {
                 setSelectedIds([]);
               }
@@ -82,7 +84,7 @@ export function FileUploadTable() {
             checked={row.getIsSelected()}
             onCheckedChange={value => {
               row.toggleSelected(!!value);
-              toggleRowSelection(row.original.fileId as number);
+              toggleRowSelection(row.original.fileId, row.original.name);
             }}
             aria-label="Select row"
           />
@@ -122,19 +124,43 @@ export function FileUploadTable() {
 
   // 선택된 항목이 있으면 삭제 버튼 활성화
   const isDeleteButtonEnabled = selectedIds.length > 0;
-
   const handleFileDelete = async () => {
     const token = getUser();
-    const response = await saveFilePatchRequest(token, selectedIds);
+    const serverFileIds: number[] = [];
+    const clientFileIds: string[] = [];
 
-    if (response.success) {
-      const updatedData = await saveFileGetRequest(token);
+    selectedIds.forEach(id => {
+      if (typeof id.fileId === "number") {
+        serverFileIds.push(id.fileId); // 서버에 보낼 ID
+      } else if (typeof id.fileId === "string") {
+        clientFileIds.push(id.fileId); // 클라이언트에서만 존재하는 ID
+      }
+    });
+
+    if (serverFileIds.length > 0) {
+      const response = await saveFilePatchRequest(token, serverFileIds);
+      if (response.success) {
+        const updatedData = await saveFileGetRequest(token);
+        setFiles(prev => ({
+          ...prev,
+          result: updatedData.result.content,
+          clientFiles: prev?.clientFiles.filter(file => !clientFileIds.includes(file.name)) ?? [],
+        }));
+      }
+    } else {
       setFiles(prev => ({
         ...prev,
-        result: updatedData.result.content,
-        clientFiles: [],
+        result: prev?.result ?? [],
+        clientFiles: (prev?.clientFiles ?? []).filter(
+          file => !selectedIds.some(selected => selected.fileName === file.name)
+        ),
       }));
+      console.log(files?.clientFiles);
+      setMergeFiles(prev => prev.filter(file => !clientFileIds.includes(file.fileId as string)));
     }
+
+    setSelectedIds([]);
+    setRowSelection({});
   };
 
   return (

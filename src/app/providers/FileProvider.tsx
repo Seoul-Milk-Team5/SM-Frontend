@@ -32,11 +32,13 @@ interface MergeFileData {
   fileId: number | string;
   date: string;
   fileUrl: string;
+  name: string;
 }
 
 interface FileContextType {
   files: FileData | undefined;
   setFiles: Dispatch<SetStateAction<FileData | undefined>>;
+  setMergeFiles: Dispatch<SetStateAction<MergeFileData[]>>;
   mergeFiles: MergeFileData[];
   updateClientFiles: (newFiles: File[]) => void;
 }
@@ -77,6 +79,7 @@ function FileProvider({ children }: { children: ReactNode }) {
         url: URL.createObjectURL(file),
         id: uuidv4(), // 이전에는 UUID를 사용했지만 이제는 숫자 ID로 대체
         date: new Date().toISOString(), // 클라이언트 파일의 업로드 시간
+        name: file.name,
       }));
 
       // ID 초기 값 설정
@@ -91,6 +94,7 @@ function FileProvider({ children }: { children: ReactNode }) {
             fileId: result.imageId,
             date: FormatCreatedAt(result.uploadDate),
             fileUrl: fileIndex !== -1 ? clientFileData[fileIndex].url : result.imageUrl,
+            name: "",
           };
         }),
         ...clientFileData.map(file => ({
@@ -98,6 +102,7 @@ function FileProvider({ children }: { children: ReactNode }) {
           fileId: file.id,
           date: file.date,
           fileUrl: file.url,
+          name: file.name,
         })),
       ];
 
@@ -106,7 +111,9 @@ function FileProvider({ children }: { children: ReactNode }) {
   }, [files]);
 
   return (
-    <FileContext.Provider value={{ files, setFiles, mergeFiles, updateClientFiles }}>{children}</FileContext.Provider>
+    <FileContext.Provider value={{ files, setFiles, mergeFiles, setMergeFiles, updateClientFiles }}>
+      {children}
+    </FileContext.Provider>
   );
 }
 
