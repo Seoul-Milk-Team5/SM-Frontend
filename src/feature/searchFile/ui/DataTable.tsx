@@ -184,7 +184,7 @@ export default function DataTable() {
             <img
               src={search ? "/icon/activeSearch.svg" : "/icon/search.svg"}
               className="cursor-pointer"
-              onClick={search ? fetchData : undefined}
+              onClick={fetchData}
             />
           </div>
           <StatusTooltip />
