@@ -49,7 +49,7 @@ export function AuthModal({ btnName, disable }: AuthModalProps) {
 
         const filteredResults = response.result.filter(item => item.processStatus === "PENDING");
 
-        if (!filteredResults || (filteredResults.length === 0 && filteredResults.length === fileCount)) {
+        if (!filteredResults || filteredResults.length === 0 || filteredResults.length !== fileCount) {
           setLoadingComent("텍스트 추출에 실패했습니다. 다시 시도해주세요.");
           setTimeout(() => {
             setIsOpen(false);
