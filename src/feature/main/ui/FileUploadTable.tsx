@@ -68,6 +68,7 @@ export function FileUploadTable() {
         header: ({ table }) => (
           <Checkbox
             checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+            className="h-[24px] w-[24px] bg-gray-50 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
             onCheckedChange={value => {
               table.toggleAllPageRowsSelected(!!value);
               if (value) {
@@ -82,6 +83,7 @@ export function FileUploadTable() {
         cell: ({ row }) => (
           <Checkbox
             checked={row.getIsSelected()}
+            className="h-[24px] w-[24px] bg-gray-50 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
             onCheckedChange={value => {
               row.toggleSelected(!!value);
               toggleRowSelection(row.original.fileId, row.original.name);

@@ -123,8 +123,12 @@ export default function DataTable() {
 
   useEffect(() => {
       fetchData();
-
   }, [selectedProcessStatus, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1); // 검색어 변경 시 첫 페이지로 이동
+  }, [search]);
+  
 
   const filteredData = data?.result.page.content || [];
   const totalPages = data?.result.page.totalPages || 1;
