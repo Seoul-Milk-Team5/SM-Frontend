@@ -50,11 +50,11 @@ function PasswordCheckContent() {
   };
 
   return (
-    <div className="w-full flex flex-col justify-center items-center px-[170px] pt-[70px] pb-[100px] gap-10">
+    <div className="w-full flex flex-col justify-center items-center px-[170px] pt-[60px] gap-7">
       {/* 페이지 타이틀/설명 */}
       <div className="w-full">
-        <h3 className="text-gray-800 text-title-lg mb-2">비밀번호 확인</h3>
-        <p className="text-gray-800 text-body-lg">본인 확인을 위해 현재 비밀번호를 입력해주세요.</p>
+        <h3 className="text-gray-800 text-[21px] font-semibold mb-2">비밀번호 확인</h3>
+        <p className="text-gray-800 text-[15px]">본인 확인을 위해 현재 비밀번호를 입력해주세요.</p>
       </div>
       <div className="flex flex-col w-full">
         <Input

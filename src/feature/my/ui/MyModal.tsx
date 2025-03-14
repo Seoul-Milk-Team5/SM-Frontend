@@ -26,8 +26,8 @@ function myModal() {
   }, []);
 
   const maxWidthClass = {
-    1: "sm:max-w-[750px] max-h-[420px]",
-    2: "sm:max-w-[625px] max-h-[100vh]",
+    1: "sm:max-w-[700px] max-h-[360px]",
+    2: "sm:max-w-[725px] max-h-[100vh]",
   }[steps];
 
   return (

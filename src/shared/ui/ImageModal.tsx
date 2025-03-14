@@ -30,7 +30,7 @@ export function ImageModal({ btnName, imageUrl }: ImageModalProps) {
         <div className="flex-grow flex justify-center items-center overflow-hidden">
           {imageUrl ? (
             isPdf ? (
-              <iframe src={imageUrl + "#toolbar=0&navpanes=0&scrollbar=0"} className="flex-grow w-full h-[50vh]" />
+              <iframe src={imageUrl + "#navpanes=0&scrollbar=0"} className="flex-grow w-full h-[50vh]" />
             ) : (
               <img
                 src={imageUrl}

@@ -4,7 +4,7 @@ import InputWithButton from "@/shared/ui/InputWithButton";
 import InputWithLabel from "@/shared/ui/InputWithLabel";
 import { validatePassword } from "@/shared/utils";
 import { ChangeEvent, Dispatch, FormEvent, MouseEvent, SetStateAction, useEffect, useState } from "react";
-import { myPasswordChangeRequest, userInformationRequest } from "../service";
+import { myPasswordChangeRequest, passwordCheckRequest, userInformationRequest } from "../service";
 import { useAuth } from "@/app/providers/AuthProvider";
 
 interface UserContentProps {
@@ -21,6 +21,7 @@ function UserContent({ setIsModalState }: UserContentProps) {
   });
 
   const [errors, setErrors] = useState<Errors>({
+    password: "",
     newPassword: "",
     rePassword: "",
   });
@@ -65,9 +66,34 @@ function UserContent({ setIsModalState }: UserContentProps) {
   };
 
   // 현재 비밀번호 입력 후 변경하기 버튼 클릭 시 새 비밀번호 인풋을 열어줌
-  const handleInputOpen = (event: MouseEvent<HTMLButtonElement>) => {
+  const handleInputOpen = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setOpen(true);
+
+    try {
+      const token = getUser();
+      const response = await passwordCheckRequest(token, formData.password);
+
+      if (response.success) {
+        setOpen(true);
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          password: "",
+        }));
+      }
+    } catch (err: any) {
+      console.error(err);
+      if (err.message.includes("401")) {
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          password: "비밀번호가 틀렸습니다.",
+        }));
+      } else {
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          password: "비밀번호 확인 중 오류가 발생했습니다.",
+        }));
+      }
+    }
   };
 
   // 화면에 보이는 인풋 필드들이 모두 채워졌는지 확인하는 조건
@@ -107,7 +133,7 @@ function UserContent({ setIsModalState }: UserContentProps) {
 
   return (
     <div className="flex flex-col w-full items-center px-[90px] pt-[80px] pb-[100px]">
-      <h3 className="w-full text-gray-800 text-title-lg mb-14">유저정보</h3>
+      <h3 className="w-full text-gray-800 text-title-lg mb-10">유저정보</h3>
       <form className="w-full flex flex-col gap-5" onSubmit={handleSubmit}>
         <InputWithLabel
           label="성함"
@@ -137,6 +163,7 @@ function UserContent({ setIsModalState }: UserContentProps) {
           disabled={formData.password === ""}
           buttonText="변경하기"
           onClick={handleInputOpen}
+          error={errors.password}
         />
         {isOpen && (
           <InputWithLabel

@@ -19,7 +19,7 @@ function InputWithButton({
 }: InputWithButtonProps) {
   return (
     <div className="flex gap-3">
-      <Label htmlFor={id} className="w-[120px] text-left pt-3 font-medium text-[19px] mr-10">
+      <Label htmlFor={id} className="w-[120px] text-left pt-3 font-medium text-[17px] mr-10">
         {label}
       </Label>
       <div className="flex-1 flex flex-col max-w-[300px] ml-8">
