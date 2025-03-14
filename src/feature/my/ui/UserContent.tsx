@@ -6,6 +6,7 @@ import { validatePassword } from "@/shared/utils";
 import { ChangeEvent, Dispatch, FormEvent, MouseEvent, SetStateAction, useEffect, useState } from "react";
 import { myPasswordChangeRequest, passwordCheckRequest, userInformationRequest } from "../service";
 import { useAuth } from "@/app/providers/AuthProvider";
+import { useToast } from "@/app/providers/ToastProvider";
 
 interface UserContentProps {
   setIsModalState: Dispatch<SetStateAction<boolean>>;
@@ -28,6 +29,7 @@ function UserContent({ setIsModalState }: UserContentProps) {
   const [isOpen, setOpen] = useState(false);
 
   const { getUser } = useAuth();
+  const { addToast } = useToast();
   const token = getUser();
 
   useEffect(() => {
@@ -125,9 +127,11 @@ function UserContent({ setIsModalState }: UserContentProps) {
 
       if (response.success) {
         setIsModalState(false);
+        addToast("비밀번호가 변경되었습니다.", "success");
       }
     } catch (error: any) {
       console.error("비밀번호 변경 에러 발생");
+      addToast("비밀번호에 실패하였습니다.", "error");
     }
   };
 

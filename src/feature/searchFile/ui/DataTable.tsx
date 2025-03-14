@@ -87,6 +87,7 @@ export default function DataTable() {
       await DeleteRequest(taxInvoiceIdList as number[], token);
       setSelectedRows([]);
       fetchData();
+      addToast("파일이 삭제되었습니다.", "success");
     } catch (error) {
       console.log("삭제 실패", error);
     }
@@ -154,8 +155,7 @@ export default function DataTable() {
   const handleSearch = () => {
     setCurrentPage(1);
     fetchData();
-  }
-    
+  };
 
   return (
     <div className=" bg-[#FFF] rounded-lg">
@@ -195,7 +195,7 @@ export default function DataTable() {
         </div>
 
         <div className="flex gap-[15px]">
-          <Errorconform 
+          <Errorconform
             btnName="삭제하기"
             onClick={handleDelete}
             disabled={selectedRows.length === 0}
@@ -208,11 +208,11 @@ export default function DataTable() {
         <TableHeader className="h-[57px]">
           <TableRow>
             <TableHead>
-            <Checkbox
-              checked={filteredData.length > 0 && filteredData.every(row => selectedRows.includes(row.id))}
-              onCheckedChange={toggleSelectAll}
-              className="h-[24px] w-[24px] bg-gray-50 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
-            />
+              <Checkbox
+                checked={filteredData.length > 0 && filteredData.every(row => selectedRows.includes(row.id))}
+                onCheckedChange={toggleSelectAll}
+                className="h-[24px] w-[24px] bg-gray-50 data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
+              />
             </TableHead>
             <TableHead>번호</TableHead>
             <TableHead>공급자</TableHead>
@@ -289,11 +289,7 @@ export default function DataTable() {
           dataTableFetch={fetchData}
         />
       </StepProvider>
-      <PreviewModal
-        isOpen={isPreviewOpen} 
-        onClose={() => setIsPreviewOpen(false)} 
-        fileUrl={previewUrl!} 
-      />
+      <PreviewModal isOpen={isPreviewOpen} onClose={() => setIsPreviewOpen(false)} fileUrl={previewUrl!} />
 
       {/* 페이지네이션 */}
       <Pagination className="mt-4">

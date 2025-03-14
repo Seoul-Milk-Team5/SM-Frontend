@@ -24,6 +24,7 @@ import { saveFileGetRequest, saveFilePatchRequest } from "../service";
 import { useAuth } from "@/app/providers/AuthProvider";
 import { formatDate } from "@/shared/utils/FormatDate";
 import Errorconform from "@/shared/ui/Alert/Errorconform";
+import { useToast } from "@/app/providers/ToastProvider";
 
 export type Payment = {
   id: number;
@@ -34,8 +35,9 @@ export type Payment = {
 export function FileUploadTable() {
   const [rowSelection, setRowSelection] = useState({});
   const [selectedIds, setSelectedIds] = useState<{ fileId: number | string; fileName: string }[]>([]);
-  const { files, mergeFiles, setFiles, setMergeFiles } = useFileContext();
+  const { mergeFiles, setFiles, setMergeFiles } = useFileContext();
   const { getUser } = useAuth();
+  const { addToast } = useToast();
 
   useEffect(() => {
     const token = getUser();
@@ -48,7 +50,7 @@ export function FileUploadTable() {
     );
   }, []);
 
-  // ✅ 체크박스 선택 시 fileId와 fileName 함께 저장
+  // 체크박스 선택 시 fileId와 fileName 함께 저장
   const toggleRowSelection = (fileId: number | string, fileName: string) => {
     setSelectedIds(prev => {
       const isSelected = prev.some(item => item.fileId === fileId);
@@ -148,6 +150,7 @@ export function FileUploadTable() {
           result: updatedData.result.content,
           clientFiles: prev?.clientFiles.filter(file => !clientFileIds.includes(file.name)) ?? [],
         }));
+        addToast("파일이 삭제되었습니다.", "success");
       }
     } else {
       setFiles(prev => ({
@@ -157,8 +160,8 @@ export function FileUploadTable() {
           file => !selectedIds.some(selected => selected.fileName === file.name)
         ),
       }));
-      console.log(files?.clientFiles);
       setMergeFiles(prev => prev.filter(file => !clientFileIds.includes(file.fileId as string)));
+      addToast("파일이 삭제되었습니다.", "success");
     }
 
     setSelectedIds([]);
@@ -175,12 +178,6 @@ export function FileUploadTable() {
           className="bg-green-500 hover:bg-green-600 cursor-pointer disabled:bg-gray-100 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white"
           disabled={!isDeleteButtonEnabled}
         />
-        {/* <Button
-          className="bg-green-500 hover:bg-green-600 cursor-pointer disabled:bg-gray-100 disabled:opacity-100 py-3.5 px-6 text-body-md-sb text-white"
-          disabled={!isDeleteButtonEnabled}
-          onClick={handleFileDelete}>
-          삭제하기
-        </Button> */}
       </div>
       <div>
         <Table>
