@@ -16,6 +16,8 @@ export function PageHeader() {
   const { addToast } = useToast();
 
   const [disable, setDisable] = useState(true);
+  const [loading, setLoading] = useState(false);
+
   const windowSize = useBrowserSize();
 
   useEffect(() => {
@@ -35,10 +37,11 @@ export function PageHeader() {
   const buttonClassName =
     windowSize.windowWidth < 850
       ? "bg-green-500  cursor-pointer disabled:opacity-100 py-3.5 px-4 text-body-md-sb text-[#fff]"
-      : "border-green-500 hover:text-green-600 cursor-pointer disabled:opacity-100 py-3.5 px-6 text-body-md-sb disabled:border-gray-100 disabled:text-gray-300 text-green-500";
+      : "border-green-500 hover:text-green-600 cursor-pointer disabled:opacity-100 py-3.5 px-6 text-body-md-sb disabled:border-gray-100 disabled:text-gray-300 text-green-500 min-w-[100px]";
 
   const handleFileSaveRequest = async () => {
     const token = getUser();
+    setLoading(true);
     const response = await saveFilePostRequest(token, files?.clientFiles ?? []);
 
     if (response.success) {
@@ -48,6 +51,7 @@ export function PageHeader() {
         result: updatedData.result.content,
         clientFiles: [],
       }));
+      setLoading(false);
       addToast("임시 저장되었습니다.", "success");
     } else {
       addToast("임시 저장에 실패하였습니다.", "error");
@@ -66,7 +70,15 @@ export function PageHeader() {
           className={`${buttonClassName}`}
           disabled={disable}
           onClick={handleFileSaveRequest}>
-          {windowSize.windowWidth < 850 ? "저장하기" : "임시 저장"}
+          {loading ? (
+            <div className="flex justify-center items-center">
+              <div className="w-4 h-4 border-4 border-gray-100 border-t-green-300 rounded-full animate-spin"></div>
+            </div>
+          ) : windowSize.windowWidth < 850 ? (
+            "저장하기"
+          ) : (
+            "임시 저장"
+          )}
         </Button>
         <StepProvider>
           <AuthModal btnName="검사하기" disable={disable} />
